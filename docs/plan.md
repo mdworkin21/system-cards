@@ -7,7 +7,8 @@ externally, which alignment and agentic-safety evaluations were run, and
 what the card *doesn't* say. Static site, no backend, every cell cites a
 page in a primary document.
 
-Status: plan only. Nothing built. Written 2026-10-24.
+Status: plan only. Written 2026-10-24. Repo created and stack decided
+2026-10-25. Nothing built.
 
 ## 1. What this is and is not
 
@@ -197,7 +198,7 @@ to a rung lives in one file and has a test that every raw term seen in
 ```
 system-cards/                    # name TBD
   sources/<lab>/<model>.yaml     # hand-edited, PR-reviewed; the only source of truth
-  schema/                        # pydantic models; exports JSON Schema for editor hints
+  schema/                        # pydantic models; system-card.schema.json exported from them and checked in
   normalization/tiers.yaml       # raw-term -> rung mapping, versioned
   cache/pdfs/                    # sha256-named PDFs, gitignored
   scripts/
@@ -206,24 +207,52 @@ system-cards/                    # name TBD
     review.py                    # drafts/<id>.yaml -> one-page HTML: value, quote, link to PDF page; you approve or fix
     check.py                     # schema + cite-page-has-quote (pdftotext) + not_reported keyword net + mapping coverage
     build.py                     # sources/ -> site/data.json + coverage matrix
-  site/                          # static: index.html, app.js, styles.css; reads data.json
+  site/                          # Vite + React + TypeScript; reads public/data.json
+    src/types.generated.ts       # from schema/system-card.schema.json; never hand-edited
   tests/                         # offline; no network, no API key
   docs/
     schema.md  normalization.md  adding-a-card.md  what-this-is-not.md
   .github/workflows/
-    check.yml                    # ruff, mypy, pytest, check.py on PR
-    pages.yml                    # build.py + deploy site/ to GitHub Pages on main
+    check.yml                    # ruff, mypy, pytest, check.py, schema drift, npm typecheck on PR
+    pages.yml                    # build.py, npm ci, npm run build, deploy site/dist to Pages on main
 ```
 
-Stack: Python data layer with uv, pydantic, ruff, mypy, pytest, matching
-ctrleval so there is one set of habits. Frontend is plain HTML, CSS and
-JavaScript with no build step for v1; a small table library is fine if
-hand-rolling the matrix gets painful. GitHub Pages via Actions. Load the
-`dataviz` skill before writing any chart or matrix code.
+**Stack (decided 2026-10-25).** Python data layer with uv, pydantic, ruff,
+mypy and pytest, matching ctrleval so there is one set of habits. Python
+also owns PDF text extraction and the page-level quote check, where
+pymupdf is clearly stronger than the JavaScript options. Frontend is React
+with TypeScript, built by Vite under `site/`, deployed to GitHub Pages by
+Actions. Load the `dataviz` skill before writing any chart or matrix code.
 
-Alternative considered: all-TypeScript with zod and Astro. One toolchain
-for a website, but it diverges from your existing tooling and the data
-layer is where the work is. Not recommended for v1.
+The two languages share one source of truth. The pydantic models export
+`schema/system-card.schema.json`, which is checked in; CI fails if the
+file drifts from the models. `npm run gen-types` turns that JSON Schema
+into `site/src/types.generated.ts` with json-schema-to-typescript, so a
+schema change breaks the frontend build instead of rendering a wrong
+column silently. `build.py` writes `site/public/data.json`; the Pages
+workflow runs the Python build, then `npm ci` and `npm run build`, and
+deploys `site/dist`. Still static, still nothing to go down.
+
+**Extending the stack.** One rule makes extensions cheap: the YAML under
+`sources/` is the only source of truth, and everything else is derived by
+`build.py`. New derived outputs are additive. A new source of truth is
+where pain lives.
+
+- Querying the data: `build.py --sqlite` emits a SQLite file next to
+  `data.json`; the page can run DuckDB-WASM or sql.js against it in the
+  browser. No server.
+- A backend API: technically a mapping from the pydantic models to
+  SQLModel tables loaded by `build.py` as a derived cache. Operationally
+  it is what killed Model Card Explorer. Not planned while the only
+  consumer is this page.
+- Write workflows (several reviewers, a review queue, comments): the one
+  case that justifies a database. If it comes, use a hosted backend whose
+  writes land as pull requests to the YAML, so git review, the quote check
+  in CI and the provenance chain survive.
+
+Never let a database become the source of truth; that forfeits PR diffs,
+the mechanical quote check and the survive-a-hosting-lapse property, and
+migrating back is hard.
 
 ## 7. Views
 
@@ -248,7 +277,7 @@ layer is where the work is. Not recommended for v1.
 | --- | --- | --- | --- |
 | 0 (optional) | Claude Artifact prototype of the matrix with 3 hand-filled cards | You look at it and say the columns are the right ones | hours |
 | 1 | Repo, schema, normalization table, 3 cards (one per lab) hand-extracted, `check.py` and `build.py`, offline tests green | `build.py` emits `data.json`; every quote verified against its page | 1 to 2 days |
-| 2 | Static site with matrix and detail views, Pages deploy | Public URL renders the 3 cards | 1 to 2 days |
+| 2 | React + TypeScript site with matrix and detail views, generated types, Pages deploy | Public URL renders the 3 cards | 1 to 2 days |
 | 3 | Backfill to 2025 floor using `draft.py` plus human verification; compare, timeline, gaps views | Every card `verification: full` | 30 to 60 min per card, plus a day of UI |
 | 4 | Maintenance: `adding-a-card.md` checklist; link the Midas Project Watchtower, which already logs system-card revisions, and build our own index-page diff job only if it proves insufficient (notify only, never auto-ingest) | | ongoing, small |
 
@@ -356,11 +385,10 @@ withheld and not-reported cells as first-class results.
    open-weight labs.
 2. **Emphasis.** Recommended: safety-framework-centric, as above.
    Capability benchmarks only where the card uses them as safety evidence.
-3. **Stack.** Recommended: Python data layer, plain static frontend,
-   GitHub Pages.
+3. **Stack.** Decided 2026-10-25: Python data layer, React with
+   TypeScript frontend, types generated from the schema, GitHub Pages.
 4. **Phase 0 artifact prototype.** Yes or skip.
-5. **Repo name and visibility.** GitHub Pages on a free plan implies a
-   public repo. Name suggestions: `system-cards`, `card-compare`,
-   `cardfile`.
+5. **Repo name and visibility.** Decided 2026-10-25: `system-cards`,
+   public.
 6. **Who else reads it.** Changes nothing in Phase 1, but decides whether
    Phase 3 gets the compare and gaps views or just the matrix.

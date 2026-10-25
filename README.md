@@ -25,11 +25,12 @@ elsewhere and the plan links to them. This is a reference.
 
 ## How it will be built
 
-Hand-reviewed YAML, one file per card, validated against a schema and
-compiled to a single JSON file that a static page reads. No server. A
-language model drafts each card's facts with cites; a script rejects any
-quote that is not literally on the cited page; a human audits the rest
-from a one-page review screen. Hosted on GitHub Pages.
+Hand-reviewed YAML, one file per card, validated against a pydantic
+schema and compiled to a single JSON file that a React and TypeScript
+page reads. The page's types are generated from the same schema. No
+server. A language model drafts each card's facts with cites; a script
+rejects any quote that is not literally on the cited page; a human audits
+the rest from a one-page review screen. Hosted on GitHub Pages.
 
 ## Layout (planned)
 
@@ -38,7 +39,7 @@ sources/<lab>/<model>.yaml   the only source of truth, hand-reviewed
 schema/                      pydantic models; JSON Schema export
 normalization/               raw lab terms -> shared tier ladder, versioned
 scripts/                     fetch, draft, check, review, build
-site/                        static page; reads data.json
+site/                        React + TypeScript page; reads data.json
 docs/                        plan, schema, normalization, adding a card
 ```
 
