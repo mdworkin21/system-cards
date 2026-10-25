@@ -2,3 +2,7 @@ cache/
 drafts/
 .venv/
 __pycache__/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+site/public/data.json

@@ -7,8 +7,9 @@ externally, which alignment and agentic-safety evaluations were run, and
 what the card *doesn't* say. Static site, no backend, every cell cites a
 page in a primary document.
 
-Status: plan only. Written 2026-10-24. Repo created and stack decided
-2026-10-25. Nothing built.
+Status: Phase 1 built 2026-10-25 (schema, checker, build, three
+extracted cards plus one stub). Plan written 2026-10-24; repo created and
+stack decided 2026-10-25. Phase 2, the site, is next.
 
 ## 1. What this is and is not
 
@@ -201,12 +202,14 @@ system-cards/                    # name TBD
   schema/                        # pydantic models; system-card.schema.json exported from them and checked in
   normalization/tiers.yaml       # raw-term -> rung mapping, versioned
   cache/pdfs/                    # sha256-named PDFs, gitignored
-  scripts/
-    fetch.py                     # url -> cache/<sha256>.pdf, records fetch date; never overwrites
-    draft.py                     # pdf -> drafts/<id>.yaml via Claude, cite per fact; never writes to sources/
-    review.py                    # drafts/<id>.yaml -> one-page HTML: value, quote, link to PDF page; you approve or fix
-    check.py                     # schema + cite-page-has-quote (pdftotext) + not_reported keyword net + mapping coverage
-    build.py                     # sources/ -> site/data.json + coverage matrix
+  src/system_cards/              # the data layer, installed as the `syscards` CLI
+    schema.py                    # pydantic models: Fact, Cite, Card; the keyword net
+    pdftext.py                   # page text from cached PDFs; the quote check
+    check.py                     # schema + ids + tier mapping + quote-on-page + keyword net
+    build.py                     # sources/ -> site/public/data.json, deterministic
+    fetch.py                     # url -> cache/pdfs/<sha256>.pdf; never overwrites; refuses changed bytes
+    cli.py                       # syscards check | build | schema | fetch | fetch-all | text | find
+  drafts/                        # LLM first drafts (Phase 3), gitignored; never read by build
   site/                          # Vite + React + TypeScript; reads public/data.json
     src/types.generated.ts       # from schema/system-card.schema.json; never hand-edited
   tests/                         # offline; no network, no API key
@@ -276,7 +279,7 @@ migrating back is hard.
 | Phase | Deliverable | Gate | Effort |
 | --- | --- | --- | --- |
 | 0 (optional) | Claude Artifact prototype of the matrix with 3 hand-filled cards | You look at it and say the columns are the right ones | hours |
-| 1 | Repo, schema, normalization table, 3 cards (one per lab) hand-extracted, `check.py` and `build.py`, offline tests green | `build.py` emits `data.json`; every quote verified against its page | 1 to 2 days |
+| 1 (done 2026-10-25) | Repo, schema, normalization table, 3 cards (one per lab) extracted, `syscards check` and `syscards build`, offline tests green | `build.py` emits `data.json`; every quote verified against its page | 1 to 2 days |
 | 2 | React + TypeScript site with matrix and detail views, generated types, Pages deploy | Public URL renders the 3 cards | 1 to 2 days |
 | 3 | Backfill to 2025 floor using `draft.py` plus human verification; compare, timeline, gaps views | Every card `verification: full` | 30 to 60 min per card, plus a day of UI |
 | 4 | Maintenance: `adding-a-card.md` checklist; link the Midas Project Watchtower, which already logs system-card revisions, and build our own index-page diff job only if it proves insufficient (notify only, never auto-ingest) | | ongoing, small |

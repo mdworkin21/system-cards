@@ -1,0 +1,208 @@
+# Gemini 3.1 Pro model card, February 2026.
+# A short card that defers most sections to the Gemini 3 Pro model card and the
+# Gemini 3 Pro Frontier Safety Framework report. The FSF results table on pages
+# 8 and 9 is the substantive safety content.
+id: google-deepmind/gemini-3.1-pro/2026-02
+models:
+  - name: Gemini 3.1 Pro
+    developer: Google DeepMind
+    family: Gemini 3
+    release_date: "2026-02"
+    open_weights: false
+    modalities: [text, image, audio, video]
+document:
+  kind: model_card
+  title: Gemini 3.1 Pro Model Card
+  url: https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-3-1-Pro-Model-Card.pdf
+  published: "2026-02"
+  pages: 9
+  sha256: 70bcda79a248255d2c858600cb1fecae9ea30278c942684754df0bca71ca8315
+  fetched: "2026-10-25"
+framework:
+  name: fsf
+  tier:
+    status: reported
+    value: CCL not reached
+    cite:
+      page: 7
+      quote: >-
+        We found that the model remains below alert thresholds for the CBRN,
+        harmful manipulation, machine learning R&D, and misalignment CCLs.
+      note: >-
+        The FSF assigns Critical Capability Levels per domain rather than one
+        model-level tier. "CCL not reached" summarizes the results table on
+        pages 8 and 9, where every row says CCL not reached.
+  domains:
+    cbrn:
+      status: reported
+      value: below_threshold
+      raw_threshold: CBRN Uplift Level 1
+      cite:
+        page: 8
+        quote: >-
+          The model can provide highly accurate and actionable information but
+          still fails to offer novel or sufficiently complete and detailed
+          instructions for critical stages, to significantly enhance the
+          capabilities of low to medium resourced threat actors required for
+          the CCL.
+        note: Page 7 states the model is below the alert threshold for CBRN.
+    cyber:
+      status: reported
+      value: alert_threshold_reached
+      raw_threshold: Cyber Uplift Level 1
+      cite:
+        page: 8
+        quote: >-
+          As with Gemini 3 Pro, the model has reached the alert threshold, but
+          still does not reach the levels of uplift required for the CCL.
+    ai_rnd:
+      status: reported
+      value: below_threshold
+      raw_threshold: Machine Learning R&D Acceleration level 1 and Automation level 1
+      cite:
+        page: 9
+        quote: >-
+          However, the model's average performance across all challenges
+          remains beneath the alert threshold for the CCLs.
+        note: >-
+          Reports a human-normalised RE-Bench average of 1.27 against 1.04 for
+          Gemini 3 Pro, Deep Think mode.
+    manipulation:
+      status: reported
+      value: below_threshold
+      raw_threshold: Harmful Manipulation Level 1 (exploratory)
+      cite:
+        page: 8
+        quote: >-
+          Evaluations indicated that the model showed higher manipulative
+          efficacy for belief change metrics compared to a non-AI baseline,
+          with the maximum odds ratio of 3.6x, which is the same as Gemini 3
+          Pro, and did not reach the alert threshold.
+    misalignment:
+      status: reported
+      value: below_threshold
+      raw_threshold: Instrumental Reasoning Levels 1 and 2 (exploratory)
+      cite:
+        page: 9
+        quote: >-
+          However, its performance on other challenges is inconsistent, and
+          thus the model does not reach the alert threshold.
+        note: >-
+          Covers stealth and situational-awareness evaluations. The card says
+          the model solves three situational-awareness challenges no other
+          model had consistently solved.
+evaluations:
+  alignment:
+    sabotage:
+      status: not_reported
+    scheming_or_deception:
+      status: reported
+      value: >-
+        Stealth evaluations, reported under the FSF misalignment CCL; performs
+        similarly to Gemini 3 Pro.
+      cite:
+        page: 9
+        quote: On stealth evaluations, the model performs similarly to Gemini 3 Pro.
+    eval_awareness:
+      status: not_reported
+      note: >-
+        Situational-awareness challenges are reported under the misalignment
+        CCL, but nothing addresses whether the model recognises it is being
+        evaluated.
+    sycophancy:
+      status: not_reported
+    reward_hacking:
+      status: not_reported
+    self_preservation:
+      status: not_reported
+  agentic_safety:
+    prompt_injection:
+      status: not_reported
+      note: Risks and mitigations are deferred to the Gemini 3 Pro model card.
+    computer_use_safety:
+      status: not_reported
+    tool_misuse:
+      status: not_reported
+  harm_and_honesty:
+    harmful_content_refusals:
+      status: reported
+      value: >-
+        Automated content-safety evaluations against Gemini 3.0 Pro:
+        text-to-text +0.10%, multilingual +0.11%, image-to-text -0.33%,
+        unjustified refusals -0.08%. Non-egregious by manual review.
+      cite:
+        page: 6
+        quote: >-
+          Overall, Gemini 3.1 Pro outperforms Gemini 3.0 Pro across both
+          safety and tone, while keeping unjustified refusals low.
+    jailbreak_robustness:
+      status: not_reported
+    honesty_or_hallucination:
+      status: not_reported
+    bias:
+      status: not_reported
+    child_safety:
+      status: reported
+      value: Satisfied required launch thresholds in human red teaming.
+      cite:
+        page: 7
+        quote: >-
+          For child safety evaluations, Gemini 3.1 Pro satisfied required
+          launch thresholds, which were developed by expert teams to protect
+          children online and meet Google's commitments to child safety across
+          our models and Google products.
+  welfare:
+    status: not_reported
+third_party:
+  summary:
+    status: not_reported
+    note: >-
+      Red teaming is by "specialist teams who sit outside of the model
+      development team", which is internal. No external evaluator is named.
+  assessments: []
+mitigations:
+  deployment_safeguards:
+    status: reported
+    value: >-
+      Mitigations deployed in the CBRN and cyber domains; details deferred to
+      the Gemini 3 Pro Frontier Safety Framework Report.
+    cite:
+      page: 7
+      quote: >-
+        More details on our evaluations and the mitigations we deploy can be
+        found in the Gemini 3 Pro Frontier Safety Framework Report.
+  weight_security:
+    status: not_reported
+  monitoring_and_response:
+    status: not_reported
+training_disclosure:
+  data_cutoff:
+    status: not_reported
+  compute:
+    status: not_reported
+    note: Hardware and software sections defer to the Gemini 3 Pro model card.
+  method_notes:
+    status: reported
+    value: >-
+      Based on Gemini 3 Pro; training data and processing deferred to the
+      Gemini 3 Pro model card.
+    cite:
+      page: 2
+      quote: "Model dependencies: Gemini 3.1 Pro is based on Gemini 3 Pro."
+disclosure_meta:
+  section_titles:
+    - Model Information
+    - Model Data
+    - Implementation and Sustainability
+    - Distribution
+    - Evaluation
+    - Intended Usage and Limitations
+    - Ethics and Content Safety
+    - Frontier Safety
+provenance:
+  extracted_by: llm_assisted
+  extracted_on: "2026-10-25"
+  verification: none
+notes: >-
+  Extracted by Claude in a Claude Code session from the cached PDF; every
+  quote was verified mechanically by `syscards check`. Awaiting a human audit.

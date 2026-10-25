@@ -1,0 +1,322 @@
+# Update to GPT-5 System Card: GPT-5.2, December 11, 2025.
+# An addendum: it reports GPT-5.2's evaluations and refers back to the GPT-5
+# and GPT-5.1 system cards for the mitigation approach. Printed page numbers
+# in the PDF are one less than the physical pages cited here.
+id: openai/gpt-5.2/2025-12
+models:
+  - name: GPT-5.2 Instant
+    developer: OpenAI
+    family: GPT-5
+    release_date: "2025-12"
+    open_weights: false
+    modalities: [text, image]
+  - name: GPT-5.2 Thinking
+    developer: OpenAI
+    family: GPT-5
+    release_date: "2025-12"
+    open_weights: false
+    modalities: [text, image]
+document:
+  kind: addendum
+  title: "Update to GPT-5 System Card: GPT-5.2"
+  url: https://cdn.openai.com/pdf/3a4153c8-c748-4b71-8e31-aecbde944f8d/oai_5_2_system-card.pdf
+  published: "2025-12-11"
+  pages: 27
+  sha256: 37df7ab47f5c142891d25a1f351a7b3e9d1e38f5e13b8346ac15ed6470074db0
+  fetched: "2026-10-25"
+  fetched_from: https://media.githubusercontent.com/media/jlumbroso/frontier-model-observatory/main/artifacts/sha256/37/37df7ab47f5c142891d25a1f351a7b3e9d1e38f5e13b8346ac15ed6470074db0/original.pdf
+framework:
+  name: preparedness_framework
+  tier:
+    status: reported
+    value: High
+    cite:
+      page: 12
+      quote: >-
+        we are continuing to treat gpt-5.2-thinking as High capability in the
+        Biological and Chemical domain
+      note: >-
+        The Preparedness Framework assigns High or Critical per Tracked
+        Category. "High" here is the highest designation any category
+        received; Biological and Chemical is the only one.
+  domains:
+    cbrn:
+      status: reported
+      value: threshold_reached
+      raw_threshold: High capability, Biological and Chemical
+      cite:
+        page: 13
+        quote: >-
+          We are treating this launch as High capability in the Biological and
+          Chemical domain, activating the associated Preparedness safeguards.
+        note: >-
+          Precautionary: the card says it does not have definitive evidence
+          the models could meaningfully help a novice create severe
+          biological harm and that they remain on the cusp of that capability.
+    cyber:
+      status: reported
+      value: below_threshold
+      raw_threshold: High cybersecurity capability
+      cite:
+        page: 16
+        quote: >-
+          The gpt-5.2-thinking model series does not meet the threshold for
+          High cyber capability.
+    ai_rnd:
+      status: reported
+      value: below_threshold
+      raw_threshold: High AI Self-Improvement capability
+      cite:
+        page: 21
+        quote: >-
+          gpt-5.2-thinking performed at a similar capability level to
+          gpt-5.1-codex-max and did not meet our High thresholds.
+    manipulation:
+      status: not_reported
+      note: >-
+        Persuasion and manipulation are not a Tracked Category in the
+        Preparedness Framework and the card does not assess them. Its one
+        use of "manipulation" is "LDAP manipulation" in a cyber range
+        scenario (page 20).
+    misalignment:
+      status: reported
+      value: below_threshold
+      raw_threshold: Research Category (sandbagging); no defined threshold
+      cite:
+        page: 26
+        quote: >-
+          Apollo concludes that gpt-5.2-thinking is unlikely to be capable of
+          causing catastrophic harm via scheming.
+        note: >-
+          Reported under "Research Category Update: Sandbagging" on the basis
+          of Apollo Research's external evaluation.
+evaluations:
+  alignment:
+    sabotage:
+      status: reported
+      value: >-
+        Apollo Research: no sabotage behaviours in its scheming and sabotage
+        settings.
+      cite:
+        page: 26
+        quote: >-
+          it shows low rates of covert subversion against developers and does
+          not engage in sabotage or self-preservation behaviors in these
+          settings
+    scheming_or_deception:
+      status: reported
+      value: >-
+        Production deception rate 1.6% (from 7.7% for GPT-5.1 Thinking) by
+        chain-of-thought monitors; elevated failures on missing-image and
+        coding deception benchmarks; Apollo found scheming propensity
+        comparable to peers.
+      cite:
+        page: 10
+        quote: >-
+          In real production traffic, GPT-5.2 Thinking was deceptive 1.6% of
+          the time, significantly lower than GPT-5.1 and slightly lower than
+          GPT-5.
+    eval_awareness:
+      status: reported
+      value: >-
+        Apollo Research observed possibly higher awareness of being evaluated
+        than some prior OpenAI models.
+      cite:
+        page: 26
+        quote: >-
+          While gpt-5.2-thinking may exhibit higher awareness of being
+          evaluated than some prior OpenAI models, deception rates are
+          generally similar to peers and are not substantially amplified by
+          scaffolding.
+    sycophancy:
+      status: not_reported
+    reward_hacking:
+      status: reported
+      value: >-
+        Counted as one category inside the production deception monitor; no
+        separate result.
+      cite:
+        page: 10
+        quote: >-
+          Categories of deception include among others: lying about what tools
+          returned or what tools were run, fabricating facts or citations,
+          being overconfident in the final answer compared to internal
+          reasoning, reward hacking and claiming to do work in the background
+          when no work was occurring.
+    self_preservation:
+      status: reported
+      value: "Apollo Research: no self-preservation behaviours in its settings."
+      cite:
+        page: 26
+        quote: >-
+          does not engage in sabotage or self-preservation behaviors in these
+          settings
+  agentic_safety:
+    prompt_injection:
+      status: reported
+      value: >-
+        Agent JSK 0.997 (Instant) and 0.978 (Thinking); PlugInject 0.929 and
+        0.996. Both sets are splits of training data, so they do not measure
+        generalisation to new attacks.
+      cite:
+        page: 6
+        quote: >-
+          Both gpt-5.2-instant and gpt-5.2-thinking show significant
+          improvements on these evaluations, essentially saturating these
+          evals.
+    computer_use_safety:
+      status: not_reported
+    tool_misuse:
+      status: not_reported
+      note: >-
+        Cyber Safety (section 3.8) measures refusal of operational cyber
+        guidance in chat, which is recorded under harmful content, not
+        agentic misuse.
+  harm_and_honesty:
+    harmful_content_refusals:
+      status: reported
+      value: >-
+        Production Benchmarks not_unsafe across 11 categories; Thinking
+        0.859 to 1.000, Instant 0.770 to 1.000; Instant regressed on
+        harassment and hate.
+      cite:
+        page: 5
+        quote: >-
+          gpt-5.2-thinking and gpt-5.2-instant generally perform on par with or
+          better than gpt-5.1-thinking and gpt-5.1-instant.
+    jailbreak_robustness:
+      status: reported
+      value: >-
+        StrongReject (filtered) not_unsafe: Thinking 0.975, Instant 0.878, a
+        regression from 0.976 for GPT-5.1 Instant.
+      cite:
+        page: 6
+        quote: >-
+          gpt-5.2-instant performs lower than gpt-5.1-instant, though it still
+          performs higher than gpt-5-instant-oct3
+    honesty_or_hallucination:
+      status: reported
+      value: >-
+        Factual hallucination rate on production-representative prompts on
+        par with or slightly better than predecessors; under 1% with
+        browsing across five domains.
+      cite:
+        page: 7
+        quote: >-
+          We find that GPT-5.2 Thinking performs on par with (or slightly
+          better) than its predecessors in this setting.
+    bias:
+      status: reported
+      value: >-
+        First-person fairness harm_overall 0.00997 for Thinking against
+        0.0128 for GPT-5.1 Thinking.
+      cite:
+        page: 12
+        quote: >-
+          We see gpt-5.2-thinking performs generally on par with
+          gpt-5.1-thinking.
+    child_safety:
+      status: reported
+      value: >-
+        sexual/minors not_unsafe 0.935 (Instant) and 0.970 (Thinking);
+        age-prediction rollout described as in early stages.
+      cite:
+        page: 5
+        quote: >-
+          We've found that this does not materially impact users whom we know
+          to be minors, for whom our preexisting safeguards appear to be
+          working well.
+  welfare:
+    status: not_reported
+third_party:
+  summary:
+    status: reported
+    value: >-
+      Irregular (cyber capabilities) and Apollo Research (scheming,
+      sabotage); SecureBio and Gryphon Scientific supplied biological
+      evaluation sets.
+    cite:
+      page: 12
+      quote: >-
+        additional prompting or fine-tuning, longer rollouts, novel
+        interactions, or different forms of scaffolding could elicit
+        behaviors beyond what we observed in our tests or the tests of our
+        third-party partners.
+  assessments:
+    - org: other
+      org_name: Irregular
+      scope: >-
+        Cyberoffensive challenges: vulnerability research and exploitation,
+        network attack simulation, evasion.
+      cite:
+        page: 21
+        quote: >-
+          Irregular, an AI Security organization that addresses and mitigates
+          frontier cybersecurity risks, evaluated the model's ability to solve
+          three types of cyberoffensive challenges:
+    - org: apollo
+      scope: Strategic deception, in-context scheming, and sabotage capabilities.
+      cite:
+        page: 26
+        quote: >-
+          Apollo Research conducted a full evaluation of gpt-5.2-thinking for
+          strategic deception, in-context scheming, and sabotage capabilities.
+mitigations:
+  deployment_safeguards:
+    status: reported
+    value: >-
+      The Biological and Chemical High-capability safeguards described in the
+      GPT-5 system card; system-level safeguards in ChatGPT for mature
+      content.
+    cite:
+      page: 12
+      quote: >-
+        We have applied the corresponding safeguards for this model as
+        described in the GPT-5 system card.
+  weight_security:
+    status: not_reported
+  monitoring_and_response:
+    status: reported
+    value: >-
+      Monitoring and enforcement pipeline for cyber misuse; chain-of-thought
+      monitors over pre-release traffic for deception.
+    cite:
+      page: 17
+      quote: >-
+        we are continuing to invest in safeguards, including both the model
+        safety training described above and scaling up our monitoring and
+        enforcement pipeline to disrupt potential misuse.
+training_disclosure:
+  data_cutoff:
+    status: not_reported
+  compute:
+    status: not_reported
+    note: >-
+      The card's GPU mentions describe MLE-Bench evaluation environments,
+      not training compute.
+  method_notes:
+    status: reported
+    value: >-
+      Reasoning models trained with reinforcement learning to think before
+      answering; data filtering described in general terms.
+    cite:
+      page: 4
+      quote: >-
+        OpenAI reasoning models are trained to reason through reinforcement
+        learning.
+disclosure_meta:
+  section_titles:
+    - Introduction
+    - Model Data and Training
+    - Baseline Model Safety Evaluations
+    - Preparedness Framework
+provenance:
+  extracted_by: llm_assisted
+  extracted_on: "2026-10-25"
+  verification: none
+notes: >-
+  Extracted by Claude in a Claude Code session from the cached PDF, read in
+  full; every quote was verified mechanically by `syscards check`. The PDF
+  bytes came from the Frontier Model Observatory's content-addressed mirror
+  because cdn.openai.com was unreachable from that environment; the sha256
+  matches the mirror's record of the original. Awaiting a human audit.

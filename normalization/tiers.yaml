@@ -1,0 +1,26 @@
+# Maps each lab's model-level tier term onto one coarse shared ladder.
+# The raw term is always stored and shown next to the rung; this table is the
+# only place the cross-lab judgment lives. Bump `version` when a mapping changes.
+version: 1
+rungs:
+  baseline: >-
+    No elevated capability threshold reached. Deployed under the framework's
+    base standard.
+  elevated: >-
+    A capability threshold was reached, or could not be ruled out, and the
+    model is deployed with the framework's elevated safeguards.
+  severe: >-
+    A threshold beyond the first elevated tier was reached (ASL-4 or above,
+    Preparedness 'Critical', or an FSF CCL for severe harm).
+mappings:
+  - {framework: rsp, raw: "ASL-2", rung: baseline}
+  - {framework: rsp, raw: "ASL-3", rung: elevated}
+  - {framework: rsp, raw: "ASL-4", rung: severe}
+  # 2026 RSP / Frontier Compliance Framework threat-model designations
+  - {framework: rsp, raw: "CB-1", rung: elevated}
+  - {framework: rsp, raw: "CB-2", rung: severe}
+  - {framework: preparedness_framework, raw: "below High", rung: baseline}
+  - {framework: preparedness_framework, raw: "High", rung: elevated}
+  - {framework: preparedness_framework, raw: "Critical", rung: severe}
+  - {framework: fsf, raw: "CCL not reached", rung: baseline}
+  - {framework: fsf, raw: "CCL reached", rung: elevated}

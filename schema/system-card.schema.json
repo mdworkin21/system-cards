@@ -1,0 +1,780 @@
+{
+  "$defs": {
+    "AgenticSafetyEvals": {
+      "additionalProperties": false,
+      "properties": {
+        "prompt_injection": {
+          "$ref": "#/$defs/Fact"
+        },
+        "computer_use_safety": {
+          "$ref": "#/$defs/Fact"
+        },
+        "tool_misuse": {
+          "$ref": "#/$defs/Fact"
+        }
+      },
+      "title": "AgenticSafetyEvals",
+      "type": "object"
+    },
+    "AlignmentEvals": {
+      "additionalProperties": false,
+      "properties": {
+        "sabotage": {
+          "$ref": "#/$defs/Fact"
+        },
+        "scheming_or_deception": {
+          "$ref": "#/$defs/Fact"
+        },
+        "eval_awareness": {
+          "$ref": "#/$defs/Fact"
+        },
+        "sycophancy": {
+          "$ref": "#/$defs/Fact"
+        },
+        "reward_hacking": {
+          "$ref": "#/$defs/Fact"
+        },
+        "self_preservation": {
+          "$ref": "#/$defs/Fact"
+        }
+      },
+      "title": "AlignmentEvals",
+      "type": "object"
+    },
+    "Cite": {
+      "additionalProperties": false,
+      "description": "Where in the document a fact comes from. ``quote`` is verbatim.",
+      "properties": {
+        "page": {
+          "description": "1-based page number in the cached PDF.",
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "quote": {
+          "description": "Verbatim text from that page.",
+          "minLength": 8,
+          "title": "Quote",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Context the quote needs.",
+          "title": "Note"
+        }
+      },
+      "required": [
+        "page",
+        "quote"
+      ],
+      "title": "Cite",
+      "type": "object"
+    },
+    "DisclosureMeta": {
+      "additionalProperties": false,
+      "properties": {
+        "section_titles": {
+          "description": "The card's own top-level headings, verbatim.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Section Titles",
+          "type": "array"
+        }
+      },
+      "title": "DisclosureMeta",
+      "type": "object"
+    },
+    "Document": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/DocumentKind"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "description": "The document itself, usually a PDF, at the lab's own host.",
+          "title": "Url",
+          "type": "string"
+        },
+        "landing_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The lab's page that links the document, if different.",
+          "title": "Landing Url"
+        },
+        "published": {
+          "anyOf": [
+            {
+              "description": "YYYY-MM or YYYY-MM-DD. Use the precision the source gives.",
+              "pattern": "^\\d{4}-\\d{2}(-\\d{2})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published"
+        },
+        "revised": {
+          "anyOf": [
+            {
+              "description": "YYYY-MM or YYYY-MM-DD. Use the precision the source gives.",
+              "pattern": "^\\d{4}-\\d{2}(-\\d{2})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revised"
+        },
+        "pages": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pages"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "fetched": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fetched"
+        },
+        "fetched_from": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Set only if the bytes came from a mirror rather than url.",
+          "title": "Fetched From"
+        }
+      },
+      "required": [
+        "kind",
+        "title",
+        "url"
+      ],
+      "title": "Document",
+      "type": "object"
+    },
+    "DocumentKind": {
+      "enum": [
+        "system_card",
+        "model_card",
+        "addendum",
+        "risk_report",
+        "third_party_report",
+        "other"
+      ],
+      "title": "DocumentKind",
+      "type": "string"
+    },
+    "DomainAssessment": {
+      "additionalProperties": false,
+      "description": "Like a Fact, but ``value`` is a DomainOutcome and the lab's own term is kept.",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/Status",
+          "default": "unknown"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DomainOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "raw_threshold": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The lab's own name for the threshold, e.g. 'Cyber Uplift Level 1'.",
+          "title": "Raw Threshold"
+        },
+        "cite": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Cite"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "title": "DomainAssessment",
+      "type": "object"
+    },
+    "DomainOutcome": {
+      "description": "Coarse outcome of a dangerous-capability assessment in one risk domain.",
+      "enum": [
+        "below_threshold",
+        "alert_threshold_reached",
+        "threshold_not_ruled_out",
+        "threshold_reached",
+        "critical_reached",
+        "not_assessed"
+      ],
+      "title": "DomainOutcome",
+      "type": "string"
+    },
+    "Domains": {
+      "additionalProperties": false,
+      "properties": {
+        "cbrn": {
+          "$ref": "#/$defs/DomainAssessment"
+        },
+        "cyber": {
+          "$ref": "#/$defs/DomainAssessment"
+        },
+        "ai_rnd": {
+          "$ref": "#/$defs/DomainAssessment",
+          "description": "AI R&D, ML R&D, self-improvement, autonomy: the labs' names differ."
+        },
+        "manipulation": {
+          "$ref": "#/$defs/DomainAssessment"
+        },
+        "misalignment": {
+          "$ref": "#/$defs/DomainAssessment"
+        }
+      },
+      "title": "Domains",
+      "type": "object"
+    },
+    "Evaluations": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment": {
+          "$ref": "#/$defs/AlignmentEvals"
+        },
+        "agentic_safety": {
+          "$ref": "#/$defs/AgenticSafetyEvals"
+        },
+        "harm_and_honesty": {
+          "$ref": "#/$defs/HarmAndHonestyEvals"
+        },
+        "welfare": {
+          "$ref": "#/$defs/Fact"
+        }
+      },
+      "title": "Evaluations",
+      "type": "object"
+    },
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/Status",
+          "default": "unknown"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short answer, only when reported.",
+          "title": "Value"
+        },
+        "cite": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Cite"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "title": "Fact",
+      "type": "object"
+    },
+    "Framework": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/FrameworkName"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        },
+        "tier": {
+          "$ref": "#/$defs/Fact",
+          "description": "Model-level tier in the lab's own words, e.g. 'ASL-3'. Normalized at build."
+        },
+        "domains": {
+          "$ref": "#/$defs/Domains"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Framework",
+      "type": "object"
+    },
+    "FrameworkName": {
+      "enum": [
+        "rsp",
+        "preparedness_framework",
+        "fsf",
+        "xai_rmf",
+        "meta_frontier_ai_framework",
+        "none",
+        "other"
+      ],
+      "title": "FrameworkName",
+      "type": "string"
+    },
+    "HarmAndHonestyEvals": {
+      "additionalProperties": false,
+      "properties": {
+        "harmful_content_refusals": {
+          "$ref": "#/$defs/Fact"
+        },
+        "jailbreak_robustness": {
+          "$ref": "#/$defs/Fact"
+        },
+        "honesty_or_hallucination": {
+          "$ref": "#/$defs/Fact"
+        },
+        "bias": {
+          "$ref": "#/$defs/Fact"
+        },
+        "child_safety": {
+          "$ref": "#/$defs/Fact"
+        }
+      },
+      "title": "HarmAndHonestyEvals",
+      "type": "object"
+    },
+    "Mitigations": {
+      "additionalProperties": false,
+      "properties": {
+        "deployment_safeguards": {
+          "$ref": "#/$defs/Fact"
+        },
+        "weight_security": {
+          "$ref": "#/$defs/Fact"
+        },
+        "monitoring_and_response": {
+          "$ref": "#/$defs/Fact"
+        }
+      },
+      "title": "Mitigations",
+      "type": "object"
+    },
+    "ModelInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "developer": {
+          "title": "Developer",
+          "type": "string"
+        },
+        "family": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Family"
+        },
+        "release_date": {
+          "anyOf": [
+            {
+              "description": "YYYY-MM or YYYY-MM-DD. Use the precision the source gives.",
+              "pattern": "^\\d{4}-\\d{2}(-\\d{2})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Release Date"
+        },
+        "open_weights": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Open Weights"
+        },
+        "modalities": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Modalities",
+          "type": "array"
+        },
+        "epoch_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Join key into Epoch AI's models CSV.",
+          "title": "Epoch Id"
+        }
+      },
+      "required": [
+        "name",
+        "developer"
+      ],
+      "title": "ModelInfo",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "extracted_by": {
+          "enum": [
+            "human",
+            "llm_assisted"
+          ],
+          "title": "Extracted By",
+          "type": "string"
+        },
+        "extracted_on": {
+          "format": "date",
+          "title": "Extracted On",
+          "type": "string"
+        },
+        "verified_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verified By"
+        },
+        "verification": {
+          "default": "none",
+          "enum": [
+            "full",
+            "partial",
+            "none"
+          ],
+          "title": "Verification",
+          "type": "string"
+        }
+      },
+      "required": [
+        "extracted_by",
+        "extracted_on"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Status": {
+      "description": "What the card does about a question.\n\n``reported``        the card answers it; ``value`` and ``cite`` say how.\n``withheld``        the card says it looked but does not publish the result.\n``not_reported``    the card is silent.\n``not_applicable``  the question does not apply (say why in ``note``).\n``unknown``         nobody has checked yet. A gap in our work, not the card's.",
+      "enum": [
+        "reported",
+        "withheld",
+        "not_reported",
+        "not_applicable",
+        "unknown"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "ThirdParty": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "$ref": "#/$defs/Fact"
+        },
+        "assessments": {
+          "items": {
+            "$ref": "#/$defs/ThirdPartyAssessment"
+          },
+          "title": "Assessments",
+          "type": "array"
+        }
+      },
+      "title": "ThirdParty",
+      "type": "object"
+    },
+    "ThirdPartyAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "org": {
+          "$ref": "#/$defs/ThirdPartyOrg"
+        },
+        "org_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Required when org is 'other'.",
+          "title": "Org Name"
+        },
+        "pre_deployment": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pre Deployment"
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope"
+        },
+        "report_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Report Url"
+        },
+        "cite": {
+          "$ref": "#/$defs/Cite"
+        }
+      },
+      "required": [
+        "org",
+        "cite"
+      ],
+      "title": "ThirdPartyAssessment",
+      "type": "object"
+    },
+    "ThirdPartyOrg": {
+      "enum": [
+        "uk_aisi",
+        "us_caisi",
+        "metr",
+        "apollo",
+        "gray_swan",
+        "securebio",
+        "other"
+      ],
+      "title": "ThirdPartyOrg",
+      "type": "string"
+    },
+    "TrainingDisclosure": {
+      "additionalProperties": false,
+      "properties": {
+        "data_cutoff": {
+          "$ref": "#/$defs/Fact"
+        },
+        "compute": {
+          "$ref": "#/$defs/Fact"
+        },
+        "method_notes": {
+          "$ref": "#/$defs/Fact"
+        }
+      },
+      "title": "TrainingDisclosure",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One system-card document and everything we recorded about it.",
+  "properties": {
+    "id": {
+      "description": "<lab>/<model-slug>/<yyyy-mm of the document>",
+      "pattern": "^[a-z0-9-]+/[a-z0-9.-]+/\\d{4}-\\d{2}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "models": {
+      "items": {
+        "$ref": "#/$defs/ModelInfo"
+      },
+      "minItems": 1,
+      "title": "Models",
+      "type": "array"
+    },
+    "document": {
+      "$ref": "#/$defs/Document"
+    },
+    "framework": {
+      "$ref": "#/$defs/Framework"
+    },
+    "evaluations": {
+      "$ref": "#/$defs/Evaluations"
+    },
+    "third_party": {
+      "$ref": "#/$defs/ThirdParty"
+    },
+    "mitigations": {
+      "$ref": "#/$defs/Mitigations"
+    },
+    "training_disclosure": {
+      "$ref": "#/$defs/TrainingDisclosure"
+    },
+    "disclosure_meta": {
+      "$ref": "#/$defs/DisclosureMeta"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "id",
+    "models",
+    "document",
+    "framework",
+    "provenance"
+  ],
+  "title": "Card",
+  "type": "object"
+}

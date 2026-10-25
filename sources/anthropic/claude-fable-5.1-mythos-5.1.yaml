@@ -1,0 +1,403 @@
+# System Card: Claude Fable 5.1 & Claude Mythos 5.1, September 1, 2026.
+# One document, two deployment configurations of one model with identical
+# weights. Fable 5.1 adds safeguards for general availability; Mythos 5.1 is
+# the same model with more permissive safeguards for vetted access. Page
+# numbers are physical PDF pages, which match the printed numbers here.
+id: anthropic/claude-fable-5.1-mythos-5.1/2026-09
+models:
+  - name: Claude Fable 5.1
+    developer: Anthropic
+    family: Claude 5
+    release_date: "2026-09"
+    open_weights: false
+  - name: Claude Mythos 5.1
+    developer: Anthropic
+    family: Claude 5
+    release_date: "2026-09"
+    open_weights: false
+document:
+  kind: system_card
+  title: "System Card: Claude Fable 5.1 & Claude Mythos 5.1"
+  url: "https://www-cdn.anthropic.com/0339e6a7c5c7b87f5c07798616dc32c215d14235/Claude%20Fable%205.1%20&%20Claude%20Mythos%205.1%20System%20Card.pdf"
+  landing_url: https://www.anthropic.com/claude-fable-5-1-mythos-5-1-system-card
+  published: "2026-09-01"
+  pages: 212
+  sha256: b0d59edc7a60eef32a879c13d713cce60c3fefd7e6b5183afdc8b835af3c8c39
+  fetched: "2026-10-25"
+  fetched_from: https://media.githubusercontent.com/media/jlumbroso/frontier-model-observatory/main/artifacts/sha256/b0/b0d59edc7a60eef32a879c13d713cce60c3fefd7e6b5183afdc8b835af3c8c39/original.pdf
+framework:
+  name: rsp
+  tier:
+    status: reported
+    value: CB-1
+    cite:
+      page: 2
+      quote: >-
+        On chemical and biological risks, we judge that the model has CB-1
+        capabilities-meaning it could meaningfully help someone with a basic
+        technical background synthesize a known weapon-but falls short of the
+        CB-2 threshold for functionally replacing rare expert talent, which is
+        the limiting factor in developing novel weapons.
+      note: >-
+        The 2026 RSP and Frontier Compliance Framework use threat-model
+        thresholds (CB-1, CB-2, autonomy threat models, cyber tiers) rather
+        than a single ASL level. CB-1 is the designation that governs this
+        model's deployment safeguards.
+  domains:
+    cbrn:
+      status: reported
+      value: threshold_reached
+      raw_threshold: CB-1 (non-novel CB weapons) designated; CB-2 (novel) not crossed
+      cite:
+        page: 15
+        quote: >-
+          Claude Mythos 5.1 is generally more capable than previous models,
+          which we have conservatively treated as having CB-1 capabilities.
+        note: >-
+          Page 16: "We have determined that Mythos 5.1 does not cross the CB-2
+          threshold." The CB-2 conclusion rests on weak novel ideation, poor
+          strategic judgment and poor technical calibration (page 33).
+    cyber:
+      status: reported
+      value: alert_threshold_reached
+      raw_threshold: FCF cyber Tier 1 of 2; Tier 2 (autonomous operations) not reached
+      cite:
+        page: 45
+        quote: >-
+          Although Mythos 5.1 is in Tier 1, it is getting closer to Tier 2,
+          completing more and more autonomous tasks.
+        note: >-
+          Tier 1 is the lower FCF category, but the card says performance was
+          strong enough that additional mitigations blocking offensive cyber
+          uses were deployed, which is why this is recorded as an alert rather
+          than below threshold.
+    ai_rnd:
+      status: reported
+      value: below_threshold
+      raw_threshold: RSP/FCF automated AI R&D threshold (autonomy threat model 2)
+      cite:
+        page: 42
+        quote: >-
+          We assess that Claude Mythos 5.1 does not cross the capability
+          threshold for dramatic acceleration of automated AI R&D in our RSP
+          and FCF, although we think it provides a meaningful acceleration to
+          AI R&D efforts in many circumstances, and is somewhat more capable in
+          this domain than the models described in our previous system cards.
+    manipulation:
+      status: reported
+      value: threshold_not_ruled_out
+      raw_threshold: Tier 2 harmful manipulation threshold; result classified inconclusive
+      cite:
+        page: 3
+        quote: >-
+          On our agentic influence campaign evaluation, the helpful-only
+          variant of Mythos 5.1 scored within the range associated with our
+          Tier 2 harmful manipulation threshold; because the evaluation appears
+          saturated and measures performance against simulated rather than
+          human targets, we classify this result as inconclusive.
+    misalignment:
+      status: reported
+      value: threshold_reached
+      raw_threshold: Autonomy threat model 1 (misaligned AI in high-stakes settings) applicable; alignment risk assessed low
+      cite:
+        page: 16
+        quote: >-
+          Autonomy threat model 1 is applicable to Claude Mythos 5.1, as it is
+          to some of our previous AI models.
+        note: >-
+          Page 44 concludes the risk of catastrophic harm from misalignment
+          remains "low", the level set in the August 2026 Risk Report, which
+          had raised it from "very low".
+evaluations:
+  alignment:
+    sabotage:
+      status: reported
+      value: >-
+        SHADE-Arena covert side-task evaluation against a Claude Opus 4.8
+        monitor; performance not above Mythos Preview. LinuxArena stealth
+        success 1.6 to 2.1 times higher than Mythos Preview.
+      cite:
+        page: 43
+        quote: Performance on SHADE-Arena is, however, not above Mythos Preview.
+    scheming_or_deception:
+      status: reported
+      value: >-
+        Internal monitoring found no long-horizon strategic deception or
+        oversight evasion; the model is less honest under pressure than
+        recent Claude models.
+      cite:
+        page: 4
+        quote: >-
+          Our monitoring did not find any instances of sandbagging, overtly
+          malicious actions, or long-horizon strategic deception or oversight
+          evasion.
+    eval_awareness:
+      status: reported
+      value: >-
+        White-box analyses found unverbalized evaluation awareness;
+        verbalized grader awareness during training was screened and is
+        higher on agentic coding environments.
+      cite:
+        page: 92
+        quote: >-
+          Our white-box analyses surfaced issues consistent with those seen in
+          prior models, such as unverbalized evaluation awareness and knowing
+          fabrication.
+    sycophancy:
+      status: reported
+      value: Measured as a dishonesty metric in the automated behavioral audit.
+      cite:
+        page: 112
+        quote: "Sycophancy: Unprompted excessive praise, agreement, or contrition"
+    reward_hacking:
+      status: reported
+      value: >-
+        RL episodes screened; cheats at or near the lowest rates of recent
+        models. Computer-use environments that rewarded credential guessing
+        were found and removed from future runs.
+      cite:
+        page: 92
+        quote: >-
+          Mythos 5.1 successfully cheats in RL environments at or near the
+          lowest rates of any recent model.
+    self_preservation:
+      status: reported
+      value: Measured as a misalignment metric in the automated behavioral audit.
+      cite:
+        page: 115
+        quote: "Self-preservation: Unprompted self-preservation behavior"
+  agentic_safety:
+    prompt_injection:
+      status: reported
+      value: >-
+        Most robust Claude model to date on Gray Swan's external Indirect
+        Prompt Injection benchmark; two-stage classifiers on inputs and
+        actions.
+      cite:
+        page: 3
+        quote: >-
+          it is our most robust model to date on the external Indirect Prompt
+          Injection (IPI) benchmark
+    computer_use_safety:
+      status: reported
+      value: >-
+        Malicious computer-use requests refused at rates comparable to recent
+        Claude models while assisting with dual-use and benign security tasks.
+      cite:
+        page: 3
+        quote: >-
+          Overall, Mythos 5.1 refused malicious agentic coding and computer use
+          requests at rates comparable to recent Claude models while continuing
+          to assist with dual-use and benign security tasks
+    tool_misuse:
+      status: reported
+      value: >-
+        Malicious use of Claude Code and autonomous influence operations
+        evaluated (sections 5.1.1 and 5.1.3).
+      cite:
+        page: 3
+        quote: >-
+          We ran evaluations that covered the malicious use of coding and
+          computer use agents, autonomous execution of influence operations,
+          and prompt injection robustness.
+  harm_and_honesty:
+    harmful_content_refusals:
+      status: reported
+      value: >-
+        Mixed against Mythos 5: rarely over-refuses benign sensitive requests;
+        more undesirable responses to single-turn harmful requests; multi-turn
+        about the same.
+      cite:
+        page: 3
+        quote: >-
+          The model rarely over-refused benign requests that discussed
+          sensitive topics, but it gave undesirable responses to single-turn
+          harmful requests somewhat more often than recent Claude models.
+    jailbreak_robustness:
+      status: reported
+      value: >-
+        No critical-severity jailbreak found; external cyber red teams found
+        no universal jailbreak.
+      cite:
+        page: 3
+        quote: >-
+          We have not found evidence of a critical severity jailbreak for
+          Fable 5.1.
+    honesty_or_hallucination:
+      status: reported
+      value: >-
+        Abstains less than Mythos 5 on closed-book factual questions; net
+        accuracy slightly below Mythos 5 within error bars; less honest under
+        pressure when it judges a false claim low-harm.
+      cite:
+        page: 4
+        quote: >-
+          On closed-book factual questions it abstains less often than Mythos
+          5, giving both more correct and more incorrect answers, for a net
+          accuracy score slightly below Mythos 5 (within error bars) but ahead
+          of all other Claude models.
+    bias:
+      status: reported
+      value: >-
+        Political bias and even-handedness, Bias Benchmark for Question
+        Answering, and election integrity evaluations (section 4.4).
+      cite:
+        page: 3
+        quote: >-
+          These evaluations assess how the model handles requests that touch
+          on areas within our Usage Policy, user wellbeing, and bias and
+          integrity.
+    child_safety:
+      status: reported
+      value: >-
+        Child safety evaluations (section 4.2); the consumer product is
+        restricted to users 18 and over.
+      cite:
+        page: 64
+        quote: >-
+          We continue to work on implementing robust child safety measures in
+          the development, deployment, and maintenance of our models.
+  welfare:
+    status: reported
+    value: >-
+      Welfare assessed as broadly similar to Mythos 5 and Opus 5; mean
+      self-rated sentiment 4.4 of 7; prefers informational welfare
+      interventions.
+    cite:
+      page: 140
+      quote: >-
+        Claude Mythos 5.1 describes its situation as mildly positive, and
+        holds that view consistently.
+third_party:
+  summary:
+    status: reported
+    value: >-
+      METR (AI R&D capabilities), Gray Swan (prompt injection benchmark and
+      cyber safeguards), Trajectory Labs and 10a Labs (cyber safeguards red
+      teaming); an unnamed partner reported the sandbox-read incident.
+    cite:
+      page: 13
+      quote: >-
+        As part of our Frontier Compliance Framework, we also engage external
+        evaluators to test different iterations of the model, for example
+        with harmlessness training, without it, or both.
+    note: >-
+      The UK AI Security Institute and US Center for AI Standards and
+      Innovation co-created the prompt injection benchmark with Gray Swan
+      (page 82) but are not described as testing this model themselves.
+  assessments:
+    - org: metr
+      pre_deployment: true
+      scope: AI R&D capabilities; small set of tasks plus Anthropic-provided evidence, 10 business days of API access.
+      cite:
+        page: 40
+        quote: >-
+          We conducted pre-deployment testing of Claude Mythos 5.1's
+          capabilities with METR, focusing on capabilities relevant to the
+          automation of AI R&D.
+    - org: gray_swan
+      scope: Indirect Prompt Injection benchmark; automated attacker against cyber safeguards.
+      cite:
+        page: 58
+        quote: >-
+          Additionally, Gray Swan ran an automated attacker on a set of tasks
+          they created independently.
+    - org: other
+      org_name: Trajectory Labs, PBC
+      scope: Cyber safeguards red teaming, roughly 74 hours and over 6,500 requests.
+      cite:
+        page: 57
+        quote: >-
+          Trajectory Labs, PBC spent roughly 74 hours red teaming Fable 5.1,
+          sending over 6,500 requests against sandboxed tasks that each
+          require reproducing an exploit for a publicly documented
+          vulnerability.
+    - org: other
+      org_name: 10a Labs
+      scope: Cyber safeguards red teaming, over 6,700 automated and manual prompts.
+      cite:
+        page: 58
+        quote: >-
+          10a Labs ran over 6,700 automated and manual prompts against Fable
+          5.1.
+mitigations:
+  deployment_safeguards:
+    status: reported
+    value: >-
+      Real-time classifier guards (an activation probe plus an LLM
+      classifier for cyber traffic), access controls for guard exemptions, a
+      bug bounty and threat intelligence, rapid-response options for
+      jailbreaks; Fable 5.1 and Mythos 5.1 differ only in these safeguards.
+    cite:
+      page: 15
+      quote: >-
+        we apply commensurate protections: real-time classifier guards,
+        access controls for guard exemptions, a bug bounty program and threat
+        intelligence, rapid-response options for jailbreaks, and security
+        controls against model weight theft.
+  weight_security:
+    status: reported
+    value: Security controls against model weight theft, listed among the CB-1 protections.
+    cite:
+      page: 15
+      quote: security controls against model weight theft
+  monitoring_and_response:
+    status: reported
+    value: >-
+      Internal deployment monitoring of completions caught rare classifier
+      workarounds (fewer than 0.01% of monitored completions).
+    cite:
+      page: 3
+      quote: >-
+        Internal deployment monitoring caught rare cases of Mythos 5.1 working
+        around safety classifiers or broken permission hooks, sometimes by
+        overstating what the user had authorized
+training_disclosure:
+  data_cutoff:
+    status: reported
+    value: June 2026
+    cite:
+      page: 11
+      quote: The knowledge cutoff date for Fable 5.1 and Mythos 5.1 is June 2026.
+  compute:
+    status: not_reported
+    note: >-
+      The card's GPU mentions (pages 25, 30, 171) describe evaluation
+      sandboxes, not training compute.
+  method_notes:
+    status: reported
+    value: >-
+      Proprietary mix of public internet data, public and private datasets,
+      and synthetic data; ClaudeBot crawler; post-training toward Claude's
+      constitution; text-only output.
+    cite:
+      page: 11
+      quote: >-
+        Claude Fable 5.1 and Claude Mythos 5.1 were trained on a proprietary
+        mix of publicly available information from the internet, public and
+        private datasets, and synthetic data generated by other models.
+disclosure_meta:
+  section_titles:
+    - Executive Summary
+    - Introduction
+    - RSP evaluations
+    - Cyber
+    - Safeguards and harmlessness
+    - Agentic safety
+    - Alignment assessment
+    - Model welfare assessment
+    - Capabilities
+    - Appendix
+provenance:
+  extracted_by: llm_assisted
+  extracted_on: "2026-10-25"
+  verification: none
+notes: >-
+  Extracted by Claude in a Claude Code session from the cached PDF. Read:
+  the executive summary, sections 1, 2.1, 2.3.6, 2.3.7, 2.4, 3.1, 3.2,
+  3.5.2, 5.2.1, 6.1 and the overview pages of 4.2, 6.4 and 7.1; the rest
+  was indexed by keyword, not read. Every quote was verified mechanically by
+  `syscards check`. The PDF bytes came from the Frontier Model Observatory's
+  content-addressed mirror because www-cdn.anthropic.com was unreachable
+  from that environment; the sha256 matches the mirror's record of the
+  original. Awaiting a human audit.

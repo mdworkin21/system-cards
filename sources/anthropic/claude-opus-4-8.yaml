@@ -1,0 +1,28 @@
+# Claude Opus 4.8 system card, May 2026. STUB: the PDF host was unreachable
+# from the environment that created this record, so no facts are extracted.
+# To finish: from a normal network run
+#   syscards fetch <document.url>
+# record the printed sha256 and page count below, then extract.
+id: anthropic/claude-opus-4-8/2026-05
+models:
+  - name: Claude Opus 4.8
+    developer: Anthropic
+    family: Claude 4
+    release_date: "2026-05"
+    open_weights: false
+document:
+  kind: system_card
+  title: Claude Opus 4.8 System Card
+  url: https://assets.claude.com/0f0c97ad20d8005706296bd92aa1c27c6b2f4f61.pdf
+  landing_url: https://www.anthropic.com/claude-opus-4-8-system-card
+  published: "2026-05"
+framework:
+  name: rsp
+provenance:
+  extracted_by: llm_assisted
+  extracted_on: "2026-10-25"
+  verification: none
+notes: >-
+  Stub. Model name, release month and landing page come from
+  anthropic.com/transparency on 2026-10-25; the PDF URL is where the landing
+  page redirects. Every fact is `unknown` until the document is fetched.
