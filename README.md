@@ -41,3 +41,10 @@ scripts/                     fetch, draft, check, review, build
 site/                        static page; reads data.json
 docs/                        plan, schema, normalization, adding a card
 ```
+
+## License
+
+Code is MIT, see [LICENSE](LICENSE). Data is CC BY 4.0, see
+[LICENSE-DATA.md](LICENSE-DATA.md), which also explains that quoted
+excerpts from system cards remain their publishers' copyright and are
+reproduced only as citations.
