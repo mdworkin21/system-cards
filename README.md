@@ -59,6 +59,13 @@ site/                        React + TypeScript page (Phase 2); reads data.json
 docs/                        plan, schema, normalization, adding a card
 ```
 
+## Working in this repo
+
+`CLAUDE.md` holds the workflow rules (branches, checkpoints, what never
+happens without a request) and the invariants. `docs/development-workflow.md`
+describes the plan, autopilot, review-brief and quiz flow;
+`docs/where-things-go.md` says where new code, data and docs belong.
+
 ## License
 
 Code is MIT, see [LICENSE](LICENSE). Data is CC BY 4.0, see
