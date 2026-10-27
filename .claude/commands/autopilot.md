@@ -323,7 +323,6 @@ Pages (Phase 2 onward). Autopilot never merges.
 - **Never set a card's `verified_by` or `verification`** (CLAUDE.md rule #9)
 - **Never edit a quote to make a check pass**; find the words on the page
 - **Max 3 CI-fix rounds and 3 review-fix rounds** per PR
-- **No Co-Authored-By** in commit messages
 - Never claim a check or test passed unless it actually ran and passed
 - If stuck or a material requirement is ambiguous, stop and ask rather than
   guessing
