@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigationType } from "react-router";
 import type { ViewState } from "../lib/viewState";
 
 /** Navigation state that marks a URL change as this input's own edit. */
@@ -20,10 +20,11 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
   const sent = useRef<number | null>(null);
   const edits = useRef(0);
   const own = (useLocation().state as QEdit | null)?.qEdit;
+  const navType = useNavigationType();
   // No deps: React may batch a typed edit and a later navigation into one render.
   useEffect(() => {
-    // Any navigation not tagged as this input's edit (a link, back/forward, a select) ends the pending edit.
-    if (own === undefined || own === sent.current) sent.current = null;
+    // An untagged navigation (a link, a select) or back/forward, whose entry may hold an old tag, ends the pending edit.
+    if (own === undefined || own === sent.current || navType === "POP") sent.current = null;
     if (sent.current === null && input.current) input.current.value = view.q;
   });
   return (

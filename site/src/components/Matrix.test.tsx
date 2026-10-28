@@ -79,3 +79,19 @@ it("resyncs the name box when the header link lands before a typed edit renders"
   expect(router.state.location.search).toBe("");
   expect(box).toHaveValue("");
 });
+
+it("resyncs the name box on Back to an entry holding an older edit's tag", async () => {
+  const router = createMemoryRouter(routes, {
+    initialEntries: [{ pathname: "/", search: "?q=y", state: { qEdit: 2 } }, "/"],
+    initialIndex: 1,
+  });
+  render(<RouterProvider router={router} />);
+  await screen.findByRole("table");
+  const box = screen.getByRole("searchbox");
+  await act(async () => {
+    fireEvent.change(box, { target: { value: "x" } });
+    await router.navigate(-1);
+  });
+  expect(router.state.location.search).toBe("?q=y");
+  expect(box).toHaveValue("y");
+});
