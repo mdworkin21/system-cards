@@ -62,7 +62,7 @@ export function Matrix() {
   return (
     <>
       <MatrixFilters view={view} labs={labs} rungs={Object.keys(ds.rungs)} onChange={setView} />
-      <div className="overflow-hidden rounded-lg border border-input bg-card text-card-foreground shadow-md">
+      <div className="overflow-hidden rounded-lg border border-input bg-card text-card-foreground shadow-surface">
         <div className="overflow-x-auto">
           <table className="w-full border-separate border-spacing-0 text-[13px]">
             <thead>

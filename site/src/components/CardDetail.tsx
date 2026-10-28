@@ -41,7 +41,7 @@ export function CardDetail() {
         <ArrowLeft className="size-4" aria-hidden="true" />
         All cards
       </Link>
-      <div className="rounded-lg border border-input bg-card p-5 text-card-foreground shadow-md">
+      <div className="rounded-lg border border-input bg-card p-5 text-card-foreground shadow-surface">
         <h2 className="text-lg font-semibold tracking-tight">{card.document.title}</h2>
         <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 lg:grid-cols-5">
           <Meta term="Models">{modelNames(card)}</Meta>
@@ -144,7 +144,7 @@ export function CardDetail() {
 
 function Surface({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-input bg-card text-card-foreground shadow-md">
+    <div className="overflow-hidden rounded-lg border border-input bg-card text-card-foreground shadow-surface">
       <div className="overflow-x-auto">{children}</div>
     </div>
   );

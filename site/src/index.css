@@ -32,6 +32,11 @@
   --outcome-5: #22325a;
 }
 
+/* A dark shadow alone disappears on the navy page: depth plus a faint blue glow lifts surfaces off it. */
+@theme {
+  --shadow-surface: 0 0 0 1px rgb(255 255 255 / 0.08), 0 4px 8px rgb(0 0 0 / 0.4), 0 28px 60px -10px rgb(0 0 0 / 0.75), 0 0 72px 6px rgb(122 143 189 / 0.35);
+}
+
 @theme inline {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
