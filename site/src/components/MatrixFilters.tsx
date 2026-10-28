@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useNavigationType } from "react-router";
 import type { ViewState } from "../lib/viewState";
 
 interface Props {
@@ -12,10 +13,13 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
   const input = useRef<HTMLInputElement>(null);
   // The last value this input sent to the URL, until the URL catches up with it.
   const sent = useRef<string | null>(null);
+  const navType = useNavigationType();
+  // No deps: React may batch a typed edit and a later navigation into one render.
   useEffect(() => {
-    if (view.q === sent.current) sent.current = null;
-    else if (sent.current === null && input.current) input.current.value = view.q;
-  }, [view.q]);
+    // This input's edits are the app's only REPLACE navigations, so any other kind ends its pending edit.
+    if (navType !== "REPLACE" || view.q === sent.current) sent.current = null;
+    if (sent.current === null && input.current) input.current.value = view.q;
+  });
   return (
     <form className="filters" role="search" onSubmit={(e) => e.preventDefault()}>
       <label>

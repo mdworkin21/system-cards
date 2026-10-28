@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { expect, it, vi } from "vitest";
 import { makeCard, makeDataset } from "../test/fixtures";
@@ -51,4 +51,18 @@ it("clears the name box when a navigation drops q", async () => {
   await screen.findByRole("table");
   await act(() => router.navigate("/"));
   expect(screen.getByRole("searchbox")).toHaveValue("");
+});
+
+it("resyncs the name box when a navigation lands before a typed edit renders", async () => {
+  const router = createMemoryRouter(routes, { initialEntries: ["/?lab=lab-b", "/"], initialIndex: 1 });
+  render(<RouterProvider router={router} />);
+  await screen.findByRole("table");
+  const box = screen.getByRole("searchbox");
+  await act(async () => {
+    fireEvent.change(box, { target: { value: "ab" } });
+    await router.navigate(-1);
+  });
+  expect(box).toHaveValue("");
+  await act(() => router.navigate("/?q=y"));
+  expect(box).toHaveValue("y");
 });
