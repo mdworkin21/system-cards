@@ -32,9 +32,9 @@
   --outcome-5: #22325a;
 }
 
-/* A dark shadow alone disappears on the navy page: depth plus a faint blue glow lifts surfaces off it. */
+/* A dark shadow vanishes on the navy page, so surfaces cast a light ramp-blue drop shadow instead. */
 @theme {
-  --shadow-surface: 0 0 0 1px rgb(255 255 255 / 0.08), 0 4px 8px rgb(0 0 0 / 0.4), 0 28px 60px -10px rgb(0 0 0 / 0.75), 0 0 72px 6px rgb(122 143 189 / 0.35);
+  --shadow-surface: 0 0 0 1px rgb(255 255 255 / 0.15), 0 10px 20px -4px rgb(140 165 220 / 0.45), 0 26px 50px -8px rgb(140 165 220 / 0.85);
 }
 
 @theme inline {
