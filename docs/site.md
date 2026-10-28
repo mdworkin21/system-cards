@@ -255,6 +255,7 @@ cd site && npm run dev   # then /ui-testing with section 1 behaviors 1-10
 | Planned | Built | Because |
 |---|---|---|
 | Domain header map is casing only | `ai_rnd` shows as "AI R&D", not a casing of "ai rnd" (`site/src/lib/columns.ts:25`) | no casing of "ai rnd" reads as a word; "AI R&D" is the schema's own description of the field (`src/system_cards/schema.py:Domains`) |
+| D10: label ink `#0F1830` on ramp steps 1–2, white on 3–5 | the outcome label sits beside the meter in `--color-ink` and no text is drawn on a ramp color, so the label-ink tokens are not defined; a border token `--color-rule: #d3dae6` was added (`site/src/components/OutcomeMeter.tsx:20`, `site/src/theme.css:8`) | meter steps are 0.5rem wide, too narrow to carry text; borders need a color the palette did not list |
 
 **Estimate vs actual:** estimated ~50–58 files / ~1200 app lines → actual N / M.
 

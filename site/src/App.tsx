@@ -1,8 +1,8 @@
-import { Link, Outlet, useLoaderData, useRouteError } from "react-router";
-import type { Dataset } from "./types.generated";
+import { Link, Outlet, useRouteError } from "react-router";
+import { useDataset } from "./lib/data";
 
 export function App() {
-  const data = useLoaderData<Dataset>();
+  const data = useDataset();
   return (
     <div className="page">
       <header className="site-header">

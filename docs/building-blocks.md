@@ -107,4 +107,8 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 | `lib/format.ts`: `statusMark`, `humanize`, `outcomeLevel`, `pdfPageUrl`, `cardHref` | glyph and label per status; enum value to words; step on `domain_outcomes`; PDF at `#page=N`; the detail route | showing any status, outcome, cite link or card link |
 | `lib/columns.ts:matrixColumns`, `modelNames` | the matrix's TanStack columns with sort accessors and a `meta.cell` kind | adding a matrix column |
 | `lib/rows.ts:groupByLab` | contiguous runs by lab in the given order | grouping rows without re-sorting |
+| `components/StatusMark.tsx` | glyph plus label for a status | any place a status is shown |
+| `components/OutcomeMeter.tsx` | outcome label plus a meter with one step per `domain_outcomes` entry; label alone off the ladder | a domain outcome |
+| `components/CitePopover.tsx`: `CitePopover`, `CiteDetails` | a button opening content on hover or focus (floating-ui); a cite's quote, note and PDF page link | anything that must trace to a page |
+| `components/MatrixCell.tsx` | one matrix cell per `meta.cell` kind | a new column kind |
 | `test/fixtures.ts`: `makeCard`, `makeDataset`, `FACT_PATHS` | typed `CardRecord`/`Dataset` with synthetic labs, every fact `unknown` unless set | any site test |
