@@ -36,7 +36,10 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
         Model
         <input
           type="search"
-          value={view.q}
+          // Uncontrolled: the router commits URL updates in a transition, and a controlled
+          // input driven by one drops characters under fast typing. `q` edits replace the
+          // history entry, so the URL never changes under the input without a remount.
+          defaultValue={view.q}
           placeholder="Filter by name"
           onChange={(e) => onChange({ ...view, q: e.target.value }, { replace: true })}
         />

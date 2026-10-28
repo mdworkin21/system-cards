@@ -18,7 +18,7 @@ const { routes } = await import("../routes");
 
 async function renderAt(url: string) {
   const { container } = render(<RouterProvider router={createMemoryRouter(routes, { initialEntries: [url] })} />);
-  await screen.findByText("Model X");
+  await screen.findByRole("table");
   return {
     groupRows: container.querySelectorAll("tr.group-row").length,
     models: [...container.querySelectorAll("tbody th[scope=row]")].map((th) => th.textContent),
@@ -35,4 +35,12 @@ it("drops the groups and orders across labs when sorted by date", async () => {
   const { groupRows, models } = await renderAt("/?sort=published");
   expect(groupRows).toBe(0);
   expect(models).toEqual(["Model Z", "Model X", "Model Y"]);
+});
+
+it("filters by lab through the hidden lab column", async () => {
+  expect((await renderAt("/?lab=lab-b")).models).toEqual(["Model Z"]);
+});
+
+it("filters by model name", async () => {
+  expect((await renderAt("/?q=y")).models).toEqual(["Model Y"]);
 });

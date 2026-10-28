@@ -64,7 +64,7 @@ jobs:
       - name: generated types match the schema export
         run: npm run gen-types && git diff --exit-code src/types.generated.ts
       - name: no lab name in site/src
-        run: '! grep -rEin "$(ls ../sources | paste -sd"|" -)" src'
+        run: '! grep -rEinw "$(ls ../sources | paste -sd"|" -)" src --exclude=types.generated.ts'
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test

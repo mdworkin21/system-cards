@@ -6,6 +6,7 @@ import {
   offset,
   safePolygon,
   shift,
+  useClick,
   useDismiss,
   useFloating,
   useFocus,
@@ -17,7 +18,7 @@ import { useState, type ReactNode } from "react";
 import { pdfPageUrl } from "../lib/format";
 import type { Cite } from "../types.generated";
 
-/** A cell trigger that opens its content on hover or keyboard focus. */
+/** A cell trigger that opens its content on hover, keyboard focus, or a tap. */
 export function CitePopover({ trigger, children }: { trigger: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { refs, floatingStyles, context } = useFloating({
@@ -30,6 +31,8 @@ export function CitePopover({ trigger, children }: { trigger: ReactNode; childre
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useHover(context, { handleClose: safePolygon(), delay: { open: 80 } }),
     useFocus(context),
+    // Touch has no hover and no focus-visible; mouse clicks stay with useHover.
+    useClick(context, { ignoreMouse: true }),
     useDismiss(context),
     useRole(context, { role: "dialog" }),
   ]);
