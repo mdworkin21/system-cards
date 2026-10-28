@@ -112,4 +112,5 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 | `components/OutcomeMeter.tsx` | outcome label plus a meter with one step per `domain_outcomes` entry; label alone off the ladder | a domain outcome |
 | `components/CitePopover.tsx`: `CitePopover`, `CiteDetails` | a button opening content on hover or focus (floating-ui); a cite's quote, note and PDF page link | anything that must trace to a page |
 | `components/MatrixCell.tsx` | one matrix cell per `meta.cell` kind | a new column kind |
+| `components/CardDetail.tsx` | `#/cards/<id>`: one card's document header, every `fact_paths` row and each third-party assessment with its cite | linking to one card |
 | `test/fixtures.ts`: `makeCard`, `makeDataset`, `FACT_PATHS` | typed `CardRecord`/`Dataset` with synthetic labs, every fact `unknown` unless set | any site test |

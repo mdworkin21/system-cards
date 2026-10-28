@@ -1,5 +1,6 @@
 import { createHashRouter, type RouteObject } from "react-router";
 import { App, Loading, RootError } from "./App";
+import { CardDetail } from "./components/CardDetail";
 import { Matrix } from "./components/Matrix";
 import { DATASET_ROUTE_ID, loadDataset } from "./lib/data";
 
@@ -14,7 +15,11 @@ export const routes: RouteObject[] = [
     element: <App />,
     errorElement: <RootError />,
     HydrateFallback: Loading,
-    children: [{ index: true, element: <Matrix /> }],
+    children: [
+      { index: true, element: <Matrix /> },
+      // Card ids contain slashes and are URL-safe (ID_PATTERN), so the splat is the raw id.
+      { path: "cards/*", element: <CardDetail /> },
+    ],
   },
 ];
 
