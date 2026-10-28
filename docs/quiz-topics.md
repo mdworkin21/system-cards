@@ -42,6 +42,12 @@ card says got into your head, which is the whole point of the project.
 | **Document identity and the cache** | sha256-named cache, never overwriting, `DocumentChanged` on a revised URL, `fetched_from` for mirrors, why PDFs are never committed. | `src/system_cards/fetch.py`; `docs/adding-a-card.md` |
 | **Build output** | The shape of `data.json`: `normalized_tier`, `withheld`, `not_reported`, `coverage`, `fact_paths`, `rungs`, `domain_outcomes`; why it is typed (`Dataset` is the export root), why it is deterministic and why the site reads nothing else. | `src/system_cards/build.py`; `docs/schema.md`; `docs/adr/0001-typed-dataset-contract.md`; `docs/plan.md` section 6 |
 
+## Site
+
+| Topic | What it covers | Sources |
+|---|---|---|
+| **Site matrix and detail** | How `data.json` reaches the page (one loader, hash routing on Pages), why sort and filters are URL params, how a status stays readable without color, what a cell's popover shows and how `#page=N` is built, why the stub row is dimmed, what CI checks for the site (type drift, the lab-name grep). | `docs/site.md`; `docs/adr/0002-url-owns-view-state.md`; `site/src/lib/`; `site/src/components/Matrix.tsx` |
+
 ## Cards
 
 | Topic | What it covers | Sources |

@@ -166,19 +166,20 @@ Do not put here:
 
 ---
 
-## site/ (Phase 2)
+## site/
 
 Purpose: the React + TypeScript page. Reads `public/data.json` and nothing
-else.
-
-Planned layout, so new code has a home from the first commit:
+else. Design and as-built notes: `docs/site.md`.
 
 | Path | What goes here |
 |---|---|
 | `site/src/types.generated.ts` | generated from `schema/system-card.schema.json`; never hand-edited |
 | `site/src/lib/` | loading `data.json`, selectors, formatting of statuses and rungs; pure functions with tests |
 | `site/src/components/` | views: the matrix, compare, timeline, detail, gaps; presentational, typed by the generated types |
-| `site/src/App.tsx` | routing between views |
+| `site/src/routes.tsx` | the route table and the router (hash mode on Pages); the only file that changes for browser routing |
+| `site/src/App.tsx` | the layout around every view, loading and error states |
+| `site/src/theme.css` | every color, font and space as a CSS variable; components use the variables only |
+| `site/src/test/` | Vitest setup and typed fixtures with synthetic labs |
 | `site/public/data.json` | build output, gitignored |
 
 Do not put here:
@@ -228,8 +229,10 @@ Both gitignored.
 - `check.yml`: lint, types, tests, schema drift, and `syscards check`
   without PDFs on every push and PR; a manual job that fetches every
   document and verifies every quote; the hook parser tests.
-- `pages.yml` (Phase 2): build the data and the site, deploy to Pages on
-  `main`.
+- `check.yml` job `site`: when `site/`, `schema/` or a workflow changes,
+  the generated-types drift check, the lab-name grep, lint, typecheck, test
+  and build.
+- `pages.yml`: build the data and the site, deploy to Pages on `main`.
 
 ---
 

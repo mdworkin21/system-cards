@@ -1,6 +1,6 @@
 # Site: matrix and card detail
 
-Issue: #2 · **Status: design** · Baseline: `main` @ `17bff7a` · Implementer: `opus` (`.claude/commands/implement.md`)
+Issue: #2 · **Status: as-built** · Baseline: `main` @ `17bff7a` · Implementer: `opus` (`.claude/commands/implement.md`)
 
 ---
 
@@ -102,12 +102,12 @@ State ownership: the root route's loader owns the dataset (fetched once, never r
 |---|---|---|---|
 | `site/` config: `package.json`, `vite.config.ts` (`base`), `tsconfig.json` (strict), `eslint.config.js`, Vitest (jsdom), `index.html` | config | — | the five npm scripts |
 | `types.generated.ts` | type | json-schema-to-typescript on the export | never hand-edited |
-| `lib/data.ts:loadDataset` | lib fn | `Dataset` | the one fetch; the seam a future backend replaces |
+| `lib/data.ts`: `loadDataset`, `useDataset`, `DATASET_ROUTE_ID` | lib fn | `Dataset`, `useRouteLoaderData` | the one fetch, the seam a future backend replaces; views read the root route's data through `useDataset` |
 | `lib/facts.ts`: `factAt`, `groupCount`, `isStub` | lib fn | `fact_paths`, `coverage` | walking a card by dotted path; `groupCount` counts `reported` over the prefix's paths |
-| `lib/format.ts`: `statusMark`, `humanize`, `outcomeLevel`, `pdfPageUrl` | lib fn | `Status`, `domain_outcomes` | exhaustive `Record<Status, …>` glyph and label; `outcomeLevel` is `null` off the ladder; `pdfPageUrl` replaces any fragment |
-| `lib/columns.ts:matrixColumns` | lib fn | TanStack `ColumnDef`, `fact_paths` | fixed columns always; domains from `framework.domains.*` paths; header map is casing only, `humanize` fallback; sort accessors per column |
+| `lib/format.ts`: `statusMark`, `humanize`, `outcomeLevel`, `pdfPageUrl`, `cardHref` | lib fn | `Status`, `domain_outcomes` | exhaustive `Record<Status, string>` glyph, label = humanized status; `outcomeLevel` is `null` off the ladder; `pdfPageUrl` replaces any fragment |
+| `lib/columns.ts:matrixColumns` | lib fn | TanStack `ColumnDef`, `fact_paths` | fixed columns always; domains from `framework.domains.*` paths; header map for acronyms, `humanize` fallback; sort accessors per column (undefined sorts last); filter functions on `model` (name text), `tier` (rung) and a hidden `lab` column; `meta.cell` names the cell kind |
 | `lib/viewState.ts`: `parseViewState`, `toSearchParams` | lib fn | `URLSearchParams` | sort column and direction, lab, rung, text; unknown keys ignored |
-| `lib/rows.ts:groupByLab` | lib fn | build order | contiguous groups, no re-sort |
+| `lib/rows.ts:groupByLab` | lib fn | build order | contiguous groups, no re-sort; generic over the item with a `labOf` accessor so the matrix groups TanStack rows |
 | `routes.tsx` | router | React Router `createHashRouter` | root route `loader: loadDataset`, `shouldRevalidate: () => false`, `errorElement`, `HydrateFallback`; children `/` and `/cards/*` (ids are URL-safe per `ID_PATTERN`, so the splat is the raw id); the only file that changes for browser routing |
 | `App.tsx`, `main.tsx` | component | router, `useLoaderData` | layout and the empty-dataset state |
 | `Matrix.tsx` | component | TanStack Table, columns, rows, view state | `<table>` in an `overflow-x: auto` box; grouped when unsorted; stub row dimmed; pages and published plain `<td>` |
@@ -128,7 +128,7 @@ State ownership: the root route's loader owns the dataset (fetched once, never r
 | Unit | Kind | Owns |
 |---|---|---|
 | `.github/workflows/pages.yml` | workflow | push to main and dispatch; `contents: read`, `pages: write`, `id-token: write`; `concurrency: pages`; uv sync, `syscards check --quiet`, `syscards build`, Node 22, `npm ci`, `npm run build`, upload `site/dist`, deploy-pages |
-| `check.yml` job `site` | workflow | gated by dorny/paths-filter on `site/**`, `schema/**`, `.github/workflows/**`: `npm ci`, `gen-types` then `git diff --exit-code`, AC4 grep (lab directory names from `sources/` must not appear in `site/src`), lint, typecheck, test, build |
+| `check.yml` jobs `changes` and `site` | workflow | gated by dorny/paths-filter on `site/**`, `schema/**`, `.github/workflows/**` (always on dispatch): `npm ci`, `gen-types` then `git diff --exit-code`, AC4 grep (`grep -rEi` of the lab directory names from `sources/` over `site/src`), lint, typecheck, test, build |
 
 ### Reuse and refactor inventory
 | Existing block | Path | Decision | Evidence / why |
@@ -257,9 +257,53 @@ cd site && npm run dev   # then /ui-testing with section 1 behaviors 1-10
 | Domain header map is casing only | `ai_rnd` shows as "AI R&D", not a casing of "ai rnd" (`site/src/lib/columns.ts:25`) | no casing of "ai rnd" reads as a word; "AI R&D" is the schema's own description of the field (`src/system_cards/schema.py:Domains`) |
 | D10: label ink `#0F1830` on ramp steps 1–2, white on 3–5 | the outcome label sits beside the meter in `--color-ink` and no text is drawn on a ramp color, so the label-ink tokens are not defined; a border token `--color-rule: #d3dae6` was added (`site/src/components/OutcomeMeter.tsx:20`, `site/src/theme.css:8`) | meter steps are 0.5rem wide, too narrow to carry text; borders need a color the palette did not list |
 
-**Estimate vs actual:** estimated ~50–58 files / ~1200 app lines → actual N / M.
+**Estimate vs actual:** estimated ~50–58 files / ~1200 app lines → actual 52 files / 1257 net app lines (20 app files; `theme.css` is 316 of the lines; tests, docs, generated types and the lockfile excluded).
 
 ---
 
 ## 5. As-built notes
-<!-- Filled when Status becomes as-built. -->
+
+### Where things are
+| Piece | Path |
+|---|---|
+| Typed build output, export root | `src/system_cards/build.py`: `Dataset`, `CardRecord`, `Coverage`, `dataset_schema` |
+| Outcome ladder | `src/system_cards/schema.py:DOMAIN_OUTCOME_LADDER` |
+| Route table and router | `site/src/routes.tsx` |
+| Data access | `site/src/lib/data.ts` |
+| Matrix | `site/src/components/Matrix.tsx`, `MatrixCell.tsx`, `MatrixFilters.tsx` |
+| Detail | `site/src/components/CardDetail.tsx` |
+| Theme | `site/src/theme.css` |
+| Deploy | `.github/workflows/pages.yml` |
+
+### What `data.json` carries
+`schema_version`, `normalization_version`, `rungs`, `fact_paths`, `domain_outcomes`, `cards`. Each card is a `CardRecord`: the source record plus `normalized_tier`, `withheld`, `not_reported`, `coverage`, and `lab` last. Field reference: `docs/schema.md`.
+
+### URL contract
+| Param | Meaning |
+|---|---|
+| `#/` | the matrix |
+| `#/cards/<id>` | one card; the id is raw, slashes included |
+| `sort=<column id>`, `dir=desc` | sort; absent `dir` is ascending; any `sort` drops the lab groups |
+| `lab=<lab>`, `rung=<rung>`, `q=<text>` | filters; `q` matches model names case-insensitively |
+
+Column ids: `model`, `tier`, the domain keys (`cbrn`, `cyber`, …), `third_party`, `alignment`, `agentic_safety`, `pages`, `published`. Unknown params are ignored.
+
+### Status marks
+| Status | Glyph | Label |
+|---|---|---|
+| `reported` | ● | reported |
+| `withheld` | ◐ | withheld |
+| `not_reported` | ○ | not reported |
+| `not_applicable` | ⊘ | not applicable |
+| `unknown` | ? | unknown |
+
+### Failure modes
+- `data.json` missing or not 200: the root route's error element shows the HTTP status (`site/src/App.tsx:RootError`).
+- An empty `cards` list: "data.json has no cards."; filters that match nothing: a one-row empty state.
+- TanStack's row models queue a page-index reset as an urgent update; left on, it keeps interrupting React Router's transition and every navigation after the first renders stale. `autoResetAll: false` in `site/src/components/Matrix.tsx:Matrix` prevents it. jsdom does not reproduce it, so no test pins it.
+- `site/package.json` overrides `vitest` to its own version: npm 10 crashes resolving vitest's optional peer chain (`Cannot read properties of null (reading 'edgesOut')`) without it.
+
+### Known gaps
+- Hard reloads of a detail and a sorted URL were checked against `vite preview` at `/system-cards/`, not yet on the public Pages URL; Pages must be set to "GitHub Actions" in the repo settings.
+- `#page=N` was checked to keep `%20` and `&` in the href; opening it in Chrome's and Firefox's PDF viewers is a manual check.
+- No regression test for the stale-navigation failure above (jsdom renders it correctly).
