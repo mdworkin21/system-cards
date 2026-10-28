@@ -22,8 +22,8 @@ export function CardDetail() {
   if (!card) {
     return (
       <section className="space-y-2">
-        <p className="text-muted-foreground">No card with this id.</p>
-        <Link className={LINK} to="/">
+        <p className="text-page-muted">No card with this id.</p>
+        <Link className="font-medium underline underline-offset-4" to="/">
           All cards
         </Link>
       </section>
@@ -35,13 +35,13 @@ export function CardDetail() {
   return (
     <section className="space-y-6">
       <Link
-        className="inline-flex items-center gap-1.5 text-muted-foreground underline-offset-4 hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-page-muted underline-offset-4 hover:text-page-foreground"
         to="/"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
         All cards
       </Link>
-      <div className="rounded-lg border bg-card p-5 shadow-sm">
+      <div className="rounded-lg border border-input bg-card p-5 text-card-foreground shadow-md">
         <h2 className="text-lg font-semibold tracking-tight">{card.document.title}</h2>
         <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 lg:grid-cols-5">
           <Meta term="Models">{modelNames(card)}</Meta>
@@ -89,7 +89,7 @@ export function CardDetail() {
 
       <h3 className="text-base font-semibold tracking-tight">Third-party assessments</h3>
       {assessments.length === 0 ? (
-        <p className="text-muted-foreground">None listed.</p>
+        <p className="text-page-muted">None listed.</p>
       ) : (
         <Surface>
           <table className="w-full border-separate border-spacing-0">
@@ -144,7 +144,7 @@ export function CardDetail() {
 
 function Surface({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-input bg-card shadow-md">
+    <div className="overflow-hidden rounded-lg border border-input bg-card text-card-foreground shadow-md">
       <div className="overflow-x-auto">{children}</div>
     </div>
   );

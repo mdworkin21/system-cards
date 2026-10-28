@@ -62,7 +62,7 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
           />
           <Input
             id="filter-model"
-            className="pl-8"
+            className="bg-card pl-8 text-card-foreground"
             type="search"
             // Uncontrolled: a controlled input driven through the router's transition drops
             // keystrokes; the effect above resyncs it after any other navigation.
@@ -81,7 +81,7 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
           type="button"
           variant="ghost"
           size="sm"
-          className="h-9 text-muted-foreground"
+          className="h-9 text-page-muted hover:bg-white/10 hover:text-page-foreground"
           onClick={() => onChange({ sort: null, lab: null, rung: null, q: "" })}
         >
           <X aria-hidden="true" />
@@ -106,7 +106,7 @@ function FilterSelect({ id, label, all, options, value, onChange }: FilterSelect
     <div className="grid gap-1.5">
       <Label htmlFor={id}>{label}</Label>
       <Select value={value ?? ALL} onValueChange={(v) => onChange(v === ALL ? null : v)}>
-        <SelectTrigger id={id} className="w-40">
+        <SelectTrigger id={id} className="w-40 bg-card text-card-foreground">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

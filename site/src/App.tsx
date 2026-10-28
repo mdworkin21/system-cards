@@ -11,19 +11,19 @@ export function App() {
         <h1 className="text-xl font-semibold tracking-tight">
           <Link to="/">System cards</Link>
         </h1>
-        <p className="mt-1 text-muted-foreground">
+        <p className="mt-1 text-page-muted">
           What frontier-model system cards say about safety, cited to the page.
         </p>
       </header>
       <main>
-        {data.cards.length === 0 ? <p className="text-muted-foreground">data.json has no cards.</p> : <Outlet />}
+        {data.cards.length === 0 ? <p className="text-page-muted">data.json has no cards.</p> : <Outlet />}
       </main>
     </div>
   );
 }
 
 export function Loading() {
-  return <p className={`${PAGE} text-muted-foreground`}>Loading data…</p>;
+  return <p className={`${PAGE} text-page-muted`}>Loading data…</p>;
 }
 
 export function RootError() {
@@ -31,7 +31,7 @@ export function RootError() {
   const message = error instanceof Error ? error.message : String(error);
   return (
     <div className={PAGE}>
-      <p className="text-muted-foreground">Could not load the dataset: {message}</p>
+      <p className="text-page-muted">Could not load the dataset: {message}</p>
     </div>
   );
 }

@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
-/* Light only. Ramp and status ink are palette D10 (docs/site.md); the rest is slate. */
+/* Light surfaces on a navy page. Ramp and status ink are palette D10 (docs/site.md); the rest is slate.
+   Text outside a surface uses the page-* tokens; surfaces set their own foreground. */
 :root {
   color-scheme: light;
   --radius: 0.5rem;
-  --background: #ffffff;
+  --background: #16213d;
+  --page-foreground: #f1f5f9;
+  --page-muted: #aab6cc;
   --foreground: #0f172a;
   --card: #ffffff;
   --card-foreground: #0f172a;
@@ -36,6 +39,8 @@
   --radius-lg: var(--radius);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-page-foreground: var(--page-foreground);
+  --color-page-muted: var(--page-muted);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -64,6 +69,6 @@
     @apply border-border outline-ring/60;
   }
   body {
-    @apply bg-background font-sans text-sm text-foreground antialiased;
+    @apply bg-background font-sans text-sm text-page-foreground antialiased;
   }
 }
