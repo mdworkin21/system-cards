@@ -94,7 +94,7 @@ export function matrixColumns(ds: Dataset): Column[] {
     ...domains,
     {
       id: "third_party",
-      header: "Third parties",
+      header: "Testers",
       meta: { cell: { kind: "thirdParty" } },
       accessorFn: (card) =>
         card.third_party.summary.status === "reported" ? card.third_party.assessments.length : undefined,

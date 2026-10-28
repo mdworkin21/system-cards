@@ -100,9 +100,8 @@ const SORT_ICON = { asc: ArrowUp, desc: ArrowDown } as const;
 
 // The model column stays in view while the table scrolls sideways, from sm up;
 // on a phone a pinned column would leave almost no room for the rest.
-const STICKY = "sm:sticky sm:left-0 sm:z-10 sm:border-r";
+const STICKY = "bg-background sm:sticky sm:left-0 sm:z-10 sm:border-r";
 
-/** Per-kind cell classes; the model column's min width fits the longest name in data.json. */
 const CELL_CLASS: Partial<Record<CellKind["kind"], string>> = {
   model: `text-left font-normal ${STICKY}`,
 };

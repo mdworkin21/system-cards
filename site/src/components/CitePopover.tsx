@@ -56,7 +56,7 @@ export function CitePopover({ trigger, children }: { trigger: ReactNode; childre
         <FloatingPortal>
           <FloatingFocusManager context={context} modal={false} initialFocus={-1} returnFocus={false}>
             <div
-              className="z-50 w-max max-w-[min(26rem,calc(100vw-1rem))] space-y-2 rounded-sm border border-foreground bg-popover p-3 text-sm text-popover-foreground shadow-[0_8px_24px_-8px_rgb(20_21_24/0.25)] [overflow-wrap:anywhere]"
+              className="z-50 w-max max-w-[min(26rem,calc(100vw-1rem))] space-y-2 rounded-sm border border-foreground bg-popover p-3 text-sm text-popover-foreground shadow-popover [overflow-wrap:anywhere]"
               ref={refs.setFloating}
               style={floatingStyles}
               {...getFloatingProps()}
@@ -74,7 +74,7 @@ export function CitePopover({ trigger, children }: { trigger: ReactNode; childre
 export function CiteDetails({ cite, url }: { cite: Cite; url: string }) {
   return (
     <div className="space-y-2">
-      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-[15px] leading-normal">{cite.quote}</blockquote>
+      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-[15px] leading-normal font-medium">{cite.quote}</blockquote>
       {cite.note && <p className="text-xs leading-relaxed text-muted-foreground">{cite.note}</p>}
       <p>
         <a

@@ -1,14 +1,12 @@
 @import "tailwindcss";
 
-/* Paper and ink: one neutral gray-white page, no cards. Ramp and status ink are palette D10 (docs/site.md).
+/* Paper and ink: one neutral gray-white page, no cards. Ramp and status ink are the palette in docs/site.md.
    Serif is for words to read (title, lab names, quotes); mono for labels and numbers; sans elsewhere. */
 :root {
   color-scheme: light;
   --radius: 0.25rem;
   --background: #f7f7f6;
   --foreground: #141518;
-  --card: #f7f7f6;
-  --card-foreground: #141518;
   --popover: #ffffff;
   --popover-foreground: #141518;
   --primary: #141518;
@@ -37,10 +35,9 @@
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
+  --shadow-popover: 0 8px 24px -8px rgb(20 21 24 / 0.25);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);

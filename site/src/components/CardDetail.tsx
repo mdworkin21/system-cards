@@ -195,7 +195,7 @@ function CiteCell({ cite, url }: { cite: Cite; url: string }) {
       >
         p. {cite.page}
       </a>
-      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-sm leading-normal">{cite.quote}</blockquote>
+      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-sm leading-normal font-medium">{cite.quote}</blockquote>
       {cite.note && <p className="text-xs leading-relaxed text-muted-foreground">{cite.note}</p>}
     </div>
   );

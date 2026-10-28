@@ -107,3 +107,19 @@ it("drops the lab filter from the URL when All labs is chosen", async () => {
   expect(router.state.location.search).toBe("");
   expect(screen.getAllByRole("rowheader").map((th) => th.textContent)).toEqual(["Model X", "Model Y", "Model Z"]);
 });
+
+it("clears every filter, and a name edit still in flight with them", async () => {
+  const user = userEvent.setup();
+  const router = createMemoryRouter(routes, { initialEntries: ["/?lab=lab-b"] });
+  render(<RouterProvider router={router} />);
+  await screen.findByRole("table");
+  const box = screen.getByRole("searchbox");
+  await user.type(box, "y");
+  await act(async () => {
+    fireEvent.change(box, { target: { value: "yz" } });
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+  });
+  expect(router.state.location.search).toBe("");
+  expect(screen.getAllByRole("rowheader").map((th) => th.textContent)).toEqual(["Model X", "Model Y", "Model Z"]);
+  expect(box).toHaveValue("");
+});

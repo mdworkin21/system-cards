@@ -4,7 +4,6 @@ import { useLocation, useNavigationType } from "react-router";
 import type { ViewState } from "@/lib/viewState";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Radix Select has no empty value; no lab slug (ID_PATTERN) can be "*", nor is any rung in tiers.yaml.
@@ -54,9 +53,9 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
         onChange={(rung) => onChange({ ...view, rung })}
       />
       <div className="grid w-full gap-1.5 sm:w-64">
-        <Label htmlFor="filter-model" className="label-caps">
+        <label htmlFor="filter-model" className="label-caps">
           Model
-        </Label>
+        </label>
         <div className="relative">
           <Search
             className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
@@ -106,9 +105,9 @@ interface FilterSelectProps {
 function FilterSelect({ id, label, all, options, value, onChange }: FilterSelectProps) {
   return (
     <div className="grid gap-1.5">
-      <Label htmlFor={id} className="label-caps">
+      <label htmlFor={id} className="label-caps">
         {label}
-      </Label>
+      </label>
       <Select value={value ?? ALL} onValueChange={(v) => onChange(v === ALL ? null : v)}>
         <SelectTrigger id={id} className="w-40 bg-popover">
           <SelectValue />
