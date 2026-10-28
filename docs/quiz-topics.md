@@ -46,7 +46,7 @@ card says got into your head, which is the whole point of the project.
 
 | Topic | What it covers | Sources |
 |---|---|---|
-| **Site matrix and detail** | How `data.json` reaches the page (one loader, hash routing on Pages), why sort and filters are URL params, how a status stays readable without color, what a cell's popover shows and how `#page=N` is built, why the stub row is dimmed, what CI checks for the site (type drift, the lab-name grep). | `docs/site.md`; `docs/adr/0002-url-owns-view-state.md`; `site/src/lib/`; `site/src/components/Matrix.tsx` |
+| **Site matrix and detail** | How `data.json` reaches the page (one loader, hash routing on Pages), why sort and filters are URL params, how a status stays readable without color, what a cell's popover shows and how `#page=N` is built, why the stub row is dimmed, why matrix cells show a short outcome label while the popover keeps the full one, why the select's "all" option is `*`, where theme tokens live (Tailwind + shadcn/ui), what CI checks for the site (type drift, the lab-name grep). | `docs/site.md`; `docs/adr/0002-url-owns-view-state.md`; `site/src/lib/`; `site/src/components/Matrix.tsx`; `site/src/index.css` |
 
 ## Cards
 

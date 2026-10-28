@@ -178,7 +178,9 @@ else. Design and as-built notes: `docs/site.md`.
 | `site/src/components/` | views: the matrix, compare, timeline, detail, gaps; presentational, typed by the generated types |
 | `site/src/routes.tsx` | the route table and the router (hash mode on Pages); the only file that changes for browser routing |
 | `site/src/App.tsx` | the layout around every view, loading and error states |
-| `site/src/theme.css` | every color, font and space as a CSS variable; components use the variables only |
+| `site/src/index.css` | Tailwind entry and the theme tokens (shadcn variables, status ink, outcome ramp); components style with Tailwind classes over these tokens, never raw colors |
+| `site/src/components/ui/` | shadcn/ui primitives (copy-in source over Radix); restyled here, not in the views |
+| `site/src/lib/utils.ts` | `cn()`, the class-merge helper the `ui/` components expect |
 | `site/src/test/` | Vitest setup and typed fixtures with synthetic labs |
 | `site/public/data.json` | build output, gitignored |
 

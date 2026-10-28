@@ -104,18 +104,18 @@ State ownership: the root route's loader owns the dataset (fetched once, never r
 | `types.generated.ts` | type | json-schema-to-typescript on the export | never hand-edited |
 | `lib/data.ts`: `loadDataset`, `useDataset`, `DATASET_ROUTE_ID` | lib fn | `Dataset`, `useRouteLoaderData` | the one fetch, the seam a future backend replaces; views read the root route's data through `useDataset` |
 | `lib/facts.ts`: `factAt`, `groupCount`, `isStub` | lib fn | `fact_paths`, `coverage` | walking a card by dotted path; `groupCount` counts `reported` over the prefix's paths |
-| `lib/format.ts`: `statusMark`, `humanize`, `outcomeLevel`, `pdfPageUrl`, `cardHref` | lib fn | `Status`, `domain_outcomes` | exhaustive `Record<Status, string>` glyph, label = humanized status; `outcomeLevel` is `null` off the ladder; `pdfPageUrl` replaces any fragment |
+| `lib/format.ts`: `statusMark`, `humanize`, `outcomeShort`, `outcomeLevel`, `pdfPageUrl`, `cardHref` | lib fn | `Status`, `DomainOutcome`, `domain_outcomes` | exhaustive `Record<Status, string>` glyph, label = humanized status; exhaustive `Record<DomainOutcome, string>` short cell label; `outcomeLevel` is `null` off the ladder; `pdfPageUrl` replaces any fragment |
 | `lib/columns.ts:matrixColumns` | lib fn | TanStack `ColumnDef`, `fact_paths` | fixed columns always; domains from `framework.domains.*` paths; header map for acronyms, `humanize` fallback; sort accessors per column (undefined sorts last); filter functions on `model` (name text), `tier` (rung) and a hidden `lab` column; `meta.cell` names the cell kind |
 | `lib/viewState.ts`: `parseViewState`, `toSearchParams` | lib fn | `URLSearchParams` | sort column and direction, lab, rung, text; unknown keys ignored |
 | `lib/rows.ts:groupByLab` | lib fn | build order | contiguous groups, no re-sort; generic over the item with a `labOf` accessor so the matrix groups TanStack rows |
 | `routes.tsx` | router | React Router `createHashRouter` | root route `loader: loadDataset`, `shouldRevalidate: () => false`, `errorElement`, `HydrateFallback`; children `/` and `/cards/*` (ids are URL-safe per `ID_PATTERN`, so the splat is the raw id); the only file that changes for browser routing |
 | `App.tsx`, `main.tsx` | component | router, `useLoaderData` | layout and the empty-dataset state |
-| `Matrix.tsx` | component | TanStack Table, columns, rows, view state | `<table>` in an `overflow-x: auto` box; grouped when unsorted; stub row dimmed; pages and published plain `<td>` |
-| `MatrixFilters.tsx` | component | view state, `cards`, `rungs` | lab and rung selects built from data, name search |
+| `Matrix.tsx` | component | TanStack Table, columns, rows, view state | `<table>` on a bordered white card that scrolls sideways inside itself; filled header row; tinted lab rows with a card count; cells `nowrap` except third-party testers; model column pinned from `sm` up; grouped when unsorted; stub row dimmed |
+| `MatrixFilters.tsx` | component | view state, `cards`, `rungs`, `components/ui` | lab and rung shadcn `Select`s built from data (sentinel `*` = all), name `Input` with a search icon, a Clear `Button` while any filter or sort is set |
 | `MatrixCell.tsx` | component | facts, format | tier: raw term plus rung, raw term alone if `normalized_tier` is null; third party: names, or mark plus summary value when reported with no assessments |
-| `StatusMark.tsx`, `OutcomeMeter.tsx` | component | format | glyph plus label; meter steps = ladder length; label only when level is null |
-| `CitePopover.tsx` | component | `@floating-ui/react` (hover with safePolygon, focus, dismiss) | quote, page, raw term, rung description from `rungs`, PDF link; max-width, wraps |
-| `theme.css` | style | `@fontsource-variable/newsreader`, `/inter` | every color, font and space as a CSS variable; components use variables only |
+| `StatusMark.tsx`, `OutcomeMeter.tsx` | component | format | glyph plus label, glyph inked only for `reported`/`withheld`; meter steps = ladder length; short label in matrix cells, full elsewhere; label only when level is null |
+| `CitePopover.tsx` | component | `@floating-ui/react` (hover with safePolygon, focus, tap, dismiss) | full outcome, raw term, quote, page, rung description from `rungs`, PDF link; max-width, wraps |
+| `index.css`, `components/ui/`, `lib/utils.ts:cn` | style | Tailwind v4, shadcn/ui (Radix), `@fontsource-variable/inter` | theme tokens as CSS variables mapped into Tailwind with `@theme inline`; components use token classes only |
 
 ### Capability C — Card detail view
 `CardDetail.tsx` at `#/cards/<id>`: document header (title, models, published, pages, PDF link, `provenance.verification`), one row per `fact_paths` entry (status, value or outcome, `raw_threshold`, note, cite page link, quote, cite note), then third-party assessments with their cites. An id not in `cards` shows "no card with this id" and a link back.
@@ -143,7 +143,9 @@ State ownership: the root route's loader owns the dataset (fetched once, never r
 | TanStack Table | npm | new dependency | sort, filter, grouping; headless, so the theme is ours |
 | React Router | npm | new dependency | hash mode now, browser mode later without touching views |
 | `@floating-ui/react` | npm | new dependency | an interactive popover needs hover intent, focus and dismiss |
-| `@fontsource-variable/*` | npm | new dependency | self-hosted fonts; invariant 7 allows no fetch but `data.json` |
+| `@fontsource-variable/inter` | npm | new dependency | self-hosted font; invariant 7 allows no fetch but `data.json` |
+| Tailwind CSS v4, `@tailwindcss/vite` | npm | new dependency (owner request) | utility styling at build time; no runtime |
+| shadcn/ui: `@radix-ui/react-select`, `class-variance-authority`, `clsx`, `tailwind-merge`, `lucide-react` | npm + copy-in source | new dependency (owner request) | accessible custom select (keyboard, typeahead, portal) instead of the native one; shadcn components are source in `components/ui/`, not a package |
 | Redux / RTK | — | rejected | one read-only dataset; view state belongs in the URL |
 
 ### Settled decisions
@@ -154,13 +156,15 @@ State ownership: the root route's loader owns the dataset (fetched once, never r
 | D3 | `data.json` fetched at runtime from `BASE_URL` | site CI and tests need no Python | — |
 | D4 | Stub card in place, dimmed when every fact is unknown; withheld = ◐ + "withheld" | spec | — |
 | D5 | Outcome label = humanized enum value; meter steps from `domain_outcomes` | no restated meaning in code | — |
-| D6 | Fonts self-hosted | invariant 7 | — |
+| D6 | Fonts self-hosted; Inter only (title included) | invariant 7; one family reads as one product | — |
 | D7 | Build output typed in pydantic; `Dataset` is the export root | the site's whole contract is generated | [0001](adr/0001-typed-dataset-contract.md) |
-| D8 | All colors and fonts in `theme.css` variables | a re-theme is one file | — |
+| D8 | All colors and fonts are tokens in `index.css` (shadcn variable block plus `@theme inline`); components use Tailwind token classes, no raw hex | a re-theme is one file |
 | D9 | Detail view in this PR, its own commit | developer | — |
-| D10 | Palette, checked with the dataviz validator: page `#EEF2F8`, ink `#16181D`, secondary `#4A4F5C`, muted `#62687A` (4.94:1), accent `#283C6B`, card surface `#FFFFFF`, outcome ramp `#9AABCD #7A8FBD #5A72A8 #3D5489 #22325A` (ordinal pass on the page color), label ink `#0F1830` on steps 1–2 and white on 3–5 (all ≥ 4.77:1) | the mockup's muted gray (2.81:1) and ramp light end failed | — |
+| D10 | Palette: outcome ramp `#9AABCD #7A8FBD #5A72A8 #3D5489 #22325A` (dataviz validator, ordinal pass) and status ink `#283C6B` (reported/withheld glyphs, quote rule, links) kept as named tokens; surfaces are slate: page `#F1F5F9`, card `#FFFFFF`, header row `#F8FAFC`, lab rows `#E9EEF5`, border `#E2E8F0`, ink `#0F172A`, muted `#5B6577` (≥ 4.77:1 on every fill) | the mockup's muted gray (2.81:1) and ramp light end failed; slate surfaces make the table a distinct card (owner review) | — |
 | D11 | Vitest fixtures use synthetic labs and ids (`lab-a/model-x/2026-01`) | keeps `site/src` free of lab names (AC4) | — |
 | D12 | No global store; view state in the URL; data behind `loadDataset` | a backend later swaps one function for RTK Query or TanStack Query | [0002](adr/0002-url-owns-view-state.md) |
+| D13 | Tailwind v4 + shadcn/ui (new-york, Radix) for styling and form controls | owner review: native selects and hand CSS did not read as professional | — |
+| D14 | Matrix cells show a short outcome label (`Below`, `Alert`, `Not ruled out`, `Reached`, `Critical`, `Not assessed`); the popover and detail view keep the humanized value and `raw_threshold` | owner review: "below threshold" in every cell was too wordy; the meter carries the scale | — |
 
 ### Size estimate
 | | App | Tests | Docs | Data / config | Files | Net app lines |
@@ -255,11 +259,17 @@ cd site && npm run dev   # then /ui-testing with section 1 behaviors 1-10
 | Planned | Built | Because |
 |---|---|---|
 | Domain header map is casing only | `ai_rnd` shows as "AI R&D", not a casing of "ai rnd" (`site/src/lib/columns.ts:25`) | no casing of "ai rnd" reads as a word; "AI R&D" is the schema's own description of the field (`src/system_cards/schema.py:Domains`) |
-| D10: label ink `#0F1830` on ramp steps 1–2, white on 3–5 | the outcome label sits beside the meter in `--color-ink` and no text is drawn on a ramp color, so the label-ink tokens are not defined; a border token `--color-rule: #d3dae6` was added (`site/src/components/OutcomeMeter.tsx:20`, `site/src/theme.css:8`) | meter steps are 0.5rem wide, too narrow to carry text; borders need a color the palette did not list |
-| Popover opens on hover or keyboard focus | it also opens on a tap: `useClick(context, { ignoreMouse: true })` (`site/src/components/CitePopover.tsx:35`) | a touch device neither hovers nor produces focus-visible, so no cite was reachable from the matrix on a phone (Chromium with touch emulation: no popover on tap before, popover after); mouse clicks stay with `useHover`; Enter or Space on a focused cell now toggles it |
+| D10: label ink `#0F1830` on ramp steps 1–2, white on 3–5 | the outcome label sits beside the meter in the foreground ink and no text is drawn on a ramp color, so the label-ink tokens are not defined; borders use the `--border` token (`site/src/components/OutcomeMeter.tsx:OutcomeMeter`, `site/src/index.css:19`) | meter steps are 0.5rem wide, too narrow to carry text; borders need a color the palette did not list |
+| Popover opens on hover or keyboard focus | it also opens on a tap: `useClick(context, { ignoreMouse: true })` (`site/src/components/CitePopover.tsx:37`) | a touch device neither hovers nor produces focus-visible, so no cite was reachable from the matrix on a phone (Chromium with touch emulation: no popover on tap before, popover after); mouse clicks stay with `useHover`; Enter or Space on a focused cell now toggles it |
 | `q` input controlled by the URL | uncontrolled, `defaultValue={view.q}`, resynced by an effect after back/forward or any navigation not tagged with the input's latest edit number in navigation state (`site/src/components/MatrixFilters.tsx:MatrixFilters`) | the router commits URL updates in a transition, and a controlled input driven by one dropped characters under fast typing ("claude opus" → "cleus" in Chromium); the matrix stays mounted across the header link and back/forward, so without the resync the box would keep a stale `q` |
 | AC4 grep over all of `site/src` | `types.generated.ts` excluded (`.github/workflows/check.yml:67`) | the generated enums carry framework and tester slugs (`xai_rmf`, `meta_frontier_ai_framework`), so adding `sources/xai/` would fail CI on a file nobody may edit; a `meta` lab would still hit `meta:` in `columns.ts` and needs its own answer then |
 | Tests table | six more `Matrix.test.tsx` cases: `?lab=lab-b` shows only Model Z; `?q=y` shows only Model Y; navigating from `/?q=y` to `/` empties the name box; a Back, or a header-link click (which React Router turns into a REPLACE at the current location), landing in the same batch as a typed edit leaves the box matching the URL; so does a Back to an entry still holding an older edit's tag | the first two catch the `lab` filter on the hidden column or the `model` filter not applying (`filtersOf` mapping to the wrong id, or TanStack skipping a hidden column), each failing when its `filters.push` is removed; the third catches the uncontrolled box keeping a stale `q` and fails without the resync effect; the fourth and fifth catch the box's pending edit never ending when React batches it with a later navigation, failing on the `[view.q]`-keyed effect and on one that treats every REPLACE as the box's own; the sixth fails when a back/forward to a tagged entry is taken for an in-flight edit; no other test renders a filtered URL or navigates the matrix |
+| `theme.css`: every color, font and space as a CSS variable, hand-written rules per class (D8) | Tailwind v4 (`@tailwindcss/vite`) with shadcn/ui conventions: tokens in `site/src/index.css:4`, `components.json`, `cn()` in `site/src/lib/utils.ts:cn`, primitives in `site/src/components/ui/`; `theme.css` deleted | owner review of the live site: the table did not stand apart from the page and the page did not read as professional; shadcn was asked for by name. The shadcn registry was unreachable from the build environment, so `ui/` was written by hand from the new-york source |
+| Native `<select>` for lab and rung | shadcn `Select` over Radix; the "all" option is the sentinel `*`, mapped to `null` (`site/src/components/MatrixFilters.tsx:11`, `:108`); a Clear button resets sort and filters | owner asked for non-native dropdowns; Radix Select rejects an empty-string value |
+| Domain cell label = humanized enum value (D5) | short label from `outcomeShort` (`site/src/lib/format.ts:11`), used in matrix cells only (`site/src/components/MatrixCell.tsx:84`); popover and detail keep the humanized value | owner: the threshold text was too wordy |
+| D10 palette for every surface; Newsreader for headings, model names and quotes | D10 ramp and status ink kept as tokens; surfaces moved to slate (D10 row updated); Inter only, Newsreader dependency removed | owner review: header row and page were the same color; one sans family for a consistent type scale |
+| Model column wraps; cells padded `0.5rem 0.75rem`, top-aligned | model column `nowrap`, `min-w-68` (fits the longest name in `data.json`, 271px measured), pinned left from `sm` up only (`site/src/components/Matrix.tsx:103`); all cells `nowrap` but third-party testers; `py-2`, middle-aligned; tabular numbers | owner: the wrapping model column made rows tall; at 375px a pinned 272px column would leave no room for the rest |
+| Tests table | one more `Matrix.test.tsx` case: choosing "All labs" on `/?lab=lab-b` leaves no `lab` param and shows all three models (`site/src/components/Matrix.test.tsx:100`); `setup.ts` stubs `hasPointerCapture`, `releasePointerCapture`, `scrollIntoView` for Radix | catches the sentinel `*` reaching the URL as `lab=*` (no rows); fails when `onValueChange` passes the value through unmapped; no other test drives a select |
 
 **Estimate vs actual:** estimated ~50–58 files / ~1200 app lines → actual 52 files / 1257 net app lines (20 app files; `theme.css` is 316 of the lines; tests, docs, generated types and the lockfile excluded).
 
@@ -276,7 +286,8 @@ cd site && npm run dev   # then /ui-testing with section 1 behaviors 1-10
 | Data access | `site/src/lib/data.ts` |
 | Matrix | `site/src/components/Matrix.tsx`, `MatrixCell.tsx`, `MatrixFilters.tsx` |
 | Detail | `site/src/components/CardDetail.tsx` |
-| Theme | `site/src/theme.css` |
+| Theme tokens, Tailwind entry | `site/src/index.css` |
+| UI primitives (shadcn/ui) | `site/src/components/ui/`, `site/components.json`, `site/src/lib/utils.ts` |
 | Deploy | `.github/workflows/pages.yml` |
 
 ### What `data.json` carries
@@ -307,6 +318,10 @@ Column ids: `model`, `tier`, the domain keys (`cbrn`, `cyber`, …), `third_part
 - TanStack's row models queue a page-index reset as an urgent update; left on, it keeps interrupting React Router's transition and every navigation after the first renders stale. `autoResetAll: false` in `site/src/components/Matrix.tsx:Matrix` prevents it. jsdom does not reproduce it, so no test pins it.
 - The model-name input is uncontrolled: a controlled input driven through the router's transition drops characters under fast typing. jsdom does not reproduce the drop; checked in Chromium with `vite preview`. An effect resyncs the box after any navigation not tagged as its own edit, including one React batches with a typed edit; a `Link` to the current location is a REPLACE, so the tag, not the navigation type, identifies the box's edits; history entries keep their tag, so back/forward always ends the pending edit (`Matrix.test.tsx` pins these).
 - The lab and rung selects and the sort spread the rendered `view`: a change made while a typed `q` is not yet rendered drops that `q` from the URL. The window is one transition commit; not fixed.
+- The lab and rung `Select`s use `*` for "all": Radix Select cannot hold `""`. A lab slug cannot be `*` (`ID_PATTERN`); a rung named `*` in `tiers.yaml` would be unselectable.
+- Radix Select needs `hasPointerCapture`, `releasePointerCapture` and `scrollIntoView`, which jsdom lacks; `site/src/test/setup.ts` stubs them.
+- Tailwind generates only class names it finds literally in source: `OutcomeMeter` lists `bg-outcome-1`…`5` in full; a sixth ladder step reuses the darkest until a token and class are added.
+- The JS bundle is 514 kB minified, 162 kB gzip (404 kB before Radix Select and its dependencies); `vite build` warns above 500 kB. Not split.
 - `site/package.json` overrides `vitest` to its own version: npm 10 crashes resolving vitest's optional peer chain (`Cannot read properties of null (reading 'edgesOut')`) without it.
 
 ### Known gaps
