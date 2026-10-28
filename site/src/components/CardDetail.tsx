@@ -11,8 +11,7 @@ import { OutcomeMeter } from "./OutcomeMeter";
 import { StatusMark } from "./StatusMark";
 
 const LINK = "font-medium text-link underline-offset-4 hover:underline";
-const TH =
-  "h-9 border-b bg-muted px-3 text-left align-middle text-xs font-medium whitespace-nowrap text-muted-foreground";
+const TH = "label-caps h-9 border-b border-b-foreground px-3 text-left align-middle whitespace-nowrap";
 const TD = "border-b px-3 py-2.5 align-top group-last/row:border-b-0";
 
 export function CardDetail() {
@@ -22,7 +21,7 @@ export function CardDetail() {
   if (!card) {
     return (
       <section className="space-y-2">
-        <p className="text-page-muted">No card with this id.</p>
+        <p className="text-muted-foreground">No card with this id.</p>
         <Link className="font-medium underline underline-offset-4" to="/">
           All cards
         </Link>
@@ -35,18 +34,22 @@ export function CardDetail() {
   return (
     <section className="space-y-6">
       <Link
-        className="inline-flex items-center gap-1.5 text-page-muted underline-offset-4 hover:text-page-foreground"
+        className="inline-flex items-center gap-1.5 text-muted-foreground underline-offset-4 hover:text-foreground"
         to="/"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
         All cards
       </Link>
-      <div className="rounded-lg border border-input bg-card p-5 text-card-foreground shadow-surface">
-        <h2 className="text-lg font-semibold tracking-tight">{card.document.title}</h2>
+      <div className="ruled py-5">
+        <h2 className="font-serif text-xl font-semibold tracking-tight">{card.document.title}</h2>
         <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 lg:grid-cols-5">
           <Meta term="Models">{modelNames(card)}</Meta>
-          <Meta term="Published">{card.document.published ?? "—"}</Meta>
-          <Meta term="Pages">{card.document.pages ?? "—"}</Meta>
+          <Meta term="Published">
+            <span className="num">{card.document.published ?? "—"}</span>
+          </Meta>
+          <Meta term="Pages">
+            <span className="num">{card.document.pages ?? "—"}</span>
+          </Meta>
           <Meta term="Document">
             <a className={cn(LINK, "inline-flex items-center gap-1")} href={url} target="_blank" rel="noreferrer">
               PDF
@@ -87,9 +90,9 @@ export function CardDetail() {
         </table>
       </Surface>
 
-      <h3 className="text-base font-semibold tracking-tight">Third-party assessments</h3>
+      <h3 className="font-serif text-lg font-semibold tracking-tight">Third-party assessments</h3>
       {assessments.length === 0 ? (
-        <p className="text-page-muted">None listed.</p>
+        <p className="text-muted-foreground">None listed.</p>
       ) : (
         <Surface>
           <table className="w-full border-separate border-spacing-0">
@@ -144,7 +147,7 @@ export function CardDetail() {
 
 function Surface({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-input bg-card text-card-foreground shadow-surface">
+    <div className="ruled">
       <div className="overflow-x-auto">{children}</div>
     </div>
   );
@@ -153,8 +156,8 @@ function Surface({ children }: { children: ReactNode }) {
 function Meta({ term, children }: { term: string; children: ReactNode }) {
   return (
     <div className="space-y-1">
-      <dt className="text-xs font-medium text-muted-foreground">{term}</dt>
-      <dd className="tabular-nums">{children}</dd>
+      <dt className="label-caps">{term}</dt>
+      <dd className="text-[13px]">{children}</dd>
     </div>
   );
 }
@@ -192,7 +195,7 @@ function CiteCell({ cite, url }: { cite: Cite; url: string }) {
       >
         p. {cite.page}
       </a>
-      <blockquote className="border-l-2 border-status-reported pl-3 text-xs leading-relaxed">{cite.quote}</blockquote>
+      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-sm leading-normal">{cite.quote}</blockquote>
       {cite.note && <p className="text-xs leading-relaxed text-muted-foreground">{cite.note}</p>}
     </div>
   );

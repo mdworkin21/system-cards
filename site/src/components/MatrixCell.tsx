@@ -30,9 +30,9 @@ export function MatrixCell({ card, cell, ds }: Props) {
     case "group":
       return <GroupCell card={card} prefix={cell.prefix} ds={ds} />;
     case "pages":
-      return <span className="tabular-nums">{card.document.pages ?? "—"}</span>;
+      return <span className="num">{card.document.pages ?? "—"}</span>;
     case "published":
-      return <span className="tabular-nums">{card.document.published ?? "—"}</span>;
+      return <span className="num">{card.document.published ?? "—"}</span>;
   }
 }
 
@@ -102,7 +102,7 @@ function ThirdPartyCell({ card }: { card: CardRecord }) {
           <span className="inline-flex max-w-44 items-center gap-1.5">
             <span className="truncate">{names[0]}</span>
             {names.length > 1 && (
-              <span className="shrink-0 text-xs text-muted-foreground tabular-nums">+{names.length - 1}</span>
+              <span className="num shrink-0 text-muted-foreground">+{names.length - 1}</span>
             )}
           </span>
         ) : (
@@ -138,7 +138,7 @@ function ThirdPartyCell({ card }: { card: CardRecord }) {
 function GroupCell({ card, prefix, ds }: { card: CardRecord; prefix: string; ds: Dataset }) {
   const { reported, total } = groupCount(card, prefix, ds.fact_paths);
   return (
-    <CitePopover trigger={<span className="tabular-nums">{`${reported}/${total}`}</span>}>
+    <CitePopover trigger={<span className="num">{`${reported}/${total}`}</span>}>
       <ul className="space-y-1 text-xs">
         {groupPaths(prefix, ds.fact_paths).map((p) => {
           const fact = factAt(card, p);

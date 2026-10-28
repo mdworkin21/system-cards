@@ -54,7 +54,9 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
         onChange={(rung) => onChange({ ...view, rung })}
       />
       <div className="grid w-full gap-1.5 sm:w-64">
-        <Label htmlFor="filter-model">Model</Label>
+        <Label htmlFor="filter-model" className="label-caps">
+          Model
+        </Label>
         <div className="relative">
           <Search
             className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
@@ -62,7 +64,7 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
           />
           <Input
             id="filter-model"
-            className="bg-card pl-8 text-card-foreground"
+            className="bg-popover pl-8"
             type="search"
             // Uncontrolled: a controlled input driven through the router's transition drops
             // keystrokes; the effect above resyncs it after any other navigation.
@@ -81,7 +83,7 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
           type="button"
           variant="ghost"
           size="sm"
-          className="h-9 text-page-muted hover:bg-white/10 hover:text-page-foreground"
+          className="h-9 text-muted-foreground"
           onClick={() => onChange({ sort: null, lab: null, rung: null, q: "" })}
         >
           <X aria-hidden="true" />
@@ -104,9 +106,11 @@ interface FilterSelectProps {
 function FilterSelect({ id, label, all, options, value, onChange }: FilterSelectProps) {
   return (
     <div className="grid gap-1.5">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} className="label-caps">
+        {label}
+      </Label>
       <Select value={value ?? ALL} onValueChange={(v) => onChange(v === ALL ? null : v)}>
-        <SelectTrigger id={id} className="w-40 bg-card text-card-foreground">
+        <SelectTrigger id={id} className="w-40 bg-popover">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

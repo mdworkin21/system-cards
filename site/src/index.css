@@ -1,30 +1,28 @@
 @import "tailwindcss";
 
-/* Light surfaces on a navy page. Ramp and status ink are palette D10 (docs/site.md); the rest is slate.
-   Text outside a surface uses the page-* tokens; surfaces set their own foreground. */
+/* Paper and ink: one neutral gray-white page, no cards. Ramp and status ink are palette D10 (docs/site.md).
+   Serif is for words to read (title, lab names, quotes); mono for labels and numbers; sans elsewhere. */
 :root {
   color-scheme: light;
-  --radius: 0.5rem;
-  --background: #16213d;
-  --page-foreground: #f1f5f9;
-  --page-muted: #aab6cc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
+  --radius: 0.25rem;
+  --background: #f7f7f6;
+  --foreground: #141518;
+  --card: #f7f7f6;
+  --card-foreground: #141518;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0f172a;
-  --primary-foreground: #f8fafc;
-  --muted: #f1f5f9;
-  --muted-foreground: #5b6577;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-  --border: #dbe2ec;
-  --input: #cbd5e1;
-  --ring: #94a3b8;
-  --group: #e6ebf4;
-  --link: #283c6b;
-  --status-reported: #283c6b;
+  --popover-foreground: #141518;
+  --primary: #141518;
+  --primary-foreground: #f7f7f6;
+  --muted: #eeeff1;
+  --muted-foreground: #64676e;
+  --accent: #eeeff1;
+  --accent-foreground: #141518;
+  --border: #d9dbdf;
+  --input: #aeb2ba;
+  --ring: #8b8f98;
+  --group: #e8eaee;
+  --link: #141518;
+  --status-reported: #1f3a7a;
   --outcome-1: #9aabcd;
   --outcome-2: #7a8fbd;
   --outcome-3: #5a72a8;
@@ -32,20 +30,15 @@
   --outcome-5: #22325a;
 }
 
-/* A dark shadow vanishes on the navy page, so surfaces cast a light ramp-blue drop shadow instead. */
-@theme {
-  --shadow-surface: 0 0 0 1px rgb(255 255 255 / 0.15), 0 10px 20px -4px rgb(140 165 220 / 0.45), 0 26px 50px -8px rgb(140 165 220 / 0.85);
-}
-
 @theme inline {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Spectral", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, Menlo, Consolas, monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-page-foreground: var(--page-foreground);
-  --color-page-muted: var(--page-muted);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -74,6 +67,19 @@
     @apply border-border outline-ring/60;
   }
   body {
-    @apply bg-background font-sans text-sm text-page-foreground antialiased;
+    @apply bg-background font-sans text-sm text-foreground antialiased;
   }
+}
+
+@utility label-caps {
+  @apply font-mono text-[10.5px] font-medium tracking-[0.06em] text-muted-foreground uppercase;
+}
+
+@utility num {
+  @apply font-mono text-xs tabular-nums;
+}
+
+/* A table defined by rules, not a box: heavy rule above, hairline below. */
+@utility ruled {
+  @apply border-t-2 border-b border-t-foreground border-b-foreground;
 }

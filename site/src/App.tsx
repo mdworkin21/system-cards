@@ -8,22 +8,22 @@ export function App() {
   return (
     <div className={PAGE}>
       <header className="mb-6">
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="font-serif text-3xl font-semibold tracking-tight">
           <Link to="/">System cards</Link>
         </h1>
-        <p className="mt-1 text-page-muted">
+        <p className="mt-1 font-serif text-[15px] italic text-muted-foreground">
           What frontier-model system cards say about safety, cited to the page.
         </p>
       </header>
       <main>
-        {data.cards.length === 0 ? <p className="text-page-muted">data.json has no cards.</p> : <Outlet />}
+        {data.cards.length === 0 ? <p className="text-muted-foreground">data.json has no cards.</p> : <Outlet />}
       </main>
     </div>
   );
 }
 
 export function Loading() {
-  return <p className={`${PAGE} text-page-muted`}>Loading data…</p>;
+  return <p className={`${PAGE} text-muted-foreground`}>Loading data…</p>;
 }
 
 export function RootError() {
@@ -31,7 +31,7 @@ export function RootError() {
   const message = error instanceof Error ? error.message : String(error);
   return (
     <div className={PAGE}>
-      <p className="text-page-muted">Could not load the dataset: {message}</p>
+      <p className="text-muted-foreground">Could not load the dataset: {message}</p>
     </div>
   );
 }
