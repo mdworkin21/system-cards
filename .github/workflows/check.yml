@@ -24,6 +24,13 @@ jobs:
       - name: check sources (quotes unverified here; PDFs are not in the repo)
         run: uv run syscards check --quiet
 
+  hooks:
+    name: Claude hooks (parser tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .claude/hooks/test_branchlib.py
+
   quotes:
     name: fetch documents and verify every quote
     if: github.event_name == 'workflow_dispatch'

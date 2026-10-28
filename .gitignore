@@ -6,3 +6,14 @@ __pycache__/
 .mypy_cache/
 .pytest_cache/
 site/public/data.json
+site/node_modules/
+site/dist/
+
+# agent tooling scratch
+.claude/settings.local.json
+.claude/ui-testing/screenshots/
+.claude/plans/
+.claude/projects/
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.playwright-mcp/
