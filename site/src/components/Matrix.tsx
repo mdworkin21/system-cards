@@ -64,7 +64,7 @@ export function Matrix() {
       <MatrixFilters view={view} labs={labs} rungs={Object.keys(ds.rungs)} onChange={setView} />
       <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full border-separate border-spacing-0">
+          <table className="w-full border-separate border-spacing-0 text-[13px]">
             <thead>
               {table.getHeaderGroups().map((hg) => (
                 <tr key={hg.id}>
@@ -104,8 +104,7 @@ const STICKY = "sm:sticky sm:left-0 sm:z-10 sm:border-r";
 
 /** Per-kind cell classes; the model column's min width fits the longest name in data.json. */
 const CELL_CLASS: Partial<Record<CellKind["kind"], string>> = {
-  model: `min-w-68 text-left font-normal ${STICKY}`,
-  thirdParty: "min-w-96 whitespace-normal",
+  model: `text-left font-normal ${STICKY}`,
 };
 
 function HeaderCell({ header }: { header: Header<CardRecord, unknown> }) {
@@ -117,14 +116,14 @@ function HeaderCell({ header }: { header: Header<CardRecord, unknown> }) {
       scope="col"
       aria-sort={dir ? SORT_ARIA[dir] : undefined}
       className={cn(
-        "h-9 border-b bg-muted px-3 text-left align-middle text-xs font-medium whitespace-nowrap text-muted-foreground",
+        "h-9 border-b bg-muted px-2 py-1 text-left align-middle text-xs font-medium text-muted-foreground",
         isModel && STICKY,
       )}
     >
       <button
         type="button"
         className={cn(
-          "-mx-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-1 outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50",
+          "-mx-1.5 inline-flex items-center gap-1 rounded-md text-left px-1.5 py-1 outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50",
           dir && "text-foreground",
         )}
         onClick={header.column.getToggleSortingHandler()}
@@ -165,7 +164,7 @@ function MatrixRow({ row, ds }: { row: Row<CardRecord>; ds: Dataset }) {
         const cell = c.column.columnDef.meta?.cell;
         const content = cell && <MatrixCell card={card} cell={cell} ds={ds} />;
         const className = cn(
-          "border-b bg-card px-3 py-2 align-middle whitespace-nowrap group-last/row:border-b-0 group-hover/row:bg-muted",
+          "border-b bg-card px-2 py-2 align-middle whitespace-nowrap group-last/row:border-b-0 group-hover/row:bg-muted",
           stub && "text-muted-foreground *:opacity-60",
           cell && CELL_CLASS[cell.kind],
         );

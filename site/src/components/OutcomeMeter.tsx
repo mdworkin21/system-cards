@@ -15,13 +15,13 @@ interface Props {
 export function OutcomeMeter({ value, ladder, label = "full" }: Props) {
   const level = outcomeLevel(value, ladder);
   return (
-    <span className="inline-flex items-center gap-2 whitespace-nowrap">
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
       {level !== null && (
         <span className="inline-flex gap-0.5" aria-hidden="true">
           {ladder.map((step, i) => (
             <span
               key={step}
-              className={cn("h-3 w-1.5 rounded-[1px]", i < level ? (STEP_FILL[i] ?? STEP_FILL.at(-1)) : "bg-border")}
+              className={cn("h-3 w-1 rounded-[1px]", i < level ? (STEP_FILL[i] ?? STEP_FILL.at(-1)) : "bg-border")}
             />
           ))}
         </span>

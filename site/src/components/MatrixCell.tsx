@@ -99,7 +99,12 @@ function ThirdPartyCell({ card }: { card: CardRecord }) {
     <CitePopover
       trigger={
         names.length > 0 ? (
-          names.join(", ")
+          <span className="inline-flex max-w-44 items-center gap-1.5">
+            <span className="truncate">{names[0]}</span>
+            {names.length > 1 && (
+              <span className="shrink-0 text-xs text-muted-foreground tabular-nums">+{names.length - 1}</span>
+            )}
+          </span>
         ) : (
           <>
             <StatusMark status="reported" /> {summary.value}

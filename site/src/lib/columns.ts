@@ -25,8 +25,8 @@ const DOMAIN_PREFIX = "framework.domains.";
 const DOMAIN_HEADERS: Record<string, string> = { cbrn: "CBRN", ai_rnd: "AI R&D" };
 
 const GROUPS = [
-  { prefix: "evaluations.alignment", header: "Alignment evals" },
-  { prefix: "evaluations.agentic_safety", header: "Agentic safety evals" },
+  { prefix: "evaluations.alignment", header: "Alignment" },
+  { prefix: "evaluations.agentic_safety", header: "Agentic safety" },
 ];
 
 function capitalize(s: string): string {
@@ -94,7 +94,7 @@ export function matrixColumns(ds: Dataset): Column[] {
     ...domains,
     {
       id: "third_party",
-      header: "Third-party testers",
+      header: "Third parties",
       meta: { cell: { kind: "thirdParty" } },
       accessorFn: (card) =>
         card.third_party.summary.status === "reported" ? card.third_party.assessments.length : undefined,
