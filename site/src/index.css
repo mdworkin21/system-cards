@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Light only. Ramp and status ink are palette D10 (docs/site.md); the rest is slate. */
+:root {
+  color-scheme: light;
+  --radius: 0.5rem;
+  --background: #f1f5f9;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;
+  --primary-foreground: #f8fafc;
+  --muted: #f8fafc;
+  --muted-foreground: #5b6577;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #94a3b8;
+  --group: #e9eef5;
+  --link: #283c6b;
+  --status-reported: #283c6b;
+  --outcome-1: #9aabcd;
+  --outcome-2: #7a8fbd;
+  --outcome-3: #5a72a8;
+  --outcome-4: #3d5489;
+  --outcome-5: #22325a;
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-group: var(--group);
+  --color-link: var(--link);
+  --color-status-reported: var(--status-reported);
+  --color-outcome-1: var(--outcome-1);
+  --color-outcome-2: var(--outcome-2);
+  --color-outcome-3: var(--outcome-3);
+  --color-outcome-4: var(--outcome-4);
+  --color-outcome-5: var(--outcome-5);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  body {
+    @apply bg-background font-sans text-sm text-foreground antialiased;
+  }
+}

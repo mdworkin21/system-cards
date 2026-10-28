@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router";
+import userEvent from "@testing-library/user-event";
 import { expect, it, vi } from "vitest";
 import { makeCard, makeDataset } from "../test/fixtures";
 
@@ -94,4 +95,15 @@ it("resyncs the name box on Back to an entry holding an older edit's tag", async
   });
   expect(router.state.location.search).toBe("?q=y");
   expect(box).toHaveValue("y");
+});
+
+it("drops the lab filter from the URL when All labs is chosen", async () => {
+  const user = userEvent.setup();
+  const router = createMemoryRouter(routes, { initialEntries: ["/?lab=lab-b"] });
+  render(<RouterProvider router={router} />);
+  await screen.findByRole("table");
+  await user.click(screen.getByRole("combobox", { name: "Lab" }));
+  await user.click(await screen.findByRole("option", { name: "All labs" }));
+  expect(router.state.location.search).toBe("");
+  expect(screen.getAllByRole("rowheader").map((th) => th.textContent)).toEqual(["Model X", "Model Y", "Model Z"]);
 });

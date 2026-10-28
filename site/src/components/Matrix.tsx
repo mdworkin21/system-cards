@@ -10,14 +10,16 @@ import {
   type SortingState,
   type Updater,
 } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import { useMemo } from "react";
 import { useSearchParams, type NavigateOptions } from "react-router";
-import { LAB_COLUMN, matrixColumns } from "../lib/columns";
-import { useDataset } from "../lib/data";
-import { isStub } from "../lib/facts";
-import { groupByLab } from "../lib/rows";
-import { parseViewState, toSearchParams, type ViewState } from "../lib/viewState";
-import type { CardRecord, Dataset } from "../types.generated";
+import { LAB_COLUMN, matrixColumns, type CellKind } from "@/lib/columns";
+import { useDataset } from "@/lib/data";
+import { isStub } from "@/lib/facts";
+import { groupByLab } from "@/lib/rows";
+import { cn } from "@/lib/utils";
+import { parseViewState, toSearchParams, type ViewState } from "@/lib/viewState";
+import type { CardRecord, Dataset } from "@/types.generated";
 import { MatrixCell } from "./MatrixCell";
 import { MatrixFilters } from "./MatrixFilters";
 
@@ -60,49 +62,75 @@ export function Matrix() {
   return (
     <>
       <MatrixFilters view={view} labs={labs} rungs={Object.keys(ds.rungs)} onChange={setView} />
-      <div className="matrix-box">
-        <table className="matrix">
-          <thead>
-            {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id}>
-                {hg.headers.map((h) => (
-                  <HeaderCell key={h.id} header={h} />
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {rows.length === 0 && (
-              <tr>
-                <td colSpan={width} className="empty">
-                  No cards match these filters.
-                </td>
-              </tr>
-            )}
-            {view.sort
-              ? rows.map((row) => <MatrixRow key={row.id} row={row} ds={ds} />)
-              : groupByLab(rows, (r) => r.original.lab).map((g) => (
-                  <LabGroup key={g.lab} lab={g.lab} rows={g.items} width={width} ds={ds} />
-                ))}
-          </tbody>
-        </table>
+      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full border-separate border-spacing-0">
+            <thead>
+              {table.getHeaderGroups().map((hg) => (
+                <tr key={hg.id}>
+                  {hg.headers.map((h) => (
+                    <HeaderCell key={h.id} header={h} />
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {rows.length === 0 && (
+                <tr>
+                  <td colSpan={width} className="px-3 py-8 text-center text-muted-foreground">
+                    No cards match these filters.
+                  </td>
+                </tr>
+              )}
+              {view.sort
+                ? rows.map((row) => <MatrixRow key={row.id} row={row} ds={ds} />)
+                : groupByLab(rows, (r) => r.original.lab).map((g) => (
+                    <LabGroup key={g.lab} lab={g.lab} rows={g.items} width={width} ds={ds} />
+                  ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );
 }
 
 const SORT_ARIA = { asc: "ascending", desc: "descending" } as const;
-const SORT_GLYPH = { asc: "▲", desc: "▼" } as const;
+const SORT_ICON = { asc: ArrowUp, desc: ArrowDown } as const;
+
+// The model column stays in view while the table scrolls sideways, from sm up;
+// on a phone a pinned column would leave almost no room for the rest.
+const STICKY = "sm:sticky sm:left-0 sm:z-10 sm:border-r";
+
+/** Per-kind cell classes; the model column's min width fits the longest name in data.json. */
+const CELL_CLASS: Partial<Record<CellKind["kind"], string>> = {
+  model: `min-w-68 text-left font-normal ${STICKY}`,
+  thirdParty: "min-w-96 whitespace-normal",
+};
 
 function HeaderCell({ header }: { header: Header<CardRecord, unknown> }) {
   const dir = header.column.getIsSorted();
+  const Icon = dir ? SORT_ICON[dir] : null;
+  const isModel = header.column.columnDef.meta?.cell?.kind === "model";
   return (
-    <th scope="col" aria-sort={dir ? SORT_ARIA[dir] : undefined}>
-      <button type="button" className="sort-button" onClick={header.column.getToggleSortingHandler()}>
+    <th
+      scope="col"
+      aria-sort={dir ? SORT_ARIA[dir] : undefined}
+      className={cn(
+        "h-9 border-b bg-muted px-3 text-left align-middle text-xs font-medium whitespace-nowrap text-muted-foreground",
+        isModel && STICKY,
+      )}
+    >
+      <button
+        type="button"
+        className={cn(
+          "-mx-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-1 outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50",
+          dir && "text-foreground",
+        )}
+        onClick={header.column.getToggleSortingHandler()}
+      >
         {flexRender(header.column.columnDef.header, header.getContext())}
-        <span className="sort-glyph" aria-hidden="true">
-          {dir ? SORT_GLYPH[dir] : ""}
-        </span>
+        {Icon ? <Icon className="size-3.5" aria-hidden="true" /> : <span className="size-3.5" aria-hidden="true" />}
       </button>
     </th>
   );
@@ -112,8 +140,13 @@ function LabGroup({ lab, rows, width, ds }: { lab: string; rows: Row<CardRecord>
   return (
     <>
       <tr className="group-row">
-        <th colSpan={width} scope="colgroup">
-          {lab}
+        <th colSpan={width} scope="colgroup" className="border-b bg-group px-3 py-1.5 text-left">
+          <span className="inline-flex items-baseline gap-2 sm:sticky sm:left-3">
+            <span className="font-semibold">{lab}</span>
+            <span className="text-xs font-normal text-muted-foreground tabular-nums">
+              {rows.length} {rows.length === 1 ? "card" : "cards"}
+            </span>
+          </span>
         </th>
       </tr>
       {rows.map((row) => (
@@ -125,17 +158,25 @@ function LabGroup({ lab, rows, width, ds }: { lab: string; rows: Row<CardRecord>
 
 function MatrixRow({ row, ds }: { row: Row<CardRecord>; ds: Dataset }) {
   const card = row.original;
+  const stub = isStub(card, ds.fact_paths);
   return (
-    <tr className={isStub(card, ds.fact_paths) ? "stub" : undefined}>
+    <tr className="group/row">
       {row.getVisibleCells().map((c) => {
         const cell = c.column.columnDef.meta?.cell;
         const content = cell && <MatrixCell card={card} cell={cell} ds={ds} />;
+        const className = cn(
+          "border-b bg-card px-3 py-2 align-middle whitespace-nowrap group-last/row:border-b-0 group-hover/row:bg-muted",
+          stub && "text-muted-foreground *:opacity-60",
+          cell && CELL_CLASS[cell.kind],
+        );
         return cell?.kind === "model" ? (
-          <th key={c.id} scope="row">
+          <th key={c.id} scope="row" className={className}>
             {content}
           </th>
         ) : (
-          <td key={c.id}>{content}</td>
+          <td key={c.id} className={className}>
+            {content}
+          </td>
         );
       })}
     </tr>

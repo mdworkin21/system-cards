@@ -1,8 +1,8 @@
 import { Link } from "react-router";
-import { modelNames, type CellKind } from "../lib/columns";
-import { factAt, groupCount, groupPaths, type AnyFact } from "../lib/facts";
-import { cardHref, humanize, pdfPageUrl } from "../lib/format";
-import type { CardRecord, Dataset, DomainAssessment } from "../types.generated";
+import { modelNames, type CellKind } from "@/lib/columns";
+import { factAt, groupCount, groupPaths, type AnyFact } from "@/lib/facts";
+import { cardHref, humanize, pdfPageUrl } from "@/lib/format";
+import type { CardRecord, Dataset, DomainAssessment } from "@/types.generated";
 import { CiteDetails, CitePopover } from "./CitePopover";
 import { OutcomeMeter } from "./OutcomeMeter";
 import { StatusMark } from "./StatusMark";
@@ -16,7 +16,11 @@ interface Props {
 export function MatrixCell({ card, cell, ds }: Props) {
   switch (cell.kind) {
     case "model":
-      return <Link to={cardHref(card.id)}>{modelNames(card)}</Link>;
+      return (
+        <Link className="font-medium text-foreground underline-offset-4 hover:underline" to={cardHref(card.id)}>
+          {modelNames(card)}
+        </Link>
+      );
     case "tier":
       return <TierCell card={card} ds={ds} />;
     case "domain":
@@ -26,9 +30,9 @@ export function MatrixCell({ card, cell, ds }: Props) {
     case "group":
       return <GroupCell card={card} prefix={cell.prefix} ds={ds} />;
     case "pages":
-      return <>{card.document.pages ?? "—"}</>;
+      return <span className="tabular-nums">{card.document.pages ?? "—"}</span>;
     case "published":
-      return <>{card.document.published ?? "—"}</>;
+      return <span className="tabular-nums">{card.document.published ?? "—"}</span>;
   }
 }
 
@@ -48,11 +52,22 @@ function TierCell({ card, ds }: { card: CardRecord; ds: Dataset }) {
   if (tier.status !== "reported" || !tier.cite || tier.value === null) return <MarkCell fact={tier} url={url} />;
   const rung = card.normalized_tier;
   return (
-    <CitePopover trigger={rung === null ? tier.value : `${tier.value} · ${rung}`}>
-      <p className="popover-head">{tier.value}</p>
+    <CitePopover
+      trigger={
+        rung === null ? (
+          tier.value
+        ) : (
+          <>
+            {tier.value}
+            <span className="text-muted-foreground"> · {rung}</span>
+          </>
+        )
+      }
+    >
+      <p className="font-semibold">{tier.value}</p>
       {rung !== null && (
-        <p className="rung">
-          <strong>{rung}</strong>: {ds.rungs[rung]}
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          <span className="font-medium text-foreground">{rung}</span>: {ds.rungs[rung]}
         </p>
       )}
       <CiteDetails cite={tier.cite} url={url} />
@@ -66,10 +81,11 @@ function DomainCell({ card, path, ds }: { card: CardRecord; path: string; ds: Da
   const url = card.document.url;
   if (fact.status !== "reported" || !fact.cite || fact.value === null) return <MarkCell fact={fact} url={url} />;
   return (
-    <CitePopover trigger={<OutcomeMeter value={fact.value} ladder={ds.domain_outcomes} />}>
-      {fact.raw_threshold && <p className="popover-head">{fact.raw_threshold}</p>}
+    <CitePopover trigger={<OutcomeMeter value={fact.value} ladder={ds.domain_outcomes} label="short" />}>
+      <OutcomeMeter value={fact.value} ladder={ds.domain_outcomes} />
+      {fact.raw_threshold && <p className="font-semibold">{fact.raw_threshold}</p>}
       <CiteDetails cite={fact.cite} url={url} />
-      {fact.note && <p className="fact-note">{fact.note}</p>}
+      {fact.note && <p className="text-xs leading-relaxed text-muted-foreground">{fact.note}</p>}
     </CitePopover>
   );
 }
@@ -91,14 +107,19 @@ function ThirdPartyCell({ card }: { card: CardRecord }) {
         )
       }
     >
-      {summary.value && <p className="popover-head">{summary.value}</p>}
+      {summary.value && <p className="font-semibold">{summary.value}</p>}
       <CiteDetails cite={summary.cite} url={url} />
       {assessments.length > 0 && (
-        <ul className="sub-list">
+        <ul className="space-y-0.5 border-t pt-2 text-xs">
           {assessments.map((a, i) => (
-            <li key={i}>
-              {a.org_name ?? a.org}:{" "}
-              <a href={pdfPageUrl(url, a.cite.page)} target="_blank" rel="noreferrer">
+            <li key={i} className="flex justify-between gap-4">
+              {a.org_name ?? a.org}
+              <a
+                className="font-medium text-link tabular-nums underline-offset-4 hover:underline"
+                href={pdfPageUrl(url, a.cite.page)}
+                target="_blank"
+                rel="noreferrer"
+              >
                 p. {a.cite.page}
               </a>
             </li>
@@ -112,13 +133,14 @@ function ThirdPartyCell({ card }: { card: CardRecord }) {
 function GroupCell({ card, prefix, ds }: { card: CardRecord; prefix: string; ds: Dataset }) {
   const { reported, total } = groupCount(card, prefix, ds.fact_paths);
   return (
-    <CitePopover trigger={`${reported}/${total}`}>
-      <ul className="sub-list">
+    <CitePopover trigger={<span className="tabular-nums">{`${reported}/${total}`}</span>}>
+      <ul className="space-y-1 text-xs">
         {groupPaths(prefix, ds.fact_paths).map((p) => {
           const fact = factAt(card, p);
           return (
-            <li key={p}>
-              {humanize(p.slice(prefix.length + 1))}: {fact && <StatusMark status={fact.status} />}
+            <li key={p} className="flex justify-between gap-6">
+              <span>{humanize(p.slice(prefix.length + 1))}</span>
+              {fact && <StatusMark status={fact.status} />}
             </li>
           );
         })}
