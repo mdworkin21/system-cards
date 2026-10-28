@@ -22,6 +22,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 9. **Never upgrade a card's verification yourself.** `provenance.verification` stays `none` and `verified_by` stays empty until a named human has read every cite against the PDF and says so. The checker proves a quote is on a page; only a person decides the value is what the quote says.
 
+10. **Never watch a PR unasked.** Do not subscribe to PR activity, poll CI, or babysit a PR after opening it, and do not offer to. Report the PR URL and stop. The only CI watch is the one inside an explicit `/autopilot` run.
+
 ### Web/remote sessions — scoped exception to #1 and #5
 
 This subsection applies **only** when running in a remote execution environment
@@ -29,7 +31,7 @@ This subsection applies **only** when running in a remote execution environment
 cannot eyeball diffs in an editor and the pushed branch *is* the review surface.
 It overrides rules #1 and #5 **in those sessions only**. In IDE/local sessions,
 #1 and #5 apply exactly as written above — nothing here changes them. Rules #2,
-#3, #4, #6 and #9 are unaffected and apply in every session.
+#3, #4, #6, #9 and #10 are unaffected and apply in every session.
 
 - **Commit and push when a unit of work is complete.** Work on the designated
   feature branch, commit with a clear message, and push — the pushed diff is how
