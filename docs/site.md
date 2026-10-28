@@ -16,9 +16,8 @@ A reader opens the public Pages URL and sees, for every card in `sources/`, what
 - Vite + React + TypeScript app under `site/` (strict TS, Vitest, eslint; scripts `lint`, `typecheck`, `test`, `build`, `gen-types`); `types.generated.ts` from the schema export.
 - Matrix view: rows grouped by lab, date-ascending; columns per `docs/plan.md` section 7.1. Status shown by glyph and text as well as color. Hover/focus card with raw term, quote, page, PDF link at `#page=N`.
 - Sort by any column; filter by lab, rung, and model-name text; sort and filters live in the URL.
-- Domain outcomes as a humanized label plus a stepped meter.
 - Card detail view: every fact path and third-party assessment with status, value, cite.
-- Light only, "cool editorial navy" (palette in decision D10).
+- Light only; palette D10.
 - `pages.yml` deploy; a `check.yml` site job when `site/` or the schema changes.
 
 **Out:** compare, timeline, gaps views; dark mode; lab logos; pretty names for labs or tester orgs; layouts beyond not overflowing a phone viewport; a backend or global store.
@@ -72,13 +71,13 @@ flowchart LR
 ```
 
 ### Capability A — Typed dataset contract (Python)
-`build.py:card_record` returns a dict and `cli.py:schema` exports `Card` only, so the build's derived fields have no generated type. A types the build output in pydantic and makes `Dataset` the export root. `data.json` is unchanged except one new top-level field, `domain_outcomes`.
+`build.py:card_record` returns a dict and `cli.py:schema` exports `Card` only, so the build's derived fields have no generated type. A types the build output in pydantic and makes `Dataset` the export root. `data.json` is unchanged except one new top-level field, `domain_outcomes`, and key order (`lab` moves to the end of each card).
 
 **Data**
 | Model | Change | Notes |
 |---|---|---|
 | `Strict` | config `json_schema_serialization_defaults_required=True`; the export uses `mode="serialization"` | defaulted fields become required in the export only; the validation schema is unchanged |
-| `Card.lab` | property becomes a pydantic `@computed_field` | appears in `model_dump` and the export as a required string; a YAML `lab:` key is still rejected; call sites unchanged |
+| `Card.lab` | property becomes a pydantic `@computed_field` | appears in `model_dump` and the export as a required string; a YAML `lab:` key is still rejected; call sites unchanged; excluded when re-validating into `CardRecord` (`extra="forbid"`); mypy needs `# type: ignore[prop-decorator]` |
 | `Coverage` | new `Strict` model, one `int` field per `Status` member | `dict[Status, int]` generates `{[k: string]: number}`; named fields make a typo a type error |
 | `CardRecord(Card)` | adds `normalized_tier: str \| None`, `withheld: list[str]`, `not_reported: list[str]`, `coverage: Coverage` | `build.py` |
 | `Dataset` | `schema_version: str`, `normalization_version: int`, `rungs: dict[str, str]`, `fact_paths: list[str]`, `domain_outcomes: list[DomainOutcome]`, `cards: list[CardRecord]` | export root, `build.py` |
@@ -90,12 +89,13 @@ flowchart LR
 | `Coverage`, `CardRecord`, `Dataset` | model | `Card`, `Status`, `DomainOutcome` | the site's contract; no logic |
 | `card_record` | build fn | `iter_facts`, `TierTable.rung_for` | returns `CardRecord`; derivations unchanged |
 | `build_dataset` | build fn | `load_card`, `source_paths` | builds `Dataset`, returns `model_dump(mode="json")`, so `write_dataset` and tests keep a dict |
-| `cli.schema` | CLI command | `Dataset` | exports `Dataset.model_json_schema(mode="serialization")`; file name unchanged |
+| `dataset_schema` | build fn | `Dataset` | `Dataset.model_json_schema(mode="serialization")`, the one spelling of the export |
+| `cli.schema` | CLI command | `dataset_schema` | writes and checks the export; file name unchanged |
 
 ### Capability B — Site scaffold, matrix, sort and filter
 A Vite app at base `/system-cards/` fetches `BASE_URL + "data.json"` once and renders the matrix with TanStack Table (headless; our markup and theme). React Router in hash mode owns the route; sort and filters are URL search params, so links share a view. Cite-bearing cells are buttons that open a popover on hover or focus.
 
-State ownership: the route loader owns the dataset (fetched once); the URL owns route, sort and filters; each popover owns its open state. No global store.
+State ownership: the root route's loader owns the dataset (fetched once, never revalidated); the URL owns route, sort and filters; each popover owns its open state. No global store.
 
 **Component design**
 | Unit | Kind | Builds on | Owns / seam |
@@ -108,8 +108,8 @@ State ownership: the route loader owns the dataset (fetched once); the URL owns 
 | `lib/columns.ts:matrixColumns` | lib fn | TanStack `ColumnDef`, `fact_paths` | fixed columns always; domains from `framework.domains.*` paths; header map is casing only, `humanize` fallback; sort accessors per column |
 | `lib/viewState.ts`: `parseViewState`, `toSearchParams` | lib fn | `URLSearchParams` | sort column and direction, lab, rung, text; unknown keys ignored |
 | `lib/rows.ts:groupByLab` | lib fn | build order | contiguous groups, no re-sort |
-| `routes.tsx` | router | React Router `createHashRouter` | `/` and `/cards/:id`; the only file that changes for browser routing |
-| `App.tsx`, `main.tsx` | component | router, `loadDataset` | loading, error, empty dataset |
+| `routes.tsx` | router | React Router `createHashRouter` | root route `loader: loadDataset`, `shouldRevalidate: () => false`, `errorElement`, `HydrateFallback`; children `/` and `/cards/*` (ids are URL-safe per `ID_PATTERN`, so the splat is the raw id); the only file that changes for browser routing |
+| `App.tsx`, `main.tsx` | component | router, `useLoaderData` | layout and the empty-dataset state |
 | `Matrix.tsx` | component | TanStack Table, columns, rows, view state | `<table>` in an `overflow-x: auto` box; grouped when unsorted; stub row dimmed; pages and published plain `<td>` |
 | `MatrixFilters.tsx` | component | view state, `cards`, `rungs` | lab and rung selects built from data, name search |
 | `MatrixCell.tsx` | component | facts, format | tier: raw term plus rung, raw term alone if `normalized_tier` is null; third party: names, or mark plus summary value when reported with no assessments |
@@ -118,7 +118,7 @@ State ownership: the route loader owns the dataset (fetched once); the URL owns 
 | `theme.css` | style | `@fontsource-variable/newsreader`, `/inter` | every color, font and space as a CSS variable; components use variables only |
 
 ### Capability C — Card detail view
-`CardDetail.tsx` at `#/cards/:id`: document header (title, models, published, pages, PDF link, `provenance.verification`), one row per `fact_paths` entry (status, value or outcome, `raw_threshold`, note, cite page link, quote, cite note), then third-party assessments with their cites. An unknown or malformed id shows "no card with this id" and a link back.
+`CardDetail.tsx` at `#/cards/<id>`: document header (title, models, published, pages, PDF link, `provenance.verification`), one row per `fact_paths` entry (status, value or outcome, `raw_threshold`, note, cite page link, quote, cite note), then third-party assessments with their cites. An id not in `cards` shows "no card with this id" and a link back.
 
 | Unit | Kind | Builds on | Owns / seam |
 |---|---|---|---|
@@ -128,7 +128,7 @@ State ownership: the route loader owns the dataset (fetched once); the URL owns 
 | Unit | Kind | Owns |
 |---|---|---|
 | `.github/workflows/pages.yml` | workflow | push to main and dispatch; `contents: read`, `pages: write`, `id-token: write`; `concurrency: pages`; uv sync, `syscards check --quiet`, `syscards build`, Node 22, `npm ci`, `npm run build`, upload `site/dist`, deploy-pages |
-| `check.yml` job `site` | workflow | gated by dorny/paths-filter on `site/**`, `schema/**`, `.github/workflows/**`: `npm ci`, `gen-types` then `git diff --exit-code`, lint, typecheck, test, build |
+| `check.yml` job `site` | workflow | gated by dorny/paths-filter on `site/**`, `schema/**`, `.github/workflows/**`: `npm ci`, `gen-types` then `git diff --exit-code`, AC4 grep (lab directory names from `sources/` must not appear in `site/src`), lint, typecheck, test, build |
 
 ### Reuse and refactor inventory
 | Existing block | Path | Decision | Evidence / why |
@@ -138,7 +138,7 @@ State ownership: the route loader owns the dataset (fetched once); the URL owns 
 | `Card.lab` | `src/system_cards/schema.py:Card` | make a computed field | `rg "\.lab\b" src tests`: `build.py` only |
 | `TierTable.rungs`, `TierTable.version` | `src/system_cards/normalization.py:TierTable` | reuse as-is | already emitted |
 | `DomainOutcome` | `src/system_cards/schema.py:DomainOutcome` | reuse; ladder new | enum order is severity order |
-| `cli.schema`, schema pin | `src/system_cards/cli.py:schema`, `tests/test_repo_data.py:test_checked_in_json_schema_matches_models` | export root becomes `Dataset` | |
+| `cli.schema`, schema pin | `src/system_cards/cli.py:schema`, `tests/test_repo_data.py:test_checked_in_json_schema_matches_models` | export root becomes `Dataset`; both call `dataset_schema` | `rg "model_json_schema" src tests`: 2 hand spellings today |
 | Site blocks | `docs/building-blocks.md` "Site" | new | no tracked `site/` at `17bff7a` |
 | TanStack Table | npm | new dependency | sort, filter, grouping; headless, so the theme is ours |
 | React Router | npm | new dependency | hash mode now, browser mode later without touching views |
@@ -168,8 +168,8 @@ State ownership: the route loader owns the dataset (fetched once); the URL owns 
 | A | 3 | 1 changed | `schema.md`, `building-blocks.md`, `where-things-go.md`, `quiz-topics.md`, ADR 0001 + index | schema export | 11 | ~70 |
 | B | 17 | 8 + fixtures | this doc, `building-blocks.md`, ADR 0002 | `package.json`, lockfile, 3 configs, `index.html`, `types.generated.ts` | ~35 | ~800 |
 | C | 1 | 1 | this doc | — | 2 | ~120 |
-| D | — | — | `plan.md` status | `pages.yml`, `check.yml` | 3 | — |
-| **Bundled** (+20%, no prior records) | 21 | 10–11 | 9 | 9 | ~50–58 | ~1200 |
+| D | — | — | `plan.md` status, `quiz-topics.md`, `CLAUDE.md` | `pages.yml`, `check.yml` | 5 | — |
+| **Bundled** (+20%, no prior records) | 21 | 12–13 | 11 | 9 | ~54–62 | ~1200 |
 
 Over 15 app files and 400 lines. Split if wanted: PR-1 = A + B + D (meets the gate), PR-2 = C.
 
@@ -182,53 +182,62 @@ Over 15 app files and 400 lines. Split if wanted: PR-1 = A + B + D (meets the ga
 
 ## 3. Implementation plan
 
-Five commits, in order. Run each commit's checks before the next.
-
 ### Slice A1 — Typed dataset contract (commit 1)
 - `schema.py`: on `Strict`, add `json_schema_serialization_defaults_required=True` to `model_config`.
-- `schema.py:Card.lab`: decorate with `@computed_field` above `@property`; keep the body. Export `DOMAIN_OUTCOME_LADDER = tuple(o for o in DomainOutcome if o is not DomainOutcome.not_assessed)`.
+- `schema.py:Card.lab`: `@computed_field  # type: ignore[prop-decorator]` above `@property`; keep the body. Add `DOMAIN_OUTCOME_LADDER = tuple(o for o in DomainOutcome if o is not DomainOutcome.not_assessed)` next to the enum.
 - `build.py`: add `Coverage(Strict)` (fields `reported`, `withheld`, `not_reported`, `not_applicable`, `unknown`: `int`), `CardRecord(Card)`, `Dataset(Strict)` per the Data table.
-- `build.py:card_record` returns `CardRecord(**card.model_dump(), normalized_tier=…, withheld=…, not_reported=…, coverage=Coverage(**counts))`; keep the derivation code.
+- `build.py:card_record` returns `CardRecord(**card.model_dump(exclude={"lab"}), normalized_tier=…, withheld=…, not_reported=…, coverage=Coverage(**counts))`; keep the derivation code.
 - `build.py:build_dataset` builds `Dataset(…, domain_outcomes=list(DOMAIN_OUTCOME_LADDER))` and returns `.model_dump(mode="json")`; key order: `schema_version`, `normalization_version`, `rungs`, `fact_paths`, `domain_outcomes`, `cards`.
-- `cli.py:schema`: export `Dataset.model_json_schema(mode="serialization")`; run `uv run syscards schema`.
-- Guard: before editing, `uv run syscards build && cp site/public/data.json $TMP/before.json`; after, rebuild and `diff` with `jq 'del(.domain_outcomes)'`: no other difference.
+- `build.py:dataset_schema() -> dict[str, Any]`; `cli.py:schema` and `tests/test_repo_data.py` both call it; run `uv run syscards schema`.
+- Guard: before editing, `uv run syscards build && cp site/public/data.json $TMP/before.json`; after, rebuild; `diff <(jq -S 'del(.domain_outcomes)' $TMP/before.json) <(jq -S 'del(.domain_outcomes)' site/public/data.json)` is empty.
 - Docs: `docs/schema.md` (export root, `domain_outcomes`), `docs/building-blocks.md` (`Card.lab`, `card_record`, `build_dataset`, new models), `docs/where-things-go.md` (`build.py` row), `docs/quiz-topics.md` ("Build output" row), `docs/adr/0001-typed-dataset-contract.md` status → accepted, ADR index.
 
-### Slice B1 — Scaffold, lib, matrix (commit 2)
+### Slice B1a — Scaffold (commit 2)
 - `site/package.json`: React 19, react-dom, react-router 7, @tanstack/react-table 8, @floating-ui/react, @fontsource-variable/newsreader, @fontsource-variable/inter; dev: vite, @vitejs/plugin-react, typescript, vitest, jsdom, @testing-library/react, @testing-library/user-event, eslint + typescript-eslint + react-hooks plugin, json-schema-to-typescript. Pin exact versions; commit `package-lock.json`.
 - Scripts: `gen-types` = `json2ts -i ../schema/system-card.schema.json -o src/types.generated.ts`; `typecheck` = `tsc --noEmit`; `test` = `vitest run`; `lint` = `eslint .`; `build` = `tsc --noEmit && vite build`.
-- `vite.config.ts`: `base: "/system-cards/"`; Vitest `environment: "jsdom"`. `tsconfig.json`: `strict`, `noUncheckedIndexedAccess`.
-- `src/lib/*` and `src/components/*` per the component table; `src/test/fixtures.ts`: `makeCard(overrides)` and `makeDataset(cards)` typed as `CardRecord` and `Dataset`, every fact `unknown` by default, synthetic ids.
-- `theme.css`: D10 tokens as `--color-*`, `--font-serif`, `--font-sans`, `--space-*`; no hex outside this file (`rg "#[0-9a-fA-F]{3,6}" site/src --glob '!theme.css'` is empty).
-- Docs: this doc section 4 as you go; `docs/building-blocks.md` "Site" rows for each `lib/` function and shared component.
+- `vite.config.ts`: `base: "/system-cards/"`; Vitest `environment: "jsdom"`, `setupFiles: ["src/test/setup.ts"]` (jest-dom matchers; a `ResizeObserver` stub if floating-ui needs one). `tsconfig.json`: `strict`, `noUncheckedIndexedAccess`.
+- `index.html`, `main.tsx`, `routes.tsx` (root route as in the component table), `App.tsx`, `theme.css` (D10 tokens as `--color-*`, `--font-serif`, `--font-sans`, `--space-*`; `rg "#[0-9a-fA-F]{3,6}" site/src --glob '!theme.css' --glob '!*.generated.ts'` is empty), `types.generated.ts`. Done when all five scripts pass.
 
-### Slice B2 — Sort, filter, URL state (commit 3)
-- `lib/viewState.ts`; `MatrixFilters.tsx`; wire TanStack `getSortedRowModel` and `getFilteredRowModel` to view state; `useSearchParams` reads and writes it.
-- Sorted → flat rows; unsorted → `groupByLab` groups. Lab and rung options come from `cards` and `rungs`, never literals.
+### Slice B1b — lib (commit 3)
+- `src/test/fixtures.ts`: `makeCard(overrides)`, `makeDataset(cards)` typed `CardRecord` / `Dataset`; every fact `unknown` by default; ids like `lab-a/model-x/2026-01`.
+- Signatures: `loadDataset(): Promise<Dataset>`; `factAt(card: CardRecord, path: string): Fact | DomainAssessment | undefined`; `groupCount(card: CardRecord, prefix: string, factPaths: string[]): {reported: number; total: number}`; `isStub(card: CardRecord, factPaths: string[]): boolean` (true iff `coverage.unknown === factPaths.length`).
+- `statusMark(s: Status): {glyph: string; label: string}`; `humanize(s: string): string`; `outcomeLevel(v: DomainOutcome | null, ladder: DomainOutcome[]): number | null`; `pdfPageUrl(url: string, page: number): string`.
+- `matrixColumns(ds: Dataset): ColumnDef<CardRecord>[]`; `groupByLab(cards: CardRecord[]): {lab: string; cards: CardRecord[]}[]`; `cardHref(id: string): string` = `/cards/${id}`.
+- Docs: `docs/building-blocks.md` "Site" rows for each `lib/` function.
+
+### Slice B1c — Matrix components (commit 4)
+- `Matrix.tsx`, `MatrixCell.tsx`, `StatusMark.tsx`, `OutcomeMeter.tsx`, `CitePopover.tsx` per the component table.
+- Docs: `docs/building-blocks.md` rows for the shared components; section 4 here as you go.
+
+### Slice B2 — Sort, filter, URL state (commit 5)
+- `parseViewState(p: URLSearchParams): ViewState`, `toSearchParams(s: ViewState): URLSearchParams` in `lib/viewState.ts`; `MatrixFilters.tsx`; TanStack `getSortedRowModel` and `getFilteredRowModel` driven by view state via `useSearchParams`.
 - Docs: `docs/adr/0002-url-owns-view-state.md` status → accepted, ADR index.
 
-### Slice C1 — Card detail (commit 4)
-- `CardDetail.tsx`; route `/cards/:id` in `routes.tsx`; links built with `cardHref(id)` = `/cards/${encodeURIComponent(id)}`; decode inside try/catch → not-found state.
+### Slice C1 — Card detail (commit 6)
+- `CardDetail.tsx` on `/cards/*`: look up `params["*"]` in `cards`; a miss is the not-found state.
 
-### Slice D1 — Deploy, CI, docs (commit 5)
-- `.github/workflows/pages.yml`, `check.yml` job `site` per capability D.
+### Slice D1 — Deploy, CI, docs (commit 7)
+- `.github/workflows/pages.yml` and `check.yml` job `site` per capability D; `actions/setup-node` with `cache-dependency-path: site/package-lock.json`; paths-filter with `base` set for pushes to main.
+- AC4 step: `! rg -i "$(ls sources | paste -sd'|')" site/src`.
 - `docs/plan.md` Phase 2 status; `docs/quiz-topics.md` row **Site matrix and detail**; `CLAUDE.md` "Site (Phase 2; `site/` does not exist yet)" heading updated.
 
 ### Tests
 | Test | Slice | Bug it catches | Fails because | Overlap checked |
 |---|---|---|---|---|
-| `tests/test_repo_data.py::test_checked_in_json_schema_matches_models` (changed: compares `Dataset.model_json_schema(mode="serialization")`) | A1 | the checked-in export drifts from the models the site types come from | the file differs from the regenerated schema | existing test; only its comparand changes |
-| `site/src/lib/facts.test.ts`: `factAt` resolves a domain path and `evaluations.welfare` | B1 | a dotted-path walk that stops one level early or late returns a group object, so a cell renders the wrong fact | asserts the returned object is the fixture's Fact at that path | none (no site tests) |
-| `site/src/lib/facts.test.ts`: `groupCount` counts only `reported`, total from `fact_paths` | B1 | withheld counted as reported, or a hard-coded total | fixture has 1 reported and 1 withheld of 3 paths; expects `{reported: 1, total: 3}` | none |
-| `site/src/lib/format.test.ts`: `statusMark` gives each status a distinct glyph and label | B1 | two statuses render the same, so a status is color-only (AC2) | expects five distinct labels and five distinct glyphs | none |
-| `site/src/lib/format.test.ts`: `outcomeLevel` is `null` for `not_assessed` | B1 | the meter shows `not_assessed` as the lowest step, reading as "below threshold" | expects `null` | none |
-| `site/src/lib/format.test.ts`: `pdfPageUrl` replaces an existing fragment and keeps `%20` and `&` | B1 | `#page` appended twice or the URL re-encoded, so the PDF opens at page 1 or 404s | input `…Card%20&%20X.pdf#foo`, expects `…Card%20&%20X.pdf#page=15` | none |
-| `site/src/lib/rows.test.ts`: `groupByLab` keeps build order | B1 | an alphabetical re-sort breaks date order within a lab | input in build order with names out of alphabetical order; expects the same order | none |
-| `site/src/components/CitePopover.test.tsx`: keyboard focus opens the popover with quote and a link ending `#page=N` | B1 | the popover wired to pointer hover only (behavior 10, AC3) | focuses the cell via `user.tab()`, expects the quote text and the link `href` | none |
-| `site/src/components/MatrixCell.test.tsx`: reported tier with null `normalized_tier` shows the raw term alone | B1 | the cell renders "CB-1 · null" or throws on a term missing from `tiers.yaml` | expects text `CB-1` and no `null` | none |
-| `site/src/lib/viewState.test.ts`: `parseViewState(toSearchParams(s))` round-trips sort and filters | B2 | a sorted or filtered link loses state on reload (AC1, behavior 9) | expects deep equality for a state with every field set | none |
-| `site/src/components/Matrix.test.tsx`: unsorted renders group headers; sorted by published renders no group headers in date order across labs | B2 | sorting applied inside groups, or groups shown while sorted (behavior 8) | counts group-header rows and checks row order | none |
-| `site/src/routes.test.tsx`: an id with slashes routes to the detail view; a malformed escape shows not found | C1 | ids containing `/` break the detail route on reload, or `%E0` throws (AC1) | uses `createMemoryRouter` with the app's routes; expects the card title, then the not-found text | none |
+| `tests/test_repo_data.py::test_checked_in_json_schema_matches_models` (changed: compares `dataset_schema()`) | A1 | the checked-in export drifts from the models the site types come from | the file differs from the regenerated schema | existing test; only its comparand changes |
+| `tests/test_build.py::test_build_adds_normalized_tier_and_coverage` (changed: adds two asserts) | A1 | `domain_outcomes` includes `not_assessed`, or misses an outcome added to the enum, so the meter shows a non-result as a step or drops a step | asserts `"not_assessed" not in data["domain_outcomes"]` and `set(data["domain_outcomes"]) \| {"not_assessed"} == {o.value for o in DomainOutcome}` | `rg "domain_outcomes\|not_assessed" tests`: none |
+| `site/src/lib/facts.test.ts`: `isStub` true only when every fact is unknown | B1b | stub detection as "nothing reported" dims a fully extracted card whose facts are all `not_reported` | fixture with every fact `not_reported` expects `false`; all `unknown` expects `true` | none |
+| `site/src/lib/facts.test.ts`: `factAt` resolves a domain path and `evaluations.welfare` | B1b | a dotted-path walk that stops one level early or late returns a group object, so a cell renders the wrong fact | asserts the returned object is the fixture's Fact at that path | none (no site tests) |
+| `site/src/lib/facts.test.ts`: `groupCount` counts only `reported`, total from `fact_paths` | B1b | withheld counted as reported, or a hard-coded total | fixture has 1 reported and 1 withheld of 3 paths; expects `{reported: 1, total: 3}` | none |
+| `site/src/lib/format.test.ts`: `statusMark` gives each status a distinct glyph and label | B1b | two statuses render the same, so a status is color-only (AC2) | expects five distinct labels and five distinct glyphs | none |
+| `site/src/lib/format.test.ts`: `outcomeLevel` is `null` for `not_assessed` | B1b | the meter shows `not_assessed` as the lowest step, reading as "below threshold" | expects `null` | none |
+| `site/src/lib/format.test.ts`: `pdfPageUrl` replaces an existing fragment and keeps `%20` and `&` | B1b | `#page` appended twice or the URL re-encoded, so the PDF opens at page 1 or 404s | input `…Card%20&%20X.pdf#foo`, expects `…Card%20&%20X.pdf#page=15` | none |
+| `site/src/lib/rows.test.ts`: `groupByLab` keeps build order | B1b | an alphabetical re-sort breaks date order within a lab | input in build order with names out of alphabetical order; expects the same order | none |
+| `site/src/components/CitePopover.test.tsx` (uses `setup.ts` stubs): keyboard focus opens the popover with quote and a link ending `#page=N` | B1c | the popover wired to pointer hover only (behavior 10, AC3) | focuses the cell via `user.tab()`, expects the quote text and the link `href` | none |
+| `site/src/components/MatrixCell.test.tsx`: reported tier with null `normalized_tier` shows the raw term alone | B1c | the cell renders "CB-1 · null" or throws on a term missing from `tiers.yaml` | expects text `CB-1` and no `null` | none |
+| `site/src/lib/viewState.test.ts`: `parseViewState(toSearchParams(s))` round-trips sort and filters; an unknown param is ignored | B2 | a sorted or filtered link loses state on reload, or a shared link with `?utm=1` throws (AC1, behavior 9) | expects deep equality for a state with every field set; `utm=1&sort=published` yields the sort | none |
+| `site/src/components/Matrix.test.tsx` (inside `createMemoryRouter` with the app's routes, at `/` and `/?sort=published`): unsorted renders group headers; sorted renders none, in date order across labs | B2 | sorting applied inside groups, or groups shown while sorted (behavior 8) | counts group-header rows and checks row order | none |
+| `site/src/routes.test.tsx`: an id with slashes routes to the detail view; an unknown id shows not found | C1 | ids containing `/` break the detail route on reload, or a missing card throws (AC1) | uses `createMemoryRouter` with the app's routes at `/cards/lab-a/model-x/2026-01`, expects the card title; at `/cards/lab-a/missing/2026-01`, expects the not-found text | none |
 
 ### Verification
 ```bash
