@@ -1,6 +1,6 @@
 # 0001. The build output is a typed pydantic model and the root of the schema export
 
-Status: proposed · Date: 2026-10-28 · Design doc: `docs/site.md`
+Status: accepted · Date: 2026-10-28 · Design doc: `docs/site.md`
 
 ## Context
 

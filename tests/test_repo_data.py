@@ -3,10 +3,10 @@
 import json
 from pathlib import Path
 
+from system_cards.build import dataset_schema
 from system_cards.check import check_sources, has_errors
 from system_cards.loader import load_card, source_paths
 from system_cards.normalization import load_tier_table
-from system_cards.schema import Card
 
 
 def test_every_source_card_passes_check_without_pdfs(repo_root: Path, tmp_path: Path):
@@ -31,4 +31,4 @@ def test_every_reported_tier_is_in_the_normalization_table(repo_root: Path):
 def test_checked_in_json_schema_matches_models(repo_root: Path):
     path = repo_root / "schema" / "system-card.schema.json"
     assert path.exists(), "run `syscards schema`"
-    assert json.loads(path.read_text()) == Card.model_json_schema(), "run `syscards schema`"
+    assert json.loads(path.read_text()) == dataset_schema(), "run `syscards schema`"

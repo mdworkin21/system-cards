@@ -40,7 +40,7 @@ card says got into your head, which is the whole point of the project.
 | **Keyword net** | Why `not_reported` is the risky status, how matching is word-based with case-sensitive acronyms, and what to do with a warning (fix the status, or dismiss it with a note). | `src/system_cards/schema.py` (`KEYWORDS`, `keyword_pattern`); `src/system_cards/check.py` |
 | **Normalization ladder** | The three rungs, the `(framework, raw)` key, why the raw term is always shown, when `version` bumps, and why domain outcomes are not table-normalized. | `docs/normalization.md`; `normalization/tiers.yaml`; `src/system_cards/normalization.py` |
 | **Document identity and the cache** | sha256-named cache, never overwriting, `DocumentChanged` on a revised URL, `fetched_from` for mirrors, why PDFs are never committed. | `src/system_cards/fetch.py`; `docs/adding-a-card.md` |
-| **Build output** | The shape of `data.json`: `normalized_tier`, `withheld`, `not_reported`, `coverage`, `fact_paths`, `rungs`; why it is deterministic and why the site reads nothing else. | `src/system_cards/build.py`; `docs/plan.md` section 6 |
+| **Build output** | The shape of `data.json`: `normalized_tier`, `withheld`, `not_reported`, `coverage`, `fact_paths`, `rungs`, `domain_outcomes`; why it is typed (`Dataset` is the export root), why it is deterministic and why the site reads nothing else. | `src/system_cards/build.py`; `docs/schema.md`; `docs/adr/0001-typed-dataset-contract.md`; `docs/plan.md` section 6 |
 
 ## Cards
 

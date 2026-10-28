@@ -32,7 +32,8 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 | `ThirdParty`, `ThirdPartyAssessment`, `ThirdPartyOrg` | a summary Fact plus named assessors, each with its own cite; `other` requires `org_name`; assessments require a reported summary | external testing |
 | `Mitigations`, `TrainingDisclosure`, `DisclosureMeta`, `Provenance` | the remaining groups; `Provenance` rejects a verification level without `verified_by` | |
 | `ModelInfo`, `Document`, `DocumentKind`, `PartialDate` | models a document covers; the document's identity (`url`, `landing_url`, `sha256`, `pages`, `fetched`, `fetched_from`); month-or-day dates | the document block |
-| `Card`, `ID_PATTERN`, `Card.lab` | the record; ids are `<lab>/<slug>/<yyyy-mm>` | |
+| `Card`, `ID_PATTERN`, `Card.lab` | the record; ids are `<lab>/<slug>/<yyyy-mm>`; `lab` is a computed field, so it is in `model_dump` and the export but rejected as YAML input | |
+| `DOMAIN_OUTCOME_LADDER` | `DomainOutcome` in severity order without `not_assessed` | the steps of an outcome scale |
 | `KEYWORDS`, `keyword_pattern`, `keyword_hits` | per-fact-path keywords; word-based matching, all-caps terms case-sensitive | the keyword net; every new Fact field needs an entry |
 | `iter_facts` | every Fact or DomainAssessment on a card with its dotted path, in schema order | anything that walks a card: `check`, `build`, the site's `fact_paths` |
 
@@ -71,8 +72,10 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 
 | Block | What it is | Use it when |
 |---|---|---|
-| `card_record` | a card's JSON plus `lab`, `normalized_tier`, `withheld`, `not_reported`, `coverage` | adding a derived field the site needs |
-| `build_dataset`, `write_dataset` | the deterministic dataset, sorted by lab, published, id, with `schema_version`, `normalization_version`, `rungs`, `fact_paths` | |
+| `Dataset`, `CardRecord`, `Coverage` | the typed shape of `data.json` and the root of the schema export | adding a derived field the site needs: add it to a model, never a dict |
+| `card_record` | a `Card` to a `CardRecord`: adds `normalized_tier`, `withheld`, `not_reported`, `coverage` | |
+| `build_dataset`, `write_dataset` | the deterministic dataset as a JSON dict, sorted by lab, published, id | |
+| `dataset_schema` | `Dataset.model_json_schema(mode="serialization")`, the one spelling of the export | anything that writes or compares the export |
 
 ## Fetch (`src/system_cards/fetch.py`)
 
