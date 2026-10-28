@@ -66,3 +66,16 @@ it("resyncs the name box when a navigation lands before a typed edit renders", a
   await act(() => router.navigate("/?q=y"));
   expect(box).toHaveValue("y");
 });
+
+it("resyncs the name box when the header link lands before a typed edit renders", async () => {
+  const router = createMemoryRouter(routes, { initialEntries: ["/"] });
+  render(<RouterProvider router={router} />);
+  await screen.findByRole("table");
+  const box = screen.getByRole("searchbox");
+  await act(async () => {
+    fireEvent.change(box, { target: { value: "ab" } });
+    fireEvent.click(screen.getByRole("link", { name: "System cards" }));
+  });
+  expect(router.state.location.search).toBe("");
+  expect(box).toHaveValue("");
+});

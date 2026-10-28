@@ -1,23 +1,29 @@
 import { useEffect, useRef } from "react";
-import { useNavigationType } from "react-router";
+import { useLocation } from "react-router";
 import type { ViewState } from "../lib/viewState";
+
+/** Navigation state that marks a URL change as this input's own edit. */
+interface QEdit {
+  qEdit: number;
+}
 
 interface Props {
   view: ViewState;
   labs: string[];
   rungs: string[];
-  onChange: (next: ViewState, opts?: { replace: boolean }) => void;
+  onChange: (next: ViewState, opts?: { replace: boolean; state?: QEdit }) => void;
 }
 
 export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
   const input = useRef<HTMLInputElement>(null);
-  // The last value this input sent to the URL, until the URL catches up with it.
-  const sent = useRef<string | null>(null);
-  const navType = useNavigationType();
+  // The number of this input's latest edit, until the URL catches up with it.
+  const sent = useRef<number | null>(null);
+  const edits = useRef(0);
+  const own = (useLocation().state as QEdit | null)?.qEdit;
   // No deps: React may batch a typed edit and a later navigation into one render.
   useEffect(() => {
-    // This input's edits are the app's only REPLACE navigations, so any other kind ends its pending edit.
-    if (navType !== "REPLACE" || view.q === sent.current) sent.current = null;
+    // Any navigation not tagged as this input's edit (a link, back/forward, a select) ends the pending edit.
+    if (own === undefined || own === sent.current) sent.current = null;
     if (sent.current === null && input.current) input.current.value = view.q;
   });
   return (
@@ -54,8 +60,8 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
           defaultValue={view.q}
           placeholder="Filter by name"
           onChange={(e) => {
-            sent.current = e.target.value;
-            onChange({ ...view, q: e.target.value }, { replace: true });
+            sent.current = ++edits.current;
+            onChange({ ...view, q: e.target.value }, { replace: true, state: { qEdit: sent.current } });
           }}
         />
       </label>

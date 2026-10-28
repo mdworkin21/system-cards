@@ -11,7 +11,7 @@ import {
   type Updater,
 } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams, type NavigateOptions } from "react-router";
 import { LAB_COLUMN, matrixColumns } from "../lib/columns";
 import { useDataset } from "../lib/data";
 import { isStub } from "../lib/facts";
@@ -33,7 +33,7 @@ export function Matrix() {
   const ds = useDataset();
   const [params, setParams] = useSearchParams();
   const view = parseViewState(params);
-  const setView = (next: ViewState, opts?: { replace: boolean }) => setParams(toSearchParams(next), opts);
+  const setView = (next: ViewState, opts?: NavigateOptions) => setParams(toSearchParams(next), opts);
 
   const columns = useMemo(() => matrixColumns(ds), [ds]);
   const labs = useMemo(() => [...new Set(ds.cards.map((c) => c.lab))], [ds]);
