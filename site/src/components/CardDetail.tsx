@@ -144,7 +144,7 @@ export function CardDetail() {
 
 function Surface({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-input bg-card shadow-md">
       <div className="overflow-x-auto">{children}</div>
     </div>
   );

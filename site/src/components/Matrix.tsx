@@ -62,7 +62,7 @@ export function Matrix() {
   return (
     <>
       <MatrixFilters view={view} labs={labs} rungs={Object.keys(ds.rungs)} onChange={setView} />
-      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+      <div className="overflow-hidden rounded-lg border border-input bg-card shadow-md">
         <div className="overflow-x-auto">
           <table className="w-full border-separate border-spacing-0 text-[13px]">
             <thead>
@@ -139,9 +139,9 @@ function LabGroup({ lab, rows, width, ds }: { lab: string; rows: Row<CardRecord>
   return (
     <>
       <tr className="group-row">
-        <th colSpan={width} scope="colgroup" className="border-b bg-group px-3 py-1.5 text-left">
+        <th colSpan={width} scope="colgroup" className="border-b bg-group px-3 py-1.5 text-left shadow-[inset_3px_0_0_var(--link)]">
           <span className="inline-flex items-baseline gap-2 sm:sticky sm:left-3">
-            <span className="font-semibold">{lab}</span>
+            <span className="font-semibold text-link">{lab}</span>
             <span className="text-xs font-normal text-muted-foreground tabular-nums">
               {rows.length} {rows.length === 1 ? "card" : "cards"}
             </span>
