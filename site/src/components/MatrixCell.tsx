@@ -1,6 +1,5 @@
 import { Link } from "react-router";
-import type { CellKind } from "../lib/columns";
-import { modelNames } from "../lib/columns";
+import { modelNames, type CellKind } from "../lib/columns";
 import { factAt, groupCount, groupPaths, type AnyFact } from "../lib/facts";
 import { cardHref, humanize, pdfPageUrl } from "../lib/format";
 import type { CardRecord, Dataset, DomainAssessment } from "../types.generated";
