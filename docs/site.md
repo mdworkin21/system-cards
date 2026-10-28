@@ -128,7 +128,7 @@ State ownership: the root route's loader owns the dataset (fetched once, never r
 | Unit | Kind | Owns |
 |---|---|---|
 | `.github/workflows/pages.yml` | workflow | push to main and dispatch; `contents: read`, `pages: write`, `id-token: write`; `concurrency: pages`; uv sync, `syscards check --quiet`, `syscards build`, Node 22, `npm ci`, `npm run build`, upload `site/dist`, deploy-pages |
-| `check.yml` jobs `changes` and `site` | workflow | gated by dorny/paths-filter on `site/**`, `schema/**`, `.github/workflows/**` (always on dispatch): `npm ci`, `gen-types` then `git diff --exit-code`, AC4 grep (`grep -rEinw` of the lab directory names from `sources/` over `site/src`, whole words, `types.generated.ts` excluded), lint, typecheck, test, build |
+| `check.yml` jobs `changes` and `site` | workflow | gated by dorny/paths-filter on `site/**`, `schema/**`, `.github/workflows/**` (always on dispatch): `npm ci`, `gen-types` then `git diff --exit-code`, AC4 grep (`grep -rEin` of the lab directory names from `sources/` over `site/src`, `types.generated.ts` excluded), lint, typecheck, test, build |
 
 ### Reuse and refactor inventory
 | Existing block | Path | Decision | Evidence / why |
@@ -218,7 +218,7 @@ Over 15 app files and 400 lines. Split if wanted: PR-1 = A + B + D (meets the ga
 
 ### Slice D1 — Deploy, CI, docs (commit 7)
 - `.github/workflows/pages.yml` and `check.yml` job `site` per capability D; `actions/setup-node` with `cache-dependency-path: site/package-lock.json`; paths-filter with `base` set for pushes to main.
-- AC4 step: `! grep -rEinw "$(ls ../sources | paste -sd'|' -)" src --exclude=types.generated.ts` (from `site/`).
+- AC4 step: `! grep -rEin "$(ls ../sources | paste -sd'|' -)" src --exclude=types.generated.ts` (from `site/`).
 - `docs/plan.md` Phase 2 status; `docs/quiz-topics.md` row **Site matrix and detail**; `CLAUDE.md` "Site (Phase 2; `site/` does not exist yet)" heading updated.
 
 ### Tests
@@ -256,10 +256,10 @@ cd site && npm run dev   # then /ui-testing with section 1 behaviors 1-10
 |---|---|---|
 | Domain header map is casing only | `ai_rnd` shows as "AI R&D", not a casing of "ai rnd" (`site/src/lib/columns.ts:25`) | no casing of "ai rnd" reads as a word; "AI R&D" is the schema's own description of the field (`src/system_cards/schema.py:Domains`) |
 | D10: label ink `#0F1830` on ramp steps 1–2, white on 3–5 | the outcome label sits beside the meter in `--color-ink` and no text is drawn on a ramp color, so the label-ink tokens are not defined; a border token `--color-rule: #d3dae6` was added (`site/src/components/OutcomeMeter.tsx:20`, `site/src/theme.css:8`) | meter steps are 0.5rem wide, too narrow to carry text; borders need a color the palette did not list |
-| Popover opens on hover or keyboard focus | it also opens on a tap: `useClick(context, { ignoreMouse: true })` (`site/src/components/CitePopover.tsx:35`) | a touch device neither hovers nor produces focus-visible, so no cite was reachable from the matrix on a phone; mouse clicks stay with `useHover` |
-| `q` input controlled by the URL | uncontrolled, `defaultValue={view.q}` (`site/src/components/MatrixFilters.tsx:42`) | the router commits URL updates in a transition, and a controlled input driven by one dropped characters under fast typing ("claude opus" → "cleus" in Chromium); `q` edits replace the history entry, so the URL never changes under the input without a remount |
-| AC4 grep matches substrings over all of `site/src` | whole-word match, `types.generated.ts` excluded (`.github/workflows/check.yml:67`) | the generated enums carry framework and tester slugs (`xai_rmf`, `meta_frontier_ai_framework`), so adding `sources/xai/` would fail CI on a file nobody may edit; a `meta` lab would still hit `meta:` in `columns.ts` and needs its own answer then |
-| Tests table | two more `Matrix.test.tsx` cases: `?lab=lab-b` shows only Model Z; `?q=y` shows only Model Y | catches the `lab` filter on the hidden column or the `model` filter not applying (`filtersOf` mapping to the wrong id, or TanStack skipping a hidden column); each fails when its `filters.push` is removed; no other test renders a filtered URL |
+| Popover opens on hover or keyboard focus | it also opens on a tap: `useClick(context, { ignoreMouse: true })` (`site/src/components/CitePopover.tsx:35`) | a touch device neither hovers nor produces focus-visible, so no cite was reachable from the matrix on a phone (Chromium with touch emulation: no popover on tap before, popover after); mouse clicks stay with `useHover`; Enter or Space on a focused cell now toggles it |
+| `q` input controlled by the URL | uncontrolled, `defaultValue={view.q}`, resynced by an effect when `q` changes for any reason but its own edit (`site/src/components/MatrixFilters.tsx:MatrixFilters`) | the router commits URL updates in a transition, and a controlled input driven by one dropped characters under fast typing ("claude opus" → "cleus" in Chromium); the matrix stays mounted across the header link and back/forward, so without the resync the box would keep a stale `q` |
+| AC4 grep over all of `site/src` | `types.generated.ts` excluded (`.github/workflows/check.yml:67`) | the generated enums carry framework and tester slugs (`xai_rmf`, `meta_frontier_ai_framework`), so adding `sources/xai/` would fail CI on a file nobody may edit; a `meta` lab would still hit `meta:` in `columns.ts` and needs its own answer then |
+| Tests table | three more `Matrix.test.tsx` cases: `?lab=lab-b` shows only Model Z; `?q=y` shows only Model Y; navigating from `/?q=y` to `/` empties the name box | the first two catch the `lab` filter on the hidden column or the `model` filter not applying (`filtersOf` mapping to the wrong id, or TanStack skipping a hidden column), each failing when its `filters.push` is removed; the third catches the uncontrolled box keeping a stale `q` and fails without the resync effect; no other test renders a filtered URL or navigates the matrix |
 
 **Estimate vs actual:** estimated ~50–58 files / ~1200 app lines → actual 52 files / 1257 net app lines (20 app files; `theme.css` is 316 of the lines; tests, docs, generated types and the lockfile excluded).
 
@@ -305,7 +305,7 @@ Column ids: `model`, `tier`, the domain keys (`cbrn`, `cyber`, …), `third_part
 - `data.json` missing or not 200: the root route's error element shows the HTTP status (`site/src/App.tsx:RootError`).
 - An empty `cards` list: "data.json has no cards."; filters that match nothing: a one-row empty state.
 - TanStack's row models queue a page-index reset as an urgent update; left on, it keeps interrupting React Router's transition and every navigation after the first renders stale. `autoResetAll: false` in `site/src/components/Matrix.tsx:Matrix` prevents it. jsdom does not reproduce it, so no test pins it.
-- The model-name input is uncontrolled: a controlled input driven through the router's transition drops characters under fast typing. jsdom does not reproduce it; checked in Chromium with `vite preview`.
+- The model-name input is uncontrolled: a controlled input driven through the router's transition drops characters under fast typing. jsdom does not reproduce the drop; checked in Chromium with `vite preview`. An effect resyncs the box when `q` changes by any other navigation (`Matrix.test.tsx` pins it).
 - `site/package.json` overrides `vitest` to its own version: npm 10 crashes resolving vitest's optional peer chain (`Cannot read properties of null (reading 'edgesOut')`) without it.
 
 ### Known gaps

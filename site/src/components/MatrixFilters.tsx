@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { ViewState } from "../lib/viewState";
 
 interface Props {
@@ -8,6 +9,13 @@ interface Props {
 }
 
 export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
+  const input = useRef<HTMLInputElement>(null);
+  // The last value this input sent to the URL, until the URL catches up with it.
+  const sent = useRef<string | null>(null);
+  useEffect(() => {
+    if (view.q === sent.current) sent.current = null;
+    else if (sent.current === null && input.current) input.current.value = view.q;
+  }, [view.q]);
   return (
     <form className="filters" role="search" onSubmit={(e) => e.preventDefault()}>
       <label>
@@ -36,12 +44,15 @@ export function MatrixFilters({ view, labs, rungs, onChange }: Props) {
         Model
         <input
           type="search"
-          // Uncontrolled: the router commits URL updates in a transition, and a controlled
-          // input driven by one drops characters under fast typing. `q` edits replace the
-          // history entry, so the URL never changes under the input without a remount.
+          // Uncontrolled: a controlled input driven through the router's transition drops
+          // keystrokes; the effect above resyncs it after any other navigation.
+          ref={input}
           defaultValue={view.q}
           placeholder="Filter by name"
-          onChange={(e) => onChange({ ...view, q: e.target.value }, { replace: true })}
+          onChange={(e) => {
+            sent.current = e.target.value;
+            onChange({ ...view, q: e.target.value }, { replace: true });
+          }}
         />
       </label>
     </form>

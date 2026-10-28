@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { expect, it, vi } from "vitest";
 import { makeCard, makeDataset } from "../test/fixtures";
@@ -43,4 +43,12 @@ it("filters by lab through the hidden lab column", async () => {
 
 it("filters by model name", async () => {
   expect((await renderAt("/?q=y")).models).toEqual(["Model Y"]);
+});
+
+it("clears the name box when a navigation drops q", async () => {
+  const router = createMemoryRouter(routes, { initialEntries: ["/?q=y"] });
+  render(<RouterProvider router={router} />);
+  await screen.findByRole("table");
+  await act(() => router.navigate("/"));
+  expect(screen.getByRole("searchbox")).toHaveValue("");
 });
