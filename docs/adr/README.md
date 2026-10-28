@@ -31,3 +31,5 @@ Copy `0000-template.md` to `NNNN-short-slug.md`.
 | ADR | Title | Status |
 |---|---|---|
 | 0000 | Template | — |
+| [0001](0001-typed-dataset-contract.md) | The build output is a typed pydantic model and the root of the schema export | proposed |
+| [0002](0002-url-owns-view-state.md) | The URL owns site view state; data sits behind one loader; no global store | proposed |
