@@ -38,7 +38,9 @@ It overrides rules #1 and #5 **in those sessions only**. In IDE/local sessions,
   the user reviews. Do not sit on finished changes waiting for an approval the
   user can't conveniently give here.
 - **Still off-limits without an explicit request:** opening pull requests,
-  merging, and pushing to the default branch (`main`).
+  merging, and pushing to the default branch (`main`). Invoking a command
+  that says it opens a PR (`/open-pr`, `/add-card`, `/autopilot`) is the
+  request.
 
 ### Branch naming — do NOT work on the auto-generated `claude/*` branch
 

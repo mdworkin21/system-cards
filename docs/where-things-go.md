@@ -132,6 +132,8 @@ Put here:
 - a new CLI command → `cli.py`, thin, calling one function from another module
 - a new field on a card → `schema.py` (model + `KEYWORDS` entry), then
   `syscards schema`, `docs/schema.md`, and the site types
+- a helper two modules need → its own module named for its responsibility,
+  promoted on the second real use (Anti-patterns, "God utilities")
 
 Do not put here:
 
@@ -387,6 +389,15 @@ Any test that needs `cache/pdfs/` or a socket. Build the PDF in the test.
 ## God utilities
 
 A `utils.py`. Put the helper in the module whose responsibility it serves.
+
+When a helper is genuinely needed by two or more modules and belongs to
+neither, it gets its own small module named for what it does, never for
+its genericness: `dates.py` for `PartialDate` handling, `hashing.py` if
+sha256 ever leaves `fetch.py`, `textnorm.py` if normalization were ever
+needed outside `pdftext.py`. Two rules keep this honest: promote on the
+second real use, never in anticipation of one (the first copy stays with
+its owner), and the module stays single-purpose, so the third unrelated
+helper gets a third module rather than joining the first two.
 
 ---
 

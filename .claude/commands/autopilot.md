@@ -120,8 +120,9 @@ layered on top of the command's own instructions:
   cards the task did not name.
 
 Have it report back the drift rows verbatim, plus files changed and commits
-made. For a card, have it report the audit table from `add-card.md` step 7
-verbatim: Phase 5 is built from it.
+made. For a card, add the override that it stops after the commit (Phase 2
+opens the PR), and have it report the audit table from `add-card.md` step 7
+verbatim: Phase 2 puts it in the PR body and Phase 5 is built from it.
 
 ## Phase 1.5: Simplify (code PRs only)
 

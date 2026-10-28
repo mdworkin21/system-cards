@@ -109,8 +109,9 @@ the change is exploratory, or when autopilot is being reverted.
 It fetches and hashes the document (or verifies a hash-matched mirror when
 the lab's host is unreachable), indexes it, writes the YAML with verbatim
 quotes, runs `syscards check` until there are no errors, dismisses or fixes
-every warning with a note, builds, and commits on `data/<lab>-<model>`. It
-leaves `provenance.verification: none`. The human audit is the review; the
+every warning with a note, builds, commits on `data/<lab>-<model>`, and
+opens the PR with the audit table as its Review Guide. It leaves
+`provenance.verification: none`. The human audit is the review; the
 verification fields change only after it. `docs/adding-a-card.md` is the
 procedure the command follows.
 

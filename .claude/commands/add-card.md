@@ -142,14 +142,19 @@ a note; every dismissed keyword-net warning with its note; then any other
 one line: "N cites verified mechanically against `<sha256>.pdf`; not
 re-audited here."
 
-## 8. Commit
+## 8. Commit and open the PR
 
 One commit, `data: add <lab> <model> (<yyyy-mm>)`, or `data: finish stub
 <lab> <model>`; a second commit `data: map <term> in tiers.yaml` only if the
 table changed. Add a row to `docs/quiz-topics.md` "Cards" in the same
-commit. Local session: stop and show the audit table; wait. Remote session:
-push the branch. Never open a PR unless asked; never set `verified_by` or
-`verification`.
+commit.
+
+Then push the branch and open the PR: follow `.claude/commands/open-pr.md`
+(its checks, then the PR), with the audit table from step 7 as the PR's
+**Review Guide**. Running `/add-card` is the request to open that PR; the PR
+is where the audit happens, so a clean card without one is unfinished.
+Under `/autopilot`, stop after the commit instead: its Phase 2 opens the PR.
+Never set `verified_by` or `verification`.
 
 ## Rules
 
@@ -159,3 +164,5 @@ push the branch. Never open a PR unless asked; never set `verified_by` or
 - Dismiss a warning only with a note that names what the keyword was
 - `verification: none`, always
 - Stay on the one card; a second document is a second run
+- The PR is part of the job; a card that passes `check` and sits on a branch
+  with no PR is not done
