@@ -1,0 +1,38 @@
+import { render, screen } from "@testing-library/react";
+import { createMemoryRouter, RouterProvider } from "react-router";
+import { expect, it, vi } from "vitest";
+import { makeCard, makeDataset } from "../test/fixtures";
+
+const ds = makeDataset([
+  makeCard({ id: "lab-a/model-x/2026-03", models: ["Model X"], published: "2026-03" }),
+  makeCard({ id: "lab-a/model-y/2026-05", models: ["Model Y"], published: "2026-05" }),
+  makeCard({ id: "lab-b/model-z/2025-12", models: ["Model Z"], published: "2025-12" }),
+]);
+
+vi.mock("../lib/data", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../lib/data")>()),
+  loadDataset: async () => ds,
+}));
+
+const { routes } = await import("../routes");
+
+async function renderAt(url: string) {
+  const { container } = render(<RouterProvider router={createMemoryRouter(routes, { initialEntries: [url] })} />);
+  await screen.findByText("Model X");
+  return {
+    groupRows: container.querySelectorAll("tr.group-row").length,
+    models: [...container.querySelectorAll("tbody th[scope=row]")].map((th) => th.textContent),
+  };
+}
+
+it("groups rows by lab while unsorted", async () => {
+  const { groupRows, models } = await renderAt("/");
+  expect(groupRows).toBe(2);
+  expect(models).toEqual(["Model X", "Model Y", "Model Z"]);
+});
+
+it("drops the groups and orders across labs when sorted by date", async () => {
+  const { groupRows, models } = await renderAt("/?sort=published");
+  expect(groupRows).toBe(0);
+  expect(models).toEqual(["Model Z", "Model X", "Model Y"]);
+});

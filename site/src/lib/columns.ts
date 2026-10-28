@@ -15,7 +15,7 @@ export type CellKind =
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
-    cell: CellKind;
+    cell?: CellKind;
   }
 }
 
@@ -38,6 +38,9 @@ export function modelNames(card: CardRecord): string {
 }
 
 type Column = ColumnDef<CardRecord, string | number | undefined>;
+
+/** Filter-only column; the matrix hides it. */
+export const LAB_COLUMN = "lab";
 
 /** The matrix's columns: fixed ones, plus one per `framework.domains.*` path in `fact_paths`. */
 export function matrixColumns(ds: Dataset): Column[] {
@@ -75,6 +78,7 @@ export function matrixColumns(ds: Dataset): Column[] {
       meta: { cell: { kind: "model" } },
       accessorFn: modelNames,
       sortingFn: "text",
+      filterFn: (row, _id, q: string) => modelNames(row.original).toLowerCase().includes(q.toLowerCase()),
     },
     {
       id: "tier",
@@ -84,6 +88,7 @@ export function matrixColumns(ds: Dataset): Column[] {
         const i = card.normalized_tier === null ? -1 : rungOrder.indexOf(card.normalized_tier);
         return i < 0 ? undefined : i;
       },
+      filterFn: (row, _id, rung: string) => row.original.normalized_tier === rung,
       ...sortable,
     },
     ...domains,
@@ -109,6 +114,12 @@ export function matrixColumns(ds: Dataset): Column[] {
       meta: { cell: { kind: "published" } },
       accessorFn: (card) => card.document.published ?? undefined,
       ...sortable,
+    },
+    {
+      id: LAB_COLUMN,
+      accessorFn: (card) => card.lab,
+      enableSorting: false,
+      filterFn: (row, _id, lab: string) => row.original.lab === lab,
     },
   ];
 }

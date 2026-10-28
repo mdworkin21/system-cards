@@ -106,6 +106,7 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 | `lib/facts.ts`: `factAt`, `groupCount`, `groupPaths`, `isStub` | a card's fact by dotted path; `reported` count over a path prefix; the stub test (every fact `unknown`) | walking a card from `fact_paths` |
 | `lib/format.ts`: `statusMark`, `humanize`, `outcomeLevel`, `pdfPageUrl`, `cardHref` | glyph and label per status; enum value to words; step on `domain_outcomes`; PDF at `#page=N`; the detail route | showing any status, outcome, cite link or card link |
 | `lib/columns.ts:matrixColumns`, `modelNames` | the matrix's TanStack columns with sort accessors and a `meta.cell` kind | adding a matrix column |
+| `lib/viewState.ts`: `parseViewState`, `toSearchParams`, `ViewState` | the matrix's sort (`sort`, `dir`) and filters (`lab`, `rung`, `q`) as URL search params | any view state a link should carry |
 | `lib/rows.ts:groupByLab` | contiguous runs by lab in the given order | grouping rows without re-sorting |
 | `components/StatusMark.tsx` | glyph plus label for a status | any place a status is shown |
 | `components/OutcomeMeter.tsx` | outcome label plus a meter with one step per `domain_outcomes` entry; label alone off the ladder | a domain outcome |

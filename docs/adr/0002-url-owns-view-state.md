@@ -1,6 +1,6 @@
 # 0002. The URL owns site view state; data sits behind one loader; no global store
 
-Status: proposed · Date: 2026-10-28 · Design doc: `docs/site.md`
+Status: accepted · Date: 2026-10-28 · Design doc: `docs/site.md`
 
 ## Context
 
