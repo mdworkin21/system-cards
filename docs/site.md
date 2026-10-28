@@ -1,6 +1,6 @@
 # Site: matrix and card detail
 
-Issue: TBD · **Status: design** · Baseline: `main` @ `17bff7a` · Implementer: `opus` (`.claude/commands/implement.md`)
+Issue: #2 · **Status: design** · Baseline: `main` @ `17bff7a` · Implementer: `opus` (`.claude/commands/implement.md`)
 
 ---
 
