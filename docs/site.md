@@ -254,7 +254,7 @@ cd site && npm run dev   # then /ui-testing with section 1 behaviors 1-10
 ## 4. Drift from design
 | Planned | Built | Because |
 |---|---|---|
-| | | |
+| Domain header map is casing only | `ai_rnd` shows as "AI R&D", not a casing of "ai rnd" (`site/src/lib/columns.ts:25`) | no casing of "ai rnd" reads as a word; "AI R&D" is the schema's own description of the field (`src/system_cards/schema.py:Domains`) |
 
 **Estimate vs actual:** estimated ~50–58 files / ~1200 app lines → actual N / M.
 

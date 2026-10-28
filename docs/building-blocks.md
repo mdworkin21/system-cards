@@ -98,8 +98,13 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 | `card_for`, `write_card`, `cached`, `run` (`test_check.py`) | a valid card dict bound to a PDF, written to a temp sources dir, checked | testing a check rule |
 | `minimal_card` (`test_schema.py`) | the smallest valid `Card` with overrides | testing a schema rule |
 
-## Site
+## Site (`site/src/`)
 
-None yet. Phase 2 adds `site/src/lib/` (loading `data.json`, selectors,
-status and rung formatting) and the first components; this section is filled
-then, with the same columns.
+| Block | What it is | Use it when |
+|---|---|---|
+| `lib/data.ts:loadDataset` | the one fetch of `data.json`, the root route's loader | any data access; a backend replaces this function |
+| `lib/facts.ts`: `factAt`, `groupCount`, `groupPaths`, `isStub` | a card's fact by dotted path; `reported` count over a path prefix; the stub test (every fact `unknown`) | walking a card from `fact_paths` |
+| `lib/format.ts`: `statusMark`, `humanize`, `outcomeLevel`, `pdfPageUrl`, `cardHref` | glyph and label per status; enum value to words; step on `domain_outcomes`; PDF at `#page=N`; the detail route | showing any status, outcome, cite link or card link |
+| `lib/columns.ts:matrixColumns`, `modelNames` | the matrix's TanStack columns with sort accessors and a `meta.cell` kind | adding a matrix column |
+| `lib/rows.ts:groupByLab` | contiguous runs by lab in the given order | grouping rows without re-sorting |
+| `test/fixtures.ts`: `makeCard`, `makeDataset`, `FACT_PATHS` | typed `CardRecord`/`Dataset` with synthetic labs, every fact `unknown` unless set | any site test |
