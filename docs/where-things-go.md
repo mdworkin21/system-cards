@@ -183,6 +183,7 @@ else. Design and as-built notes: `docs/site.md`.
 | `site/src/lib/utils.ts` | `cn()`, the class-merge helper the `ui/` components expect |
 | `site/src/test/` | Vitest setup and typed fixtures with synthetic labs |
 | `site/public/data.json` | build output, gitignored |
+| `site/public/favicon.ico`, `site/public/apple-touch-icon.png` | site icons, linked from `site/index.html` |
 
 Do not put here:
 
