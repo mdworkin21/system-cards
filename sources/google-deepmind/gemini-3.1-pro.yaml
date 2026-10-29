@@ -202,7 +202,9 @@ disclosure_meta:
 provenance:
   extracted_by: llm_assisted
   extracted_on: "2026-10-25"
-  verification: none
+  verified_by: mdworkin21
+  verification: full
 notes: >-
   Extracted by Claude in a Claude Code session from the cached PDF; every
-  quote was verified mechanically by `syscards check`. Awaiting a human audit.
+  quote was verified mechanically by `syscards check`. mdworkin21 read every
+  cite against the PDF and reviewed the keyword net for not_reported Facts.
