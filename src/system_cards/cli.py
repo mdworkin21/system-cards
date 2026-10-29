@@ -8,13 +8,12 @@ from pathlib import Path
 
 import click
 
-from system_cards.build import build_dataset, write_dataset
+from system_cards.build import build_dataset, dataset_schema, write_dataset
 from system_cards.check import check_sources, has_errors
 from system_cards.fetch import DEFAULT_CACHE, DocumentChanged, fetch
 from system_cards.loader import DEFAULT_SOURCES, load_card, source_paths
 from system_cards.normalization import DEFAULT_TIER_TABLE, load_tier_table
 from system_cards.pdftext import page_texts, pages_containing
-from system_cards.schema import Card
 
 DEFAULT_SCHEMA = Path("schema/system-card.schema.json")
 DEFAULT_OUT = Path("site/public/data.json")
@@ -72,7 +71,7 @@ def build(sources: Path, tiers: Path, out: Path) -> None:
 @click.option("--check", "check_only", is_flag=True, help="Fail if the file is out of date.")
 def schema(out: Path, check_only: bool) -> None:
     """Export the JSON Schema the frontend generates its types from."""
-    current = json.dumps(Card.model_json_schema(), indent=2) + "\n"
+    current = json.dumps(dataset_schema(), indent=2) + "\n"
     if check_only:
         if not out.exists() or out.read_text(encoding="utf-8") != current:
             print(f"{out} is out of date; run `syscards schema`")

@@ -32,7 +32,8 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 | `ThirdParty`, `ThirdPartyAssessment`, `ThirdPartyOrg` | a summary Fact plus named assessors, each with its own cite; `other` requires `org_name`; assessments require a reported summary | external testing |
 | `Mitigations`, `TrainingDisclosure`, `DisclosureMeta`, `Provenance` | the remaining groups; `Provenance` rejects a verification level without `verified_by` | |
 | `ModelInfo`, `Document`, `DocumentKind`, `PartialDate` | models a document covers; the document's identity (`url`, `landing_url`, `sha256`, `pages`, `fetched`, `fetched_from`); month-or-day dates | the document block |
-| `Card`, `ID_PATTERN`, `Card.lab` | the record; ids are `<lab>/<slug>/<yyyy-mm>` | |
+| `Card`, `ID_PATTERN`, `Card.lab` | the record; ids are `<lab>/<slug>/<yyyy-mm>`; `lab` is a computed field, so it is in `model_dump` and the export but rejected as YAML input | |
+| `DOMAIN_OUTCOME_LADDER` | `DomainOutcome` in severity order without `not_assessed` | the steps of an outcome scale |
 | `KEYWORDS`, `keyword_pattern`, `keyword_hits` | per-fact-path keywords; word-based matching, all-caps terms case-sensitive | the keyword net; every new Fact field needs an entry |
 | `iter_facts` | every Fact or DomainAssessment on a card with its dotted path, in schema order | anything that walks a card: `check`, `build`, the site's `fact_paths` |
 
@@ -71,8 +72,10 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 
 | Block | What it is | Use it when |
 |---|---|---|
-| `card_record` | a card's JSON plus `lab`, `normalized_tier`, `withheld`, `not_reported`, `coverage` | adding a derived field the site needs |
-| `build_dataset`, `write_dataset` | the deterministic dataset, sorted by lab, published, id, with `schema_version`, `normalization_version`, `rungs`, `fact_paths` | |
+| `Dataset`, `CardRecord`, `Coverage` | the typed shape of `data.json` and the root of the schema export | adding a derived field the site needs: add it to a model, never a dict |
+| `card_record` | a `Card` to a `CardRecord`: adds `normalized_tier`, `withheld`, `not_reported`, `coverage` | |
+| `build_dataset`, `write_dataset` | the deterministic dataset as a JSON dict, sorted by lab, published, id | |
+| `dataset_schema` | `Dataset.model_json_schema(mode="serialization")`, the one spelling of the export | anything that writes or compares the export |
 
 ## Fetch (`src/system_cards/fetch.py`)
 
@@ -95,8 +98,21 @@ about 40 rows, split it into its own file and leave a one-line pointer here.
 | `card_for`, `write_card`, `cached`, `run` (`test_check.py`) | a valid card dict bound to a PDF, written to a temp sources dir, checked | testing a check rule |
 | `minimal_card` (`test_schema.py`) | the smallest valid `Card` with overrides | testing a schema rule |
 
-## Site
+## Site (`site/src/`)
 
-None yet. Phase 2 adds `site/src/lib/` (loading `data.json`, selectors,
-status and rung formatting) and the first components; this section is filled
-then, with the same columns.
+| Block | What it is | Use it when |
+|---|---|---|
+| `lib/data.ts:loadDataset` | the one fetch of `data.json`, the root route's loader | any data access; a backend replaces this function |
+| `lib/facts.ts`: `factAt`, `groupCount`, `groupPaths`, `isStub` | a card's fact by dotted path; `reported` count over a path prefix; the stub test (every fact `unknown`) | walking a card from `fact_paths` |
+| `lib/format.ts`: `statusMark`, `humanize`, `outcomeShort`, `outcomeLevel`, `pdfPageUrl`, `cardHref` | glyph and label per status; enum value to words; a matrix cell's short outcome label (an exhaustive `Record<DomainOutcome, string>`); step on `domain_outcomes`; PDF at `#page=N`; the detail route | showing any status, outcome, cite link or card link |
+| `lib/utils.ts:cn` | re-exports shadcn's `cn` package (class-name merging for Tailwind), so a caller's `className` overrides a component's classes | composing Tailwind classes in a component |
+| `components/ui/`: `Select`, `Input`, `Label`, `Button` | shadcn/ui new-york primitives over Radix, styled with the theme tokens | any form control; add a new primitive here from the shadcn source |
+| `lib/columns.ts:matrixColumns`, `modelNames` | the matrix's TanStack columns with sort accessors and a `meta.cell` kind | adding a matrix column |
+| `lib/viewState.ts`: `parseViewState`, `toSearchParams`, `ViewState` | the matrix's sort (`sort`, `dir`) and filters (`lab`, `rung`, `q`) as URL search params | any view state a link should carry |
+| `lib/rows.ts:groupByLab` | contiguous runs by lab in the given order | grouping rows without re-sorting |
+| `components/StatusMark.tsx` | glyph plus label for a status | any place a status is shown |
+| `components/OutcomeMeter.tsx` | outcome label (`label="short"` in matrix cells, full humanized value elsewhere) plus a meter with one step per `domain_outcomes` entry; label alone off the ladder | a domain outcome |
+| `components/CitePopover.tsx`: `CitePopover`, `CiteDetails` | a button opening content on hover or focus (floating-ui); a cite's quote, note and PDF page link | anything that must trace to a page |
+| `components/MatrixCell.tsx` | one matrix cell per `meta.cell` kind | a new column kind |
+| `components/CardDetail.tsx` | `#/cards/<id>`: one card's document header, every `fact_paths` row and each third-party assessment with its cite | linking to one card |
+| `test/fixtures.ts`: `makeCard`, `makeDataset`, `FACT_PATHS` | typed `CardRecord`/`Dataset` with synthetic labs, every fact `unknown` unless set | any site test |

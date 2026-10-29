@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/* Paper and ink: one neutral gray-white page, no cards. Ramp and status ink are the palette in docs/site.md.
+   Serif is for words to read (title, lab names, quotes); mono for labels and numbers; sans elsewhere. */
+:root {
+  color-scheme: light;
+  --radius: 0.25rem;
+  --background: #f7f7f6;
+  --foreground: #141518;
+  --popover: #ffffff;
+  --popover-foreground: #141518;
+  --primary: #141518;
+  --primary-foreground: #f7f7f6;
+  --muted: #eeeff1;
+  --muted-foreground: #64676e;
+  --accent: #eeeff1;
+  --accent-foreground: #141518;
+  --border: #d9dbdf;
+  --input: #aeb2ba;
+  --ring: #8b8f98;
+  --group: #e8eaee;
+  --link: #141518;
+  --status-reported: #1f3a7a;
+  --outcome-1: #9aabcd;
+  --outcome-2: #7a8fbd;
+  --outcome-3: #5a72a8;
+  --outcome-4: #3d5489;
+  --outcome-5: #22325a;
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Spectral", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, Menlo, Consolas, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --shadow-popover: 0 8px 24px -8px rgb(20 21 24 / 0.25);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-group: var(--group);
+  --color-link: var(--link);
+  --color-status-reported: var(--status-reported);
+  --color-outcome-1: var(--outcome-1);
+  --color-outcome-2: var(--outcome-2);
+  --color-outcome-3: var(--outcome-3);
+  --color-outcome-4: var(--outcome-4);
+  --color-outcome-5: var(--outcome-5);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  body {
+    @apply bg-background font-sans text-sm text-foreground antialiased;
+  }
+}
+
+@utility label-caps {
+  @apply font-mono text-[10.5px] font-medium tracking-[0.06em] text-muted-foreground uppercase;
+}
+
+@utility num {
+  @apply font-mono text-xs tabular-nums;
+}
+
+/* A table defined by rules, not a box: heavy rule above, hairline below. */
+@utility ruled {
+  @apply border-t-2 border-b border-t-foreground border-b-foreground;
+}

@@ -13,7 +13,7 @@ import re
 from enum import StrEnum
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 PartialDate = Annotated[
     str,
@@ -25,7 +25,11 @@ PartialDate = Annotated[
 
 
 class Strict(BaseModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    model_config = ConfigDict(
+        extra="forbid",
+        str_strip_whitespace=True,
+        json_schema_serialization_defaults_required=True,
+    )
 
 
 class Status(StrEnum):
@@ -84,6 +88,9 @@ class DomainOutcome(StrEnum):
     threshold_reached = "threshold_reached"
     critical_reached = "critical_reached"
     not_assessed = "not_assessed"
+
+
+DOMAIN_OUTCOME_LADDER = tuple(o for o in DomainOutcome if o is not DomainOutcome.not_assessed)
 
 
 class DomainAssessment(Strict):
@@ -286,6 +293,7 @@ class Card(Strict):
     provenance: Provenance
     notes: str | None = None
 
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def lab(self) -> str:
         return self.id.split("/", 1)[0]

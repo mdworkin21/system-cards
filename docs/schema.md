@@ -6,6 +6,15 @@ The pydantic models in `src/system_cards/schema.py` are the definition;
 and checked in so the frontend can generate types from it. CI fails if
 the export drifts.
 
+The export's root is `Dataset`, the shape of `data.json`
+(`src/system_cards/build.py:dataset_schema`); `Card` is under `$defs`.
+`data.json` carries `schema_version`, `normalization_version`, `rungs`,
+`fact_paths`, `domain_outcomes` (the outcome ladder, `DomainOutcome` in
+enum order without `not_assessed`) and `cards`; each card is a
+`CardRecord`: the source record plus `lab`, `normalized_tier`, `withheld`,
+`not_reported` and `coverage`. Fields the build always writes are
+required in the export.
+
 ## Facts
 
 Almost every field that records something the card says is a **Fact**:

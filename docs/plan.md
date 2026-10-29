@@ -9,7 +9,10 @@ page in a primary document.
 
 Status: Phase 1 built 2026-10-25 (schema, checker, build, three
 extracted cards plus one stub). Plan written 2026-10-24; repo created and
-stack decided 2026-10-25. Phase 2, the site, is next.
+stack decided 2026-10-25. Phase 2 built 2026-10-28 (matrix with sort and
+filter, card detail, generated types, Pages workflow; `docs/site.md`); the
+public URL serves it once `pages.yml` runs on `main` with Pages set to
+GitHub Actions.
 
 ## 1. What this is and is not
 
@@ -280,7 +283,7 @@ migrating back is hard.
 | --- | --- | --- | --- |
 | 0 (optional) | Claude Artifact prototype of the matrix with 3 hand-filled cards | You look at it and say the columns are the right ones | hours |
 | 1 (done 2026-10-25) | Repo, schema, normalization table, 3 cards (one per lab) extracted, `syscards check` and `syscards build`, offline tests green | `build.py` emits `data.json`; every quote verified against its page | 1 to 2 days |
-| 2 | React + TypeScript site with matrix and detail views, generated types, Pages deploy | Public URL renders the 3 cards | 1 to 2 days |
+| 2 (built 2026-10-28) | React + TypeScript site with matrix and detail views, generated types, Pages deploy | Public URL renders the 3 cards | 1 to 2 days |
 | 3 | Backfill to 2025 floor using `draft.py` plus human verification; compare, timeline, gaps views | Every card `verification: full` | 30 to 60 min per card, plus a day of UI |
 | 4 | Maintenance: `adding-a-card.md` checklist; link the Midas Project Watchtower, which already logs system-card revisions, and build our own index-page diff job only if it proves insufficient (notify only, never auto-ingest) | | ongoing, small |
 

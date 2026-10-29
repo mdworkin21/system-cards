@@ -5,6 +5,7 @@ import yaml
 
 from system_cards.build import build_dataset, write_dataset
 from system_cards.normalization import load_tier_table
+from system_cards.schema import DomainOutcome
 
 TABLE = load_tier_table(Path(__file__).resolve().parent.parent / "normalization" / "tiers.yaml")
 
@@ -39,6 +40,8 @@ def test_build_adds_normalized_tier_and_coverage(tmp_path):
     data = build_dataset(tmp_path / "sources", TABLE)
     assert data["normalization_version"] == TABLE.version
     assert "framework.tier" in data["fact_paths"]
+    assert "not_assessed" not in data["domain_outcomes"]
+    assert set(data["domain_outcomes"]) | {"not_assessed"} == {o.value for o in DomainOutcome}
     rec = data["cards"][0]
     assert rec["lab"] == "lab"
     assert rec["normalized_tier"] == "elevated"

@@ -118,7 +118,7 @@ responsibility:
 | `schema.py` | the record shape: `Card` and every model under it, `Status`, `Cite`, `Fact`, `DomainAssessment`, validation rules, `KEYWORDS` and keyword matching, `iter_facts` | reading files, PDFs, output shaping |
 | `pdftext.py` | page text from a cached PDF; text normalization; `quote_on_page`; `pages_containing` | deciding what a failed match means (that is `check`) |
 | `check.py` | turning cards plus cached PDFs into `Finding`s: ids, tier mapping, page counts, quote-on-page, keyword net, provenance rules | printing (that is `cli`), fetching |
-| `build.py` | the deterministic `data.json`: card records plus `normalized_tier`, `withheld`, `not_reported`, `coverage`, `fact_paths` | presentation choices (colors, ordering for display) |
+| `build.py` | the deterministic `data.json` and its typed models (`Dataset`, `CardRecord`, `Coverage`), the root of the schema export: card records plus `normalized_tier`, `withheld`, `not_reported`, `coverage`, `fact_paths`, `domain_outcomes` | presentation choices (colors, ordering for display) |
 | `fetch.py` | download, sha256, the content-addressed cache, refusing changed bytes | parsing |
 | `loader.py` | finding and loading `sources/**/*.yaml`, the id-matches-path rule | validation beyond pydantic |
 | `normalization.py` | `TierTable` and loading `tiers.yaml` | choosing a rung for a card (the table does) |
@@ -128,7 +128,7 @@ Put here:
 
 - a new check rule → `check.py`, returning `Finding`s, with a test on a
   synthetic PDF or card
-- a new derived field for the site → `build.py:card_record`
+- a new derived field for the site → a field on `build.py:CardRecord` or `Dataset`, filled in `card_record` or `build_dataset`
 - a new CLI command → `cli.py`, thin, calling one function from another module
 - a new field on a card → `schema.py` (model + `KEYWORDS` entry), then
   `syscards schema`, `docs/schema.md`, and the site types
@@ -166,19 +166,22 @@ Do not put here:
 
 ---
 
-## site/ (Phase 2)
+## site/
 
 Purpose: the React + TypeScript page. Reads `public/data.json` and nothing
-else.
-
-Planned layout, so new code has a home from the first commit:
+else. Design and as-built notes: `docs/site.md`.
 
 | Path | What goes here |
 |---|---|
 | `site/src/types.generated.ts` | generated from `schema/system-card.schema.json`; never hand-edited |
 | `site/src/lib/` | loading `data.json`, selectors, formatting of statuses and rungs; pure functions with tests |
 | `site/src/components/` | views: the matrix, compare, timeline, detail, gaps; presentational, typed by the generated types |
-| `site/src/App.tsx` | routing between views |
+| `site/src/routes.tsx` | the route table and the router (hash mode on Pages); the only file that changes for browser routing |
+| `site/src/App.tsx` | the layout around every view, loading and error states |
+| `site/src/index.css` | Tailwind entry, the theme tokens (shadcn variables, status ink, outcome ramp, the three font stacks) and the `label-caps`, `num`, `ruled` utilities; components style with Tailwind classes over these, never raw colors |
+| `site/src/components/ui/` | shadcn/ui primitives (copy-in source over Radix); restyled here, not in the views |
+| `site/src/lib/utils.ts` | `cn()`, the class-merge helper the `ui/` components expect |
+| `site/src/test/` | Vitest setup and typed fixtures with synthetic labs |
 | `site/public/data.json` | build output, gitignored |
 
 Do not put here:
@@ -188,7 +191,7 @@ Do not put here:
 - fetches to anything but the local `data.json`
 
 Rule of thumb: if the site needs a number the build does not emit, add it to
-`build.py:card_record` and the schema export, then read it.
+`build.py:CardRecord` (filled in `card_record`), regenerate the schema export, then read it.
 
 ---
 
@@ -228,8 +231,10 @@ Both gitignored.
 - `check.yml`: lint, types, tests, schema drift, and `syscards check`
   without PDFs on every push and PR; a manual job that fetches every
   document and verifies every quote; the hook parser tests.
-- `pages.yml` (Phase 2): build the data and the site, deploy to Pages on
-  `main`.
+- `check.yml` job `site`: when `site/`, `schema/` or a workflow changes,
+  the generated-types drift check, the lab-name grep, lint, typecheck, test
+  and build.
+- `pages.yml`: build the data and the site, deploy to Pages on `main`.
 
 ---
 
@@ -337,7 +342,7 @@ that every card's term is mapped.
 
 A component under `site/src/components/`, data access through `site/src/lib/`,
 types from `types.generated.ts`. If it needs a value the build does not emit,
-extend `build.py:card_record` first.
+add it to `build.py:CardRecord` first.
 
 ## Adding a doc
 

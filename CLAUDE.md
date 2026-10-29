@@ -106,10 +106,11 @@ uv run syscards text <pdf> --page N    # read a page, for extraction
 uv run syscards find <pdf> "a phrase"  # which pages contain it
 ```
 
-Site (Phase 2; `site/` does not exist yet):
+Site (`docs/site.md`; run `uv run syscards build` first so `site/public/data.json` exists):
 
 ```bash
-cd site && npm ci && npm run dev        # http://localhost:5173
+cd site && npm ci && npm run dev        # http://localhost:5173/system-cards/
+cd site && npm run gen-types            # after `syscards schema`; never hand-edit the output
 cd site && npm run lint && npm run typecheck && npm run test && npm run build
 ```
 
@@ -140,5 +141,5 @@ When using Playwright MCP to test the site (Phase 2 onward):
 - **Screenshots folder**: `.claude/ui-testing/screenshots/{feature-name}/`
 - **Naming convention**: `{page}-{feature-or-state}.png` (e.g. `matrix-initial.png`, `matrix-filter-anthropic.png`)
 - **No login.** The site is static and public.
-- **App URL**: `http://localhost:5173` via `cd site && npm run dev`
+- **App URL**: `http://localhost:5173/system-cards/` via `cd site && npm run dev`
 - **Prefer snapshots over screenshots** for asserting page state — `browser_snapshot` for content, `browser_take_screenshot` for visual confirmation
