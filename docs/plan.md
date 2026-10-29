@@ -10,9 +10,9 @@ page in a primary document.
 Status: Phase 1 built 2026-10-25 (schema, checker, build, three
 extracted cards plus one stub). Plan written 2026-10-24; repo created and
 stack decided 2026-10-25. Phase 2 built 2026-10-28 (matrix with sort and
-filter, card detail, generated types, Pages workflow; `docs/site.md`); the
-public URL serves it once `pages.yml` runs on `main` with Pages set to
-GitHub Actions.
+filter, card detail, generated types, Pages workflow; `docs/site.md`) and
+live at https://mdworkin21.github.io/system-cards/ since 2026-10-29. Phase 3
+next; its gate needs a human to verify every cite on the four cards first.
 
 ## 1. What this is and is not
 
