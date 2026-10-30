@@ -188,12 +188,13 @@ function CiteCell({ cite, url }: { cite: Cite; url: string }) {
   return (
     <div className="space-y-1.5">
       <a
-        className={cn(LINK, "text-xs tabular-nums")}
+        className={cn(LINK, "inline-flex items-center gap-1 text-xs tabular-nums")}
         href={pdfPageUrl(url, cite.page)}
         target="_blank"
         rel="noreferrer"
       >
         p. {cite.page}
+        <ExternalLink className="size-3" aria-hidden="true" />
       </a>
       <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-sm leading-normal font-medium">{displayQuote(cite.quote)}</blockquote>
       {cite.note && <p className="text-xs leading-relaxed text-muted-foreground">{cite.note}</p>}
