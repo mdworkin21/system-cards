@@ -43,9 +43,13 @@ export function pdfPageUrl(url: string, page: number): string {
   return `${url.split("#", 1)[0]}#page=${page}`;
 }
 
-/** The quote with "…" where it starts or ends mid-sentence; the stored quote stays verbatim. */
+/**
+ * The quote with "…" where it starts or ends mid-sentence; the stored quote stays verbatim.
+ * A lowercase start counts as mid-sentence only for a plain word, since labs write
+ * model names like "gpt-5.2-thinking" in lowercase at the start of a sentence.
+ */
 export function displayQuote(q: string): string {
-  const head = /^[a-z]/.test(q) ? "…" : "";
+  const head = /^[a-z]+(\s|[,;]|$)/.test(q) ? "…" : "";
   const tail = /[.!?:]["'”’)\]]*$/.test(q) ? "" : "…";
   return `${head}${q}${tail}`;
 }

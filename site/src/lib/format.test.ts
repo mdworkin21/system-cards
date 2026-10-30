@@ -30,6 +30,12 @@ describe("displayQuote", () => {
     expect(displayQuote("we are continuing to treat it as High")).toBe("…we are continuing to treat it as High…");
   });
 
+  it("does not mark a sentence that opens with a lowercase model name", () => {
+    expect(displayQuote("gpt-5.2-thinking performed at a similar level.")).toBe(
+      "gpt-5.2-thinking performed at a similar level.",
+    );
+  });
+
   it("leaves a whole sentence alone, including one closing on a quote mark", () => {
     expect(displayQuote("It said “below threshold.”")).toBe("It said “below threshold.”");
   });
