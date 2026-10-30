@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router";
 import { modelNames } from "@/lib/columns";
 import { useDataset } from "@/lib/data";
 import { factAt, type AnyFact } from "@/lib/facts";
-import { pdfPageUrl } from "@/lib/format";
+import { displayQuote, pdfPageUrl } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Cite, DomainOutcome } from "@/types.generated";
 import { OutcomeMeter } from "./OutcomeMeter";
@@ -195,7 +195,7 @@ function CiteCell({ cite, url }: { cite: Cite; url: string }) {
       >
         p. {cite.page}
       </a>
-      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-sm leading-normal font-medium">{cite.quote}</blockquote>
+      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-sm leading-normal font-medium">{displayQuote(cite.quote)}</blockquote>
       {cite.note && <p className="text-xs leading-relaxed text-muted-foreground">{cite.note}</p>}
     </div>
   );

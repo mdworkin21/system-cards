@@ -43,6 +43,13 @@ export function pdfPageUrl(url: string, page: number): string {
   return `${url.split("#", 1)[0]}#page=${page}`;
 }
 
+/** The quote with "…" where it starts or ends mid-sentence; the stored quote stays verbatim. */
+export function displayQuote(q: string): string {
+  const head = /^[a-z]/.test(q) ? "…" : "";
+  const tail = /[.!?:]["'”’)\]]*$/.test(q) ? "" : "…";
+  return `${head}${q}${tail}`;
+}
+
 export function cardHref(id: string): string {
   return `/cards/${id}`;
 }
