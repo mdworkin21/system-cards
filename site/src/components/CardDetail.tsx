@@ -170,7 +170,7 @@ function FactRow({ path, fact, url, ladder }: { path: string; fact: AnyFact; url
         <code className="font-mono text-xs whitespace-nowrap">{path}</code>
       </th>
       <td className={TD}>
-        <StatusMark status={fact.status} compact />
+        <StatusMark status={fact.status} />
       </td>
       <td className={cn(TD, "min-w-56")}>
         {isDomain && fact.value !== null ? <OutcomeMeter value={fact.value} ladder={ladder} /> : fact.value}
