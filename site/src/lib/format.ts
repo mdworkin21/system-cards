@@ -50,7 +50,7 @@ export function pdfPageUrl(url: string, page: number): string {
  */
 export function displayQuote(q: string): string {
   const head = /^[a-z]+(\s|[,;]|$)/.test(q) ? "…" : "";
-  const tail = /[.!?:]["'”’)\]]*$/.test(q) ? "" : "…";
+  const tail = /[.!?]["'”’)\]]*$/.test(q) ? "" : "…";
   return `${head}${q}${tail}`;
 }
 

@@ -30,6 +30,10 @@ describe("displayQuote", () => {
     expect(displayQuote("we are continuing to treat it as High")).toBe("…we are continuing to treat it as High…");
   });
 
+  it("marks a quote ending on a colon, since what it introduces is cut", () => {
+    expect(displayQuote("It solved three types of challenges:")).toBe("It solved three types of challenges:…");
+  });
+
   it("does not mark a sentence that opens with a lowercase model name", () => {
     expect(displayQuote("gpt-5.2-thinking performed at a similar level.")).toBe(
       "gpt-5.2-thinking performed at a similar level.",
