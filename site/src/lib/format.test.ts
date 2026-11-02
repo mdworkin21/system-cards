@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LADDER } from "../test/fixtures";
 import type { Status } from "../types.generated";
-import { outcomeLevel, pdfPageUrl, statusMark } from "./format";
+import { displayQuote, outcomeLevel, pdfPageUrl, statusMark } from "./format";
 
 describe("statusMark", () => {
   it("gives every status its own glyph and its own label", () => {
@@ -22,5 +22,25 @@ describe("pdfPageUrl", () => {
   it("replaces an existing fragment and keeps the URL's encoding", () => {
     const url = "https://example.org/a/Model%20Card%20&%20X.pdf#foo";
     expect(pdfPageUrl(url, 15)).toBe("https://example.org/a/Model%20Card%20&%20X.pdf#page=15");
+  });
+});
+
+describe("displayQuote", () => {
+  it("marks a fragment cut at both ends", () => {
+    expect(displayQuote("we are continuing to treat it as High")).toBe("…we are continuing to treat it as High…");
+  });
+
+  it("marks a quote ending on a colon, since what it introduces is cut", () => {
+    expect(displayQuote("It solved three types of challenges:")).toBe("It solved three types of challenges:…");
+  });
+
+  it("does not mark a sentence that opens with a lowercase model name", () => {
+    expect(displayQuote("gpt-5.2-thinking performed at a similar level.")).toBe(
+      "gpt-5.2-thinking performed at a similar level.",
+    );
+  });
+
+  it("leaves a whole sentence alone, including one closing on a quote mark", () => {
+    expect(displayQuote("It said “below threshold.”")).toBe("It said “below threshold.”");
   });
 });

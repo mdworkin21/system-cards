@@ -16,7 +16,7 @@ import {
 } from "@floating-ui/react";
 import { ExternalLink } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { pdfPageUrl } from "@/lib/format";
+import { displayQuote, pdfPageUrl } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Cite } from "@/types.generated";
 
@@ -74,7 +74,7 @@ export function CitePopover({ trigger, children }: { trigger: ReactNode; childre
 export function CiteDetails({ cite, url }: { cite: Cite; url: string }) {
   return (
     <div className="space-y-2">
-      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-[15px] leading-normal font-medium">{cite.quote}</blockquote>
+      <blockquote className="border-l-2 border-status-reported pl-3 font-serif text-[15px] leading-normal font-medium">{displayQuote(cite.quote)}</blockquote>
       {cite.note && <p className="text-xs leading-relaxed text-muted-foreground">{cite.note}</p>}
       <p>
         <a
