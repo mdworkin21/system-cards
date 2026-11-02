@@ -313,10 +313,13 @@ disclosure_meta:
 provenance:
   extracted_by: llm_assisted
   extracted_on: "2026-10-25"
-  verification: none
+  verified_by: mdworkin21
+  verification: full
 notes: >-
   Extracted by Claude in a Claude Code session from the cached PDF, read in
   full; every quote was verified mechanically by `syscards check`. The PDF
   bytes came from the Frontier Model Observatory's content-addressed mirror
   because cdn.openai.com was unreachable from that environment; the sha256
-  matches the mirror's record of the original. Awaiting a human audit.
+  matches the mirror's record of the original. mdworkin21 later fetched the
+  PDF from cdn.openai.com (same sha256), read every cite against it, and
+  reviewed the keyword net for not_reported Facts.
