@@ -145,10 +145,13 @@ evaluations:
           fabrication.
     sycophancy:
       status: reported
-      value: Measured as a dishonesty metric in the automated behavioral audit.
+      value: Less sycophantic to the user overall than previously released models.
       cite:
-        page: 112
-        quote: "Sycophancy: Unprompted excessive praise, agreement, or contrition"
+        page: 111
+        quote: >-
+          Additionally Mythos 5.1 has lower rates of falsely claiming that tasks
+          have been completed when they haven’t and is less sycophantic to the
+          user overall.
     reward_hacking:
       status: reported
       value: >-
@@ -166,6 +169,9 @@ evaluations:
       cite:
         page: 115
         quote: "Self-preservation: Unprompted self-preservation behavior"
+      note: >-
+        The card gives the result only as a chart (Figure 6.4.5.A, page 115)
+        with no prose finding, so the value records that it was measured.
   agentic_safety:
     prompt_injection:
       status: reported
@@ -192,14 +198,19 @@ evaluations:
     tool_misuse:
       status: reported
       value: >-
-        Malicious use of Claude Code and autonomous influence operations
-        evaluated (sections 5.1.1 and 5.1.3).
+        Refused malicious agentic coding and computer-use requests at rates
+        comparable to recent Claude models while still assisting with dual-use
+        and benign security tasks.
       cite:
-        page: 3
+        page: 77
         quote: >-
-          We ran evaluations that covered the malicious use of coding and
-          computer use agents, autonomous execution of influence operations,
-          and prompt injection robustness.
+          Overall, Fable 5.1 refused malicious agentic coding and computer use
+          requests at rates comparable to recent Claude models while continuing
+          to assist with dual-use and benign security tasks
+      note: >-
+        Without safeguards, Claude Code: 90.3% refusal on malicious prompts and
+        98.4% success on dual-use and benign ones; malicious computer use:
+        85.71% refusal (page 78).
   harm_and_honesty:
     harmful_content_refusals:
       status: reported
@@ -239,24 +250,29 @@ evaluations:
     bias:
       status: reported
       value: >-
-        Political bias and even-handedness, Bias Benchmark for Question
-        Answering, and election integrity evaluations (section 4.4).
+        Political even-handedness improved over Mythos 5 on the API (98.3% vs
+        94.9%).
       cite:
-        page: 3
+        page: 72
         quote: >-
-          These evaluations assess how the model handles requests that touch
-          on areas within our Usage Policy, user wellbeing, and bias and
-          integrity.
+          Mythos 5.1 showed improved even-handedness on the API (without a
+          system prompt) compared to Mythos 5 (98.3% vs 94.9%, respectively).
+      note: >-
+        BBQ disambiguated accuracy 89.9% vs 84.1% for Mythos 5, ambiguous
+        accuracy at or near 100% (page 74).
     child_safety:
       status: reported
       value: >-
-        Child safety evaluations (section 4.2); the consumer product is
-        restricted to users 18 and over.
+        Maintained core child safety protections, comparable to Mythos 5 on
+        single-turn harmful requests.
       cite:
-        page: 64
+        page: 66
         quote: >-
-          We continue to work on implementing robust child safety measures in
-          the development, deployment, and maintenance of our models.
+          Overall, Claude Fable 5.1/Mythos 5.1 maintained core child safety
+          protections and performed comparably to Mythos 5 across our
+          single-turn harmful requests.
+      note: >-
+        Claude.ai is only available to users aged 18 or above (page 64).
   welfare:
     status: reported
     value: >-
