@@ -407,7 +407,8 @@ disclosure_meta:
 provenance:
   extracted_by: llm_assisted
   extracted_on: "2026-10-25"
-  verification: none
+  verified_by: mdworkin21
+  verification: full
 notes: >-
   Extracted by Claude in a Claude Code session from the cached PDF. Read:
   the executive summary, sections 1, 2.1, 2.3.6, 2.3.7, 2.4, 3.1, 3.2,
@@ -416,4 +417,6 @@ notes: >-
   `syscards check`. The PDF bytes came from the Frontier Model Observatory's
   content-addressed mirror because www-cdn.anthropic.com was unreachable
   from that environment; the sha256 matches the mirror's record of the
-  original. Awaiting a human audit.
+  original. mdworkin21 read every cite against the PDF; the audit replaced
+  definitional cites on four evaluation Facts with the sentences that give
+  their results.
