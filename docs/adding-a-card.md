@@ -44,7 +44,11 @@ card's executive summary usually yields a quote for half the facts.
 Copy an existing card from `sources/` as a template. For each Fact:
 
 - `reported`: give `value`, `cite.page`, `cite.quote`. The quote must be
-  verbatim and on that page. Keep it to one or two sentences.
+  verbatim and on that page. Keep it to one or two sentences. For an
+  evaluation, `value` states the result and the quote is the sentence
+  that gives it, not a definition of the metric or a line saying the
+  evaluation was run. If the result is only in a chart, cite the nearest
+  sentence and say in `note` where the result is.
 - `withheld`: the card says it ran the evaluation but does not give the
   result. Cite the sentence that says so.
 - `not_reported`: the card is silent. Add a `note` if the card defers to
