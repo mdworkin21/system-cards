@@ -213,6 +213,7 @@ Purpose: durable documentation. Flat by subsystem; one feature, one doc.
 | `docs/adr/` | cross-cutting decisions (`docs/adr/README.md`) |
 | `docs/templates/` | templates the workflow commands fill |
 | `docs/quiz-topics.md` | the catalog `/quiz` draws from; a new feature surface adds a row |
+| `docs/card-queue.md` | the ordered worklist of documents to extract; a row per document with its status |
 
 ---
 
