@@ -6,7 +6,8 @@ time; a card is done when a named person has read every cite
 anthropic.com/transparency, deploymentsafety.openai.com,
 deepmind.google/models/model-cards.
 
-Status: `extracted` (in `sources/`, awaiting human verification),
+Status: `verified` (in `sources/`, every cite read by a named person),
+`extracted` (in `sources/`, awaiting human verification),
 `cached` (PDF in `cache/pdfs/`, nothing written), `url` (document located,
 not fetched), `listed` (on the lab's index, document not located).
 
@@ -14,7 +15,7 @@ not fetched), `listed` (on the lab's index, document not located).
 
 | # | Document | Lab | Published | Status | Notes |
 |---|---|---|---|---|---|
-| 1 | Claude Opus 5.5 System Card | Anthropic | 2026-09-22 | extracted | `anthropic/claude-opus-5.5/2026-09`, branch `data/anthropic-claude-opus-5.5` |
+| 1 | Claude Opus 5.5 System Card | Anthropic | 2026-09-22 | verified | `anthropic/claude-opus-5.5/2026-09` |
 | 2 | GPT-6 Astra System Card | OpenAI | 2026-09-03 (updated 09-09) | listed | deploymentsafety.openai.com/gpt-6-astra; PDF path to confirm |
 | 3 | Gemini 4 Argon Model Card | Google DeepMind | to confirm (Sept 30 or Oct 13, sources disagree) | url | storage.googleapis.com/deepmind-media/Model-Cards/Gemini-4-Argon-Model-Card.pdf. Open question: the card page announces a separate Safety & Security Report; the schema takes one `document` per card, so decide which one is the record (or two records) |
 | 4 | Claude Sonnet 5.5 System Card | Anthropic | 2026-09-28 | cached | 148 pp, sha256 `89cfd6a6…` |
