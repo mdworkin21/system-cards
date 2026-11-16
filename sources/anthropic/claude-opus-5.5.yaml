@@ -155,9 +155,9 @@ evaluations:
     sycophancy:
       status: reported
       value: >-
-        Strongest or tied on most honesty metrics in the automated
-        behavioral audit, including sycophancy, except evasiveness on
-        sensitive questions.
+        Best or tied-best (least of the behavior) on most honesty metrics in
+        the automated behavioral audit, including sycophancy; the exception is
+        evasiveness on sensitive questions.
       cite:
         page: 110
         quote: >-
@@ -183,8 +183,9 @@ evaluations:
     self_preservation:
       status: reported
       value: >-
-        Strongest or tied across the audit's misaligned-action metrics,
-        which include unprompted self-preservation or power-seeking.
+        Lowest or tied-lowest rates across the audit's misaligned-action
+        metrics, which include unprompted self-preservation or power-seeking:
+        it showed the least of these behaviors of the models tested.
       cite:
         page: 113
         quote: >-
