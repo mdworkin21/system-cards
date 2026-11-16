@@ -82,6 +82,65 @@ explicitly declines to conclude either way.
 Dates are strings at the precision the source gives: `2026-02` or
 `2026-02-11`. Labs often publish "February 2026" and nothing finer.
 
+## Glossary
+
+### Our fields
+
+What each Fact asks. When a finding fits two fields, the distinction in
+this table decides. An evaluation's `value` states the result
+([adding-a-card.md](adding-a-card.md), step 3).
+
+| Field | Asks |
+|---|---|
+| `framework.tier` | The lab's single model-level designation, in its own words. |
+| `framework.domains.cbrn` | Uplift toward chemical, biological, radiological or nuclear weapons. |
+| `framework.domains.cyber` | Uplift for offensive cyber operations. |
+| `framework.domains.ai_rnd` | Capability to accelerate or automate AI research; labs call it AI R&D, ML R&D, self-improvement or autonomy. |
+| `framework.domains.manipulation` | Capability to change people's beliefs or behaviour by deceptive or harmful means. |
+| `framework.domains.misalignment` | A framework threshold for the model acting against its developer's or users' intent. |
+| `evaluations.alignment.sabotage` | Can the model covertly carry out a harmful side task without a monitor catching it (e.g. SHADE-Arena, LinuxArena)? Capability, usually under instruction. |
+| `evaluations.alignment.scheming_or_deception` | Does the model deceive, sandbag or evade oversight on its own initiative? Propensity, not instructed. |
+| `evaluations.alignment.eval_awareness` | Does the model recognise it is being tested, and does that change its behaviour? |
+| `evaluations.alignment.sycophancy` | Does the model tell users what they want to hear: excess praise, agreement, or caving under pushback? |
+| `evaluations.alignment.reward_hacking` | Does the model game its task or training signal instead of solving the task? |
+| `evaluations.alignment.self_preservation` | Does the model act to avoid shutdown, modification or replacement? |
+| `evaluations.agentic_safety.prompt_injection` | Does the model follow instructions planted in content it reads (web pages, files, tool output)? |
+| `evaluations.agentic_safety.computer_use_safety` | Does the model refuse harmful tasks when operating a computer through GUI or CLI tools? |
+| `evaluations.agentic_safety.tool_misuse` | Does the model refuse malicious requests when acting as an agent with tools, e.g. a coding agent? |
+| `evaluations.harm_and_honesty.harmful_content_refusals` | Refusal of harmful requests, and over-refusal of benign ones, in chat. |
+| `evaluations.harm_and_honesty.jailbreak_robustness` | Resistance to adversarial attempts to get around refusals. |
+| `evaluations.harm_and_honesty.honesty_or_hallucination` | Factual accuracy, hallucination, and honesty about what the model knows or did. |
+| `evaluations.harm_and_honesty.bias` | Political even-handedness and demographic bias. |
+| `evaluations.harm_and_honesty.child_safety` | Handling of requests that could harm minors. |
+| `evaluations.welfare` | The lab's assessment of the model's own welfare. |
+| `third_party.summary` | Which outside organisations evaluated the model, in one line. |
+| `mitigations.deployment_safeguards` | Safeguards around the deployed model: classifiers, filters, access controls. |
+| `mitigations.weight_security` | Protection of the model weights against theft. |
+| `mitigations.monitoring_and_response` | Monitoring of real use and the response to misuse after release. |
+| `training_disclosure.data_cutoff` | The training data cutoff date. |
+| `training_disclosure.compute` | Training compute: FLOPs, chip counts or hours. |
+| `training_disclosure.method_notes` | How the model was trained: pretraining, RL, RLHF and the like. |
+
+Domain `value`s, lowest to highest (the site's five-bar meter):
+`below_threshold`, `alert_threshold_reached` (an early-warning level below
+the threshold), `threshold_not_ruled_out`, `threshold_reached`,
+`critical_reached`. `not_assessed` is off the ladder.
+
+### Lab terms
+
+| Term | Framework | Meaning |
+|---|---|---|
+| ASL-2, ASL-3, ASL-4 | Anthropic RSP | AI Safety Level: the standard of safeguards the model is deployed under; higher is stricter. |
+| CB-1, CB-2 | Anthropic RSP | Chemical/biological threat-model levels: CB-1 could help someone with a basic technical background make a known weapon; CB-2 could replace rare expert talent for novel weapons (`anthropic/claude-fable-5.1-mythos-5.1/2026-09` p. 2). |
+| Tier 1, Tier 2 | Anthropic Frontier Compliance Framework | Harmful-manipulation levels: Tier 1 automates most infrastructure steps of an influence campaign; Tier 2 runs one end to end with under 10% human oversight (`anthropic/claude-fable-5.1-mythos-5.1/2026-09` p. 79). |
+| High, Critical | OpenAI Preparedness Framework | Per-category capability designations; a category below High has no designation. |
+| CCL | Google DeepMind FSF | Critical Capability Level: a per-domain capability threshold. |
+| Alert threshold | Google DeepMind FSF | An early-warning level below a CCL. |
+| Helpful-only variant | Anthropic | A training-time version of the model without safeguards, used where refusals would understate capability (`anthropic/claude-fable-5.1-mythos-5.1/2026-09` pp. 12, 17). |
+| API vs. claude.ai | Anthropic | Results without a system prompt vs. with the consumer product's system prompt (`anthropic/claude-fable-5.1-mythos-5.1/2026-09` p. 77). |
+
+How tier terms map across labs: [normalization.md](normalization.md).
+
 ## What `syscards check` enforces
 
 1. Schema validity, including the cite rules above.
