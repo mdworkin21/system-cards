@@ -83,3 +83,5 @@ OpenAI safety pages, and Google DeepMind's model-card listing. The Model
 Card Explorer dataset (github.com/owizdom/ai-research-model-cards,
 `data/dataset/documents.csv`, CC-BY 4.0) lists 90 documents across six
 labs with URLs and is a good seed list to verify against.
+
+The ordered worklist of what to extract next is `docs/card-queue.md`.
