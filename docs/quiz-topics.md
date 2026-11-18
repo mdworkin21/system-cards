@@ -54,6 +54,7 @@ card says got into your head, which is the whole point of the project.
 |---|---|---|
 | **Card: Claude Fable 5.1 & Mythos 5.1** | CB-1 designated and CB-2 not crossed; FCF cyber Tier 1 with additional mitigations; autonomy threat models 1 and 2; METR, Gray Swan, Trajectory Labs, 10a Labs; alignment findings (covert capabilities, honesty under pressure, grader awareness); the sandbox-read incident. | `sources/anthropic/claude-fable-5.1-mythos-5.1.yaml`; the cached PDF pages it cites |
 | **Card: GPT-5.2 update** | High in Biological and Chemical as a precaution; cyber and AI self-improvement below High; Apollo Research on scheming; Irregular on cyber; production deception 1.6%; what the addendum defers to the GPT-5 card. | `sources/openai/gpt-5.2.yaml`; the cached PDF pages it cites |
+| **Card: GPT-6.2 Astra & Sol** | Critical in Cybersecurity for both models; High in Biological and Chemical; Astra the first released model at High in AI Self-Improvement while Sol is below; the FGF Loss of Control Tier 1 footnote; Blocker Deception regression and the Codex developer prompt; evaluation awareness; UK AISI's alignment, monitor-evasion and universal-jailbreak findings. | `sources/openai/gpt-6.2-astra-sol.yaml`; the cached PDF pages it cites |
 | **Card: Gemini 3.1 Pro** | The five FSF domains and their results, cyber at the alert threshold, what the nine-page card defers to the Gemini 3 Pro card and FSF report, and why third-party testing is `not_reported`. | `sources/google-deepmind/gemini-3.1-pro.yaml`; the cached PDF pages it cites |
 
 ## Process
