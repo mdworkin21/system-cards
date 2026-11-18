@@ -44,7 +44,7 @@ resolved from anthropic.com/transparency.
 
 | Order | Document | Lab | Status | Notes |
 |---|---|---|---|---|
-| 1 | Claude Opus 4.8 System Card | Anthropic | url | Stub in `sources/`; assets.claude.com/0f0c97ad20d8005706296bd92aa1c27c6b2f4f61.pdf now reachable |
+| 1 | Claude Opus 4.8 System Card | Anthropic | url | assets.claude.com/0f0c97ad20d8005706296bd92aa1c27c6b2f4f61.pdf (stub removed; extract from scratch) |
 | 2 | Claude Opus 5 System Card | Anthropic | url | assets.claude.com/ceaf5c7ff2783855203fde8208ec311252dced5b.pdf |
 | 3 | Claude Opus 4.7 System Card | Anthropic | url | assets.claude.com/037f06850df7fbe871e206dad004c3db5fd50340.pdf |
 | 4 | Claude Opus 4.6 System Card | Anthropic | url | assets.claude.com/6a5fa276ac68b9aeb0c8b6af5fa36326e0e166dd.pdf |
