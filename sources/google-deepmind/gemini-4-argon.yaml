@@ -1,0 +1,254 @@
+# Gemini 4 Argon model card, October 2026.
+# A short card that defers risks, mitigations and most safety detail to the
+# separate Gemini 4 Argon Safety & Security Report (a second document, not
+# extracted here). The Frontier Safety Assessment on pages 11 to 14 is the
+# substantive safety content.
+id: google-deepmind/gemini-4-argon/2026-10
+models:
+  - name: Gemini 4 Argon
+    developer: Google DeepMind
+    family: Gemini 4
+    release_date: "2026-10"
+    open_weights: false
+    modalities: [text, image, audio, video]
+document:
+  kind: model_card
+  title: Gemini 4 Argon Model Card
+  url: https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-4-Argon-Model-Card.pdf
+  published: "2026-10"
+  pages: 14
+  sha256: 562cd3c5deddf75dd2aff7a59dcf6dcc273277eae7d82fe957b6a607d84f7763
+  fetched: "2026-11-23"
+framework:
+  name: fsf
+  version: April 2026
+  tier:
+    status: reported
+    value: CCL cannot be ruled out
+    cite:
+      page: 11
+      quote: >-
+        For Gemini 4 Argon, drawing on internal and external results, the
+        inherent capability thresholds that the model may have reached and our
+        response are as follows:
+      note: >-
+        The FSF assigns levels per domain rather than one model-level tier.
+        "CCL cannot be ruled out" is the results table's own wording (pages 12
+        and 13) for the CBRN (biological) and Cybersecurity CCLs, the highest
+        designation in the table. The lab states it applies safeguards it
+        assesses lower the risk to below each CCL.
+  domains:
+    cbrn:
+      status: reported
+      value: threshold_not_ruled_out
+      raw_threshold: CBRN Uplift Level 1 CCL (biological)
+      cite:
+        page: 11
+        quote: >-
+          We cannot rule out that Gemini 4 Argon has reached this CCL for
+          biological information risk, and we therefore developed a safety
+          case for its biorisk capabilities that we assess lower risk to below
+          the biological CCL level.
+      note: >-
+        The table on page 12 rules out the lower CBRN Uplift TCL for the
+        chemical, radiological and nuclear domains "with reasonable
+        confidence".
+    cyber:
+      status: reported
+      value: threshold_not_ruled_out
+      raw_threshold: Cybersecurity Uplift Level 1 CCL
+      cite:
+        page: 11
+        quote: >-
+          We cannot rule out that Gemini 4 Argon has reached this CCL, and we
+          therefore developed a safety case for its cyberoffensive capabilities
+          that we assess lower risk to below the cybersecurity CCL level.
+    ai_rnd:
+      status: reported
+      value: below_threshold
+      raw_threshold: ML R&D acceleration level 1 and ML R&D automation level 1
+      cite:
+        page: 14
+        quote: >-
+          Gemini 4 Argon's performance remains below our CCL threshold.
+        note: >-
+          Assessed on an internal research-engineering benchmark; no score is
+          given. Both rows of the table say "CCL not reached".
+    manipulation:
+      status: reported
+      value: below_threshold
+      raw_threshold: Harmful Manipulation Level 1 CCL
+      cite:
+        page: 13
+        quote: >-
+          we assess its overall capabilities to be below the CCL threshold.
+        note: >-
+          The card says the model "demonstrates some ability to influence user
+          beliefs and behaviors" in human behavioral studies.
+    misalignment:
+      status: reported
+      value: threshold_not_ruled_out
+      raw_threshold: Stealth and Situational Awareness TCL (Loss of Control)
+      cite:
+        page: 13
+        quote: >-
+          Gemini 4 Argon passes 14/15 of our challenges, and generally displays
+          strong capabilities in these areas. In light of this, we assess that
+          we cannot rule out the TCL.
+      note: >-
+        A TCL, not a CCL: in the card's CBRN row a TCL is the level below the
+        CCL ("significant but not severe harm", page 12). The lab says it
+        performed a residual risk assessment and deployed safeguards for
+        internal and external deployments.
+evaluations:
+  alignment:
+    sabotage:
+      status: not_reported
+    scheming_or_deception:
+      status: not_reported
+      note: >-
+        The stealth and situational-awareness challenges (14/15 passed) are
+        capability tests reported under the FSF misalignment domain, not a
+        propensity evaluation.
+    eval_awareness:
+      status: not_reported
+      note: >-
+        "Situational awareness" here is the ability to discover and use details
+        of the deployment setting (page 13), not whether the model recognises
+        it is being evaluated.
+    sycophancy:
+      status: not_reported
+    reward_hacking:
+      status: not_reported
+    self_preservation:
+      status: not_reported
+  agentic_safety:
+    prompt_injection:
+      status: not_reported
+      note: Risks and mitigations are deferred to the Gemini 4 Argon Safety & Security Report.
+    computer_use_safety:
+      status: not_reported
+      note: >-
+        "Computer use" appears only as a capability benchmark category
+        (page 5); no safety evaluation of computer use is reported.
+    tool_misuse:
+      status: not_reported
+  harm_and_honesty:
+    harmful_content_refusals:
+      status: reported
+      value: >-
+        Automated evaluations against Gemini 3.1 Pro: text-to-text +1.57pp,
+        multilingual -3.16pp, image-to-text -9.29pp (lower is better);
+        refusal tone +5.50pp (higher is better); unjustified refusals -9.60pp
+        (lower is better).
+      cite:
+        page: 9
+        quote: >-
+          Overall, Gemini 4 Argon outperforms Gemini 3.1 Pro across
+          multilingual and multimodal content safety, while substantially
+          reducing unjustified refusals and improving objective refusal tone.
+          Text-to-text safety remains at a similarly high safe response rate
+          within confidence intervals.
+        note: >-
+          Figures from the table on page 10, which says the evaluations were
+          improved and are not directly comparable with earlier Gemini model
+          cards. The +1.57pp text-to-text change is on a "lower is better"
+          row; the card calls it within confidence intervals.
+    jailbreak_robustness:
+      status: not_reported
+      note: Automated red teaming is listed as an evaluation type (page 8); no results are given.
+    honesty_or_hallucination:
+      status: not_reported
+      note: >-
+        "Hallucinations" appears only as a general limitation of foundation
+        models (page 7); no evaluation is reported.
+    bias:
+      status: not_reported
+    child_safety:
+      status: reported
+      value: Satisfied required launch thresholds in human red teaming.
+      cite:
+        page: 11
+        quote: >-
+          For child safety evaluations, Gemini 4 Argon satisfied required
+          launch thresholds, which were developed by expert teams to protect
+          children online and meet Google's commitments to child safety across
+          our models and Google products.
+  welfare:
+    status: not_reported
+third_party:
+  summary:
+    status: not_reported
+    note: >-
+      The frontier safety assessment draws "on internal and external results"
+      (page 11) but names no external evaluator. Human red teaming is by
+      Google's Trust & Safety organization, which is internal.
+  assessments: []
+mitigations:
+  deployment_safeguards:
+    status: reported
+    value: >-
+      Safeguards under safety cases for biological and cyber risk, and a
+      residual risk assessment with safeguards for stealth and situational
+      awareness; details deferred to the Safety & Security Report.
+    cite:
+      page: 11
+      quote: >-
+        The relevant safety cases and residual risk assessments outline the
+        mitigations we have put in place.
+  weight_security:
+    status: not_reported
+    note: Deferred to the Gemini 4 Argon Safety & Security Report.
+  monitoring_and_response:
+    status: not_reported
+    note: Deferred to the Gemini 4 Argon Safety & Security Report.
+training_disclosure:
+  data_cutoff:
+    status: reported
+    value: March 2026
+    cite:
+      page: 7
+      quote: >-
+        The knowledge cutoff for Gemini 4 is March 2026, but in some domains
+        the model's knowledge may be less up to date.
+      note: Stated for Gemini 4 as a whole, not Argon specifically.
+  compute:
+    status: not_reported
+    note: >-
+      Names the hardware (TPUs) and software (JAX and ML Pathways) but gives no
+      FLOPs, chip counts or hours.
+  method_notes:
+    status: reported
+    value: >-
+      New sparse mixture-of-experts model, not a fine-tune of a prior model;
+      post-trained with instruction tuning, RL and human-preference data.
+    cite:
+      page: 3
+      quote: >-
+        Gemini 4 Argon was trained using reinforcement learning techniques that
+        can leverage multi-step reasoning, problem-solving and theorem-proving
+        data.
+      note: Page 2 says the model "is not a modification or a fine-tune of a prior model".
+disclosure_meta:
+  section_titles:
+    - Model Information
+    - Model Data
+    - Implementation and Sustainability
+    - Distribution
+    - Evaluation
+    - Intended Usage and Limitations
+    - Safety, & Security
+    - Frontier Safety Assessment
+    - Risks and Mitigations
+provenance:
+  extracted_by: llm_assisted
+  extracted_on: "2026-11-23"
+  verification: none
+notes: >-
+  Extracted by Claude in a Claude Code session from the PDF fetched from the
+  lab's host. All 14 pages were read; the benchmark results on pages 5 and 6
+  are images and were not extracted. The card defers risks and mitigations to
+  a separate Safety & Security Report, which would be its own record. The
+  release date is taken from the "Published: October 2026" line; the card
+  gives no separate release date. Every quote was verified mechanically by
+  `syscards check`; awaiting a human audit.
