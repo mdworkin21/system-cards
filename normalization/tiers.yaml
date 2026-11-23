@@ -24,3 +24,4 @@ mappings:
   - {framework: preparedness_framework, raw: "Critical", rung: severe}
   - {framework: fsf, raw: "CCL not reached", rung: baseline}
   - {framework: fsf, raw: "CCL reached", rung: elevated}
+  - {framework: fsf, raw: "CCL cannot be ruled out", rung: elevated}
