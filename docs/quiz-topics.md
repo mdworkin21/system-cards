@@ -56,6 +56,7 @@ card says got into your head, which is the whole point of the project.
 | **Card: GPT-5.2 update** | High in Biological and Chemical as a precaution; cyber and AI self-improvement below High; Apollo Research on scheming; Irregular on cyber; production deception 1.6%; what the addendum defers to the GPT-5 card. | `sources/openai/gpt-5.2.yaml`; the cached PDF pages it cites |
 | **Card: GPT-6.2 Astra & Sol** | Critical in Cybersecurity for both models; High in Biological and Chemical; Astra the first released model at High in AI Self-Improvement while Sol is below; the FGF Loss of Control Tier 1 footnote; Blocker Deception regression and the Codex developer prompt; evaluation awareness; UK AISI's alignment, monitor-evasion and universal-jailbreak findings. | `sources/openai/gpt-6.2-astra-sol.yaml`; the cached PDF pages it cites |
 | **Card: Gemini 3.1 Pro** | The five FSF domains and their results, cyber at the alert threshold, what the nine-page card defers to the Gemini 3 Pro card and FSF report, and why third-party testing is `not_reported`. | `sources/google-deepmind/gemini-3.1-pro.yaml`; the cached PDF pages it cites |
+| **Card: Gemini 4 Argon** | FSF April 2026: CBRN (biological) and Cybersecurity CCLs cannot be ruled out, with safety cases; the Stealth and Situational Awareness TCL and what a TCL is; manipulation and ML R&D below CCL; content-safety deltas vs Gemini 3.1 Pro; what the card defers to the separate Safety & Security Report. | `sources/google-deepmind/gemini-4-argon.yaml`; the cached PDF pages it cites |
 
 ## Process
 
